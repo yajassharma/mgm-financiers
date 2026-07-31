@@ -23,12 +23,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mgm-web-http.entrypoints=web"
-      - "traefik.http.routers.mgm-web-http.rule=Host(`mgmfinanciers.com`)"
+      - "traefik.http.routers.mgm-web-http.rule=Host(`mgmfinanciers.com`, `www.mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-web-http.middlewares=mgm-web-redirect"
       - "traefik.http.middlewares.mgm-web-redirect.redirectscheme.permanent=true"
       - "traefik.http.middlewares.mgm-web-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.mgm-web.entrypoints=websecure"
-      - "traefik.http.routers.mgm-web.rule=Host(`mgmfinanciers.com`)"
+      - "traefik.http.routers.mgm-web.rule=Host(`mgmfinanciers.com`, `www.mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-web.tls.certresolver=deploy-resolver"
       - "traefik.http.services.mgm-web.loadbalancer.server.port=80"
 
