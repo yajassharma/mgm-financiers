@@ -13,13 +13,6 @@ export const getCookie = (name: string) => {
   return cookieValue;
 };
 
-const deleteCookie = (name: string) => {
-  document.cookie = `${name}=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path=/`;
-
-  // Remove it from local storage too
-  window.sessionStorage.removeItem(name);
-};
-
 export const deleteAllCookies = () => {
   const authKeys = ['token', 'mgm_admin_auth'];
   authKeys.forEach((key) => {
