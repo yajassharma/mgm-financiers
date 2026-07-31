@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@azure/storage-blob": "^12.28.0",
+    "@google-analytics/data": "^6.1.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
