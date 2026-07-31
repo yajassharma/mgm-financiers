@@ -317,9 +317,38 @@ export class AnalyticsService {
         sessions: parseInt(r.metricValues?.[0]?.value || '0'),
       }));
 
+      // Device breakdown
+      const [deviceRes] = await this.gaClient.runReport({
+        property: `properties/${this.gaPropertyId}`,
+        dateRanges: [range],
+        dimensions: [{ name: 'deviceCategory' }],
+        metrics: [{ name: 'sessions' }],
+        orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+      });
+
+      const devices = (deviceRes?.rows || []).map((r: any) => ({
+        device: r.dimensionValues?.[0]?.value || 'Unknown',
+        sessions: parseInt(r.metricValues?.[0]?.value || '0'),
+      }));
+
+      // Top pages
+      const [pagesRes] = await this.gaClient.runReport({
+        property: `properties/${this.gaPropertyId}`,
+        dateRanges: [range],
+        dimensions: [{ name: 'pagePath' }],
+        metrics: [{ name: 'screenPageViews' }],
+        limit: 10,
+        orderBys: [{ metric: { metricName: 'screenPageViews' }, desc: true }],
+      });
+
+      const topPages = (pagesRes?.rows || []).map((r: any) => ({
+        page: r.dimensionValues?.[0]?.value || '',
+        views: parseInt(r.metricValues?.[0]?.value || '0'),
+      }));
+
       return makeResponse({
         statusCode: 200, title: 'Traffic Data', message: 'Data retrieved', status: 'success',
-        data: { daily: filled, sources },
+        data: { daily: filled, sources, devices, topPages },
       });
     } catch (err: any) {
       this.logger.error(`GA4 traffic fetch failed: ${err.message}`);

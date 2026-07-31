@@ -32,17 +32,17 @@ export default function Dashboard() {
   const gs = grievanceStats?.data;
   const ps = paymentStats?.data;
 
-  const trafficSources = tr?.sources
-    ? Object.entries(tr.sources).map(([name, value]) => ({
-        name: name.charAt(0).toUpperCase() + name.slice(1),
-        value: value as number,
+  const trafficSources = tr?.sources?.length
+    ? tr.sources.map((s: any) => ({
+        name: (s.source || "Direct").charAt(0).toUpperCase() + (s.source || "Direct").slice(1),
+        value: s.sessions as number,
       }))
     : [];
 
-  const deviceData = tr?.devices
-    ? Object.entries(tr.devices).map(([name, value]) => ({
-        name: name.charAt(0).toUpperCase() + name.slice(1),
-        value: value as number,
+  const deviceData = tr?.devices?.length
+    ? tr.devices.map((d: any) => ({
+        name: d.device.charAt(0).toUpperCase() + d.device.slice(1),
+        value: d.sessions as number,
       }))
     : [];
 
@@ -100,7 +100,7 @@ export default function Dashboard() {
           <>
             <StatCard
               label="Total Visitors"
-              value={ov?.totalUsers?.toLocaleString() || "—"}
+              value={ov?.ga?.totalUsers?.toLocaleString() || "—"}
               color="info"
               icon={
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@ export default function Dashboard() {
             />
             <StatCard
               label="Page Views"
-              value={ov?.pageViews?.toLocaleString() || "—"}
+              value={ov?.ga?.pageViews?.toLocaleString() || "—"}
               color="success"
               icon={
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,9 +152,9 @@ export default function Dashboard() {
           </div>
           {trafficLoading ? (
             <ChartSkeleton />
-          ) : tr?.data?.length ? (
+          ) : tr?.daily?.length ? (
             <AreaChart
-              data={tr.data}
+              data={tr.daily}
               xKey="date"
               yKey="visitors"
               yKey2="pageViews"
@@ -202,9 +202,9 @@ export default function Dashboard() {
         {/* Top Pages */}
         <Card className="lg:col-span-2">
           <h3 className="text-sm font-semibold text-mgm-navy mb-4">Top Pages</h3>
-          {tr?.topPages?.length ? (
+          {(ov?.ga?.topPages?.length || tr?.topPages?.length) ? (
             <div className="space-y-2">
-              {tr.topPages.slice(0, 5).map((page: any, i: number) => (
+              {(ov?.ga?.topPages || tr?.topPages || []).slice(0, 5).map((page: any, i: number) => (
                 <div key={i} className="flex items-center justify-between py-2 border-b border-mgm-border last:border-0">
                   <span className="text-sm text-mgm-navy truncate mr-4">{page.page}</span>
                   <span className="text-xs font-semibold text-mgm-muted whitespace-nowrap">
@@ -251,8 +251,8 @@ export default function Dashboard() {
           </button>
           <div className="p-4 rounded-xl border border-mgm-border bg-gray-50/50">
             <p className="text-[10px] uppercase tracking-wider text-mgm-muted font-semibold mb-1">Avg Session</p>
-            <p className="text-xl font-bold text-mgm-navy">{ov?.avgSessionDuration ? `${Math.round(ov.avgSessionDuration)}s` : "—"}</p>
-            <p className="text-[11px] text-mgm-muted mt-1">Bounce rate: {ov?.bounceRate ? `${ov.bounceRate.toFixed(1)}%` : "—"}</p>
+            <p className="text-xl font-bold text-mgm-navy">{ov?.ga?.avgSessionDuration ? `${Math.round(ov.ga.avgSessionDuration)}s` : "—"}</p>
+            <p className="text-[11px] text-mgm-muted mt-1">Bounce rate: {ov?.ga?.bounceRate ? `${ov.ga.bounceRate.toFixed(1)}%` : "—"}</p>
           </div>
         </div>
       </Card>
