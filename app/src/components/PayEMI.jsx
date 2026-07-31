@@ -325,7 +325,7 @@ const prefersReduced = usePrefersReducedMotion()
         return
       }
 
-      console.log('[PayEMI] Order:', oid, 'Session:', paymentSessionId.substring(0, 40) + '...')
+      console.log('[PayEMI] Order created')
 
       // Load Cashfree SDK
       setPaymentStatus('loading_sdk')
@@ -338,7 +338,7 @@ const prefersReduced = usePrefersReducedMotion()
         return
       }
 
-      console.log('[PayEMI] SDK loaded. Cashfree type:', typeof window.Cashfree)
+      console.log('[PayEMI] SDK loaded')
 
       if (typeof window.Cashfree !== 'function') {
         setPaymentStatus('failed')
@@ -347,7 +347,7 @@ const prefersReduced = usePrefersReducedMotion()
       }
 
       const cashfree = window.Cashfree({ mode: 'production' })
-      console.log('[PayEMI] Opening checkout with session:', paymentSessionId.substring(0, 30))
+      console.log('[PayEMI] Opening checkout')
 
       setPaymentStatus('processing')
 

@@ -16,7 +16,7 @@ export class UserAuthService {
 
     const expiresIn: any = process.env.JWT_EXPIRES_IN || '1h';
 
-    const secret = process.env.ADMIN_JWT_SECRET;
+    const secret = process.env.USER_JWT_SECRET;
     if (!secret) {
       throw new InternalServerErrorException('JWT secret not set');
     }

@@ -8,8 +8,10 @@ export class Otp {
   @Prop({ required: true }) link!: string;
   @Prop({ required: true }) otp!: string;
   @Prop({ required: true }) consentId!: string;
+  @Prop({ required: true }) phoneNumber!: string;
   @Prop({ required: true }) expiresAt!: Date;
   @Prop({ default: false }) isUsed!: boolean;
+  @Prop({ default: 0 }) attempts!: number;
 }
 
 export const OtpSchema = SchemaFactory.createForClass(Otp);

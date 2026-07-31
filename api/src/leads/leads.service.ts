@@ -4,6 +4,7 @@ import { Lead, LeadDocument } from './schema/leads.schema';
 import { Model } from 'mongoose';
 import { makeResponse } from '../common/helpers/response.helper';
 import { paginate } from '../common/helpers/pagination.helper';
+import { escapeRegex } from '../common/helpers/regex.helper';
 
 @Injectable()
 export class LeadsService {
@@ -35,11 +36,12 @@ export class LeadsService {
   async findAll(search: string, status: string, page = 1, limit = 10) {
     const filter: any = {};
     if (search) {
+      const safeSearch = escapeRegex(search);
       filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { phone: { $regex: search, $options: 'i' } },
-        { leadId: { $regex: search, $options: 'i' } },
+        { name: { $regex: safeSearch, $options: 'i' } },
+        { email: { $regex: safeSearch, $options: 'i' } },
+        { phone: { $regex: safeSearch, $options: 'i' } },
+        { leadId: { $regex: safeSearch, $options: 'i' } },
       ];
     }
     if (status && status !== 'all') {

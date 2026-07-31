@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Otp, OtpDocument } from './schema/otp.schema';
 import { makeResponse } from 'src/common/helpers/response.helper';
 import axios from 'axios';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class OtpService {
+  private readonly logger = new Logger(OtpService.name);
+  private readonly MAX_OTP_ATTEMPTS = 5;
+
   constructor(@InjectModel(Otp.name) readonly model: Model<OtpDocument>) {}
 
   private async sendOtpSms(mobile: string, otp: string, consentId: string) {
@@ -27,11 +31,11 @@ export class OtpService {
       },
     });
 
-    console.log('res', res.data.status);
+    this.logger.log(`OTP SMS status: ${res.data.status}`);
   }
 
   generateOtp() {
-    return Math.floor(100000 + Math.random() * 900000).toString();
+    return crypto.randomInt(100000, 999999).toString();
   }
 
   async sendOtp(phoneNumber: string, consentId: string) {
@@ -76,7 +80,17 @@ export class OtpService {
         message: 'Please request a new OTP',
       });
 
+    if (doc.attempts >= this.MAX_OTP_ATTEMPTS) {
+      return makeResponse({
+        status: 'error',
+        statusCode: 429,
+        title: 'Too Many Attempts',
+        message: 'Maximum OTP attempts exceeded. Please request a new OTP.',
+      });
+    }
+
     if (doc.otp !== otp) {
+      doc.attempts = (doc.attempts || 0) + 1;
       await doc.save();
 
       return makeResponse({

@@ -4,6 +4,7 @@ import { Payment, PaymentDocument } from "./schema/payments.schema";
 import { Model, PipelineStage } from "mongoose";
 import { makeResponse } from "../common/helpers/response.helper";
 import { paginate } from "../common/helpers/pagination.helper";
+import { escapeRegex } from "../common/helpers/regex.helper";
 import { ConfigService } from "@nestjs/config";
 import { Cron, CronExpression } from "@nestjs/schedule";
 
@@ -27,13 +28,23 @@ export class PaymentsService {
 
   async createOrder(body: any) {
     const { customerName, customerEmail, customerPhone, borrowerName, phone, email, amount, paymentType, loanAccountNumber, loanNumber } = body;
-    const name = customerName || borrowerName || "";
-    const eemail = customerEmail || email || "";
-    const phoneNum = customerPhone || phone || "";
-    const loanNum = loanAccountNumber || loanNumber || "";
+    const name = (customerName || borrowerName || "").toString().trim().slice(0, 200);
+    const eemail = (customerEmail || email || "").toString().trim().slice(0, 200);
+    const phoneNum = (customerPhone || phone || "").toString().trim().slice(0, 15);
+    const loanNum = (loanAccountNumber || loanNumber || "").toString().trim().slice(0, 50);
+    const amountNum = Number(amount);
+
+    if (!name || !eemail || !phoneNum || !amountNum || amountNum <= 0) {
+      return makeResponse({ statusCode: 400, title: "Bad Request", message: "Missing or invalid required fields.", status: "error" });
+    }
+
+    if (amountNum > 10000000) {
+      return makeResponse({ statusCode: 400, title: "Bad Request", message: "Amount exceeds maximum limit.", status: "error" });
+    }
+
     const orderId = "MGM_" + Date.now() + "_" + Math.random().toString(36).substr(2, 9);
 
-    await this.model.create({ orderId, customerName: name, customerEmail: eemail, customerPhone: phoneNum, amount: Number(amount), paymentType, loanAccountNumber: loanNum });
+    await this.model.create({ orderId, customerName: name, customerEmail: eemail, customerPhone: phoneNum, amount: amountNum, paymentType, loanAccountNumber: loanNum });
 
     const { appId, secretKey, apiVersion, baseUrl } = this.getCashfreeConfig();
     const frontendBase = this.config.get<string>("frontendBase") || "https://mgm.72.61.244.222.sslip.io";
@@ -135,7 +146,7 @@ export class PaymentsService {
   }
 
   async handleWebhook(body: any) {
-    this.logger.log(`Webhook received: ${JSON.stringify(body)}`);
+    this.logger.log(`Webhook received for order: ${body?.order_id}, status: ${body?.order_status}`);
 
     const { order_id, order_status, cf_order_id, payment_method } = body;
 
@@ -170,11 +181,12 @@ export class PaymentsService {
   async findAll(search?: string, status?: string, page = 1, limit = 10) {
     const stages: PipelineStage[] = [];
     if (search) {
+      const safeSearch = escapeRegex(search);
       stages.push({ $match: { $or: [
-        { customerName: { $regex: search, $options: "i" } },
-        { customerEmail: { $regex: search, $options: "i" } },
-        { orderId: { $regex: search, $options: "i" } },
-        { cfPaymentId: { $regex: search, $options: "i" } },
+        { customerName: { $regex: safeSearch, $options: "i" } },
+        { customerEmail: { $regex: safeSearch, $options: "i" } },
+        { orderId: { $regex: safeSearch, $options: "i" } },
+        { cfPaymentId: { $regex: safeSearch, $options: "i" } },
       ]}});
     }
     if (status && status !== "all") {

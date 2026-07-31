@@ -9,6 +9,7 @@ import { NextFunction, Response, Request } from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -29,15 +30,15 @@ async function bootstrap() {
   app.use(hpp());
   app.use(cookieParser());
 
-  // app.use(
-  //   rateLimit({
-  //     windowMs: 15 * 60 * 1000,
-  //     max: 200,
-  //     standardHeaders: true,
-  //     legacyHeaders: false,
-  //     message: 'Too many requests from this IP, please try again later.',
-  //   }),
-  // );
+  app.use(
+    rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 200,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: 'Too many requests from this IP, please try again later.',
+    }),
+  );
 
   // Only send HSTS header in production + HTTPS
   app.use((req: Request, res: Response, next: NextFunction) => {

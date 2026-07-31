@@ -21,14 +21,10 @@ const deleteCookie = (name: string) => {
 };
 
 export const deleteAllCookies = () => {
-  const cookies = document.cookie.split("; ");
-
-  cookies.forEach((cookie) => {
-    const name = cookie.split("=").shift();
-    deleteCookie(name ?? "");
+  const authKeys = ['token', 'mgm_admin_auth'];
+  authKeys.forEach((key) => {
+    document.cookie = `${key}=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; Path=/`;
+    window.sessionStorage.removeItem(key);
+    window.localStorage.removeItem(key);
   });
-
-  // Some sites backup cookies in `localStorage`
-  window.sessionStorage.clear();
-  window.localStorage.clear();
 };

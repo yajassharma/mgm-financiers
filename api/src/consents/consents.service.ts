@@ -4,6 +4,7 @@ import { Consent, ConsentDocument } from './schema/consents.schema';
 import { Model, PipelineStage, Types } from 'mongoose';
 import { makeResponse } from 'src/common/helpers/response.helper';
 import { paginate } from 'src/common/helpers/pagination.helper';
+import { escapeRegex } from 'src/common/helpers/regex.helper';
 import { OtpService } from 'src/auth/otp/otp.service';
 import { Admin, AdminDocument } from 'src/admin/schemas/admin.schema';
 
@@ -123,13 +124,14 @@ export class ConsentsService {
     const stages: PipelineStage[] = [];
 
     if (search) {
+      const safeSearch = escapeRegex(search);
       stages.push({
         $match: {
           $or: [
-            { mobile: { $regex: search, $options: 'i' } },
-            { name: { $regex: search, $options: 'i' } },
-            { pan: { $regex: search, $options: 'i' } },
-            { consentId: { $regex: search, $options: 'i' } },
+            { mobile: { $regex: safeSearch, $options: 'i' } },
+            { name: { $regex: safeSearch, $options: 'i' } },
+            { pan: { $regex: safeSearch, $options: 'i' } },
+            { consentId: { $regex: safeSearch, $options: 'i' } },
           ],
         },
       });

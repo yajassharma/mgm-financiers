@@ -4,6 +4,7 @@ import { Grievance, GrievanceDocument } from './schema/grievances.schema';
 import { Model, PipelineStage } from 'mongoose';
 import { makeResponse } from 'src/common/helpers/response.helper';
 import { paginate } from 'src/common/helpers/pagination.helper';
+import { escapeRegex } from 'src/common/helpers/regex.helper';
 
 @Injectable()
 export class GrievancesService {
@@ -50,12 +51,13 @@ export class GrievancesService {
   async findAll(search?: string, status?: string, page = 1, limit = 10) {
     const stages: PipelineStage[] = [];
     if (search) {
+      const safeSearch = escapeRegex(search);
       stages.push({ $match: { $or: [
-        { name: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { mobile: { $regex: search, $options: 'i' } },
-        { grievanceId: { $regex: search, $options: 'i' } },
-        { subject: { $regex: search, $options: 'i' } },
+        { name: { $regex: safeSearch, $options: 'i' } },
+        { email: { $regex: safeSearch, $options: 'i' } },
+        { mobile: { $regex: safeSearch, $options: 'i' } },
+        { grievanceId: { $regex: safeSearch, $options: 'i' } },
+        { subject: { $regex: safeSearch, $options: 'i' } },
       ]}});
     }
     if (status && status !== 'all') {

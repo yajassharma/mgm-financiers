@@ -1,4 +1,5 @@
 import { PipelineStage, Model, FilterQuery } from 'mongoose';
+import { escapeRegex } from './regex.helper';
 
 interface PaginationOptions {
   page?: number;
@@ -21,9 +22,10 @@ export async function paginate<T>(
 
   // add search filter if needed
   if (options.search && options.searchField) {
+    const safeSearch = escapeRegex(options.search);
     query = {
       ...query,
-      [options.searchField]: { $regex: options.search, $options: 'i' },
+      [options.searchField]: { $regex: safeSearch, $options: 'i' },
     };
   }
 

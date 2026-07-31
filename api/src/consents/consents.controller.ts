@@ -92,12 +92,13 @@ export class ConsentsController {
   }
 
   @Get('export-xlsx')
+  @UseGuards(AdminJwtGuard)
   async exportXlsx(
     @Res() res: Response,
     @Query('search') search: string,
     @Query('status') status: string,
     @Query('page') page = 1,
-    @Query('limit') limit = 100000,
+    @Query('limit') limit = 10000,
   ) {
     const consents = await this.consentsService.allConsents(
       search,

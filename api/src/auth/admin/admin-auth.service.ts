@@ -90,7 +90,7 @@ export class AdminAuthService {
       const resetLink = `${process.env.FRONTEND_BASE}/reset-password/${resetToken}`;
 
       // Send email
-      await this.mailer.sendResetEmail('abhayjatav777@gmail.com', resetLink);
+      await this.mailer.sendResetEmail(admin.email, resetLink);
     }
 
     // Always return success (even if email not found)

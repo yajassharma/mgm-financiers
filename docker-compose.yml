@@ -1,7 +1,6 @@
 # ============================================================
 #  MGM Financiers — Docker Compose
-#  Server just needs this file + .env + MongoDB + Traefik
-#  No source code on server — only pre-built images
+#  Domain: mgmfinanciers.com
 # ============================================================
 
 services:
@@ -9,17 +8,27 @@ services:
     image: mgm-web:${IMAGE_TAG:-latest}
     container_name: mgm-web
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - traefik
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mgm-web-http.entrypoints=web"
-      - "traefik.http.routers.mgm-web-http.rule=Host(`mgm.${DOMAIN}`)"
+      - "traefik.http.routers.mgm-web-http.rule=Host(`mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-web-http.middlewares=mgm-web-redirect"
       - "traefik.http.middlewares.mgm-web-redirect.redirectscheme.permanent=true"
       - "traefik.http.middlewares.mgm-web-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.mgm-web.entrypoints=websecure"
-      - "traefik.http.routers.mgm-web.rule=Host(`mgm.${DOMAIN}`)"
+      - "traefik.http.routers.mgm-web.rule=Host(`mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-web.tls.certresolver=deploy-resolver"
       - "traefik.http.services.mgm-web.loadbalancer.server.port=80"
 
@@ -27,17 +36,27 @@ services:
     image: mgm-consent:${IMAGE_TAG:-latest}
     container_name: mgm-consent
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - traefik
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mgm-consent-http.entrypoints=web"
-      - "traefik.http.routers.mgm-consent-http.rule=Host(`consent.${DOMAIN}`)"
+      - "traefik.http.routers.mgm-consent-http.rule=Host(`consent.mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-consent-http.middlewares=mgm-consent-redirect"
       - "traefik.http.middlewares.mgm-consent-redirect.redirectscheme.permanent=true"
       - "traefik.http.middlewares.mgm-consent-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.mgm-consent.entrypoints=websecure"
-      - "traefik.http.routers.mgm-consent.rule=Host(`consent.${DOMAIN}`)"
+      - "traefik.http.routers.mgm-consent.rule=Host(`consent.mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-consent.tls.certresolver=deploy-resolver"
       - "traefik.http.services.mgm-consent.loadbalancer.server.port=80"
 
@@ -45,17 +64,27 @@ services:
     image: mgm-admin:${IMAGE_TAG:-latest}
     container_name: mgm-admin
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - traefik
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mgm-admin-http.entrypoints=web"
-      - "traefik.http.routers.mgm-admin-http.rule=Host(`admin-mgm.${DOMAIN}`)"
+      - "traefik.http.routers.mgm-admin-http.rule=Host(`admin.mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-admin-http.middlewares=mgm-admin-redirect"
       - "traefik.http.middlewares.mgm-admin-redirect.redirectscheme.permanent=true"
       - "traefik.http.middlewares.mgm-admin-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.mgm-admin.entrypoints=websecure"
-      - "traefik.http.routers.mgm-admin.rule=Host(`admin-mgm.${DOMAIN}`)"
+      - "traefik.http.routers.mgm-admin.rule=Host(`admin.mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-admin.tls.certresolver=deploy-resolver"
       - "traefik.http.services.mgm-admin.loadbalancer.server.port=80"
 
@@ -65,17 +94,27 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
     networks:
       - traefik
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.mgm-api-http.entrypoints=web"
-      - "traefik.http.routers.mgm-api-http.rule=Host(`api-mgm.${DOMAIN}`)"
+      - "traefik.http.routers.mgm-api-http.rule=Host(`api.mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-api-http.middlewares=mgm-api-redirect"
       - "traefik.http.middlewares.mgm-api-redirect.redirectscheme.permanent=true"
       - "traefik.http.middlewares.mgm-api-redirect.redirectscheme.scheme=https"
       - "traefik.http.routers.mgm-api.entrypoints=websecure"
-      - "traefik.http.routers.mgm-api.rule=Host(`api-mgm.${DOMAIN}`)"
+      - "traefik.http.routers.mgm-api.rule=Host(`api.mgmfinanciers.com`)"
       - "traefik.http.routers.mgm-api.tls.certresolver=deploy-resolver"
       - "traefik.http.services.mgm-api.loadbalancer.server.port=4000"
 
