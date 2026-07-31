@@ -267,27 +267,4 @@ export class PaymentsService {
       }
     }
   }
-
-  @Cron('0 */15 * * * *')
-  async expireOldPayments() {
-    const hardCutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const softCutoff = new Date(Date.now() - 60 * 60 * 1000);
-
-    const result = await this.model.updateMany(
-      { status: "PENDING", createdAt: { $lte: hardCutoff } },
-      { $set: { status: "EXPIRED", failureReason: "Payment session expired (auto)" } },
-    );
-
-    const processingResult = await this.model.updateMany(
-      { status: "PROCESSING", createdAt: { $lte: softCutoff } },
-      { $set: { status: "FAILED", failureReason: "Payment timed out (auto)" } },
-    );
-
-    if (result.modifiedCount > 0) {
-      this.logger.log(`Auto-expired ${result.modifiedCount} old pending payments`);
-    }
-    if (processingResult.modifiedCount > 0) {
-      this.logger.log(`Auto-failed ${processingResult.modifiedCount} stuck processing payments`);
-    }
-  }
 }

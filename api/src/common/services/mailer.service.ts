@@ -16,7 +16,7 @@ export class MailerService {
 
   async sendResetEmail(to: string, link: string) {
     await this.transporter.sendMail({
-      from: `"Go DriveX" <${process.env.SMTP_USER}>`,
+      from: `"MGM Financiers" <${process.env.SMTP_USER}>`,
       to,
       subject: 'Password Reset',
       html: `
