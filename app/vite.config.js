@@ -7,7 +7,7 @@ export default defineConfig({
     allowedHosts: true,
     proxy: {
       '/api': {
-        target: 'https://api-mgm.72.61.244.222.sslip.io',
+        target: process.env.VITE_API_URL || 'https://api.mgmfinanciers.com',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: true,

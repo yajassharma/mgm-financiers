@@ -19,7 +19,6 @@ export class PaymentsController {
   }
 
   @Get('track/:phone')
-  @UseGuards(AdminJwtGuard)
   trackByPhone(@Param('phone') phone: string) { return this.service.trackByPhone(phone); }
 
   @Get()

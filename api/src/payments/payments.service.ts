@@ -47,8 +47,8 @@ export class PaymentsService {
     await this.model.create({ orderId, customerName: name, customerEmail: eemail, customerPhone: phoneNum, amount: amountNum, paymentType, loanAccountNumber: loanNum });
 
     const { appId, secretKey, apiVersion, baseUrl } = this.getCashfreeConfig();
-    const frontendBase = this.config.get<string>("frontendBase") || "https://mgm.72.61.244.222.sslip.io";
-    const webhookUrl = `${this.config.get<string>("apiBase") || "https://api-mgm.72.61.244.222.sslip.io"}/payments/webhook`;
+    const frontendBase = this.config.get<string>("frontendBase") || "https://mgmfinanciers.com";
+    const webhookUrl = `${this.config.get<string>("apiBase") || "https://api.mgmfinanciers.com"}/payments/webhook`;
 
     const payload = {
       order_id: orderId,

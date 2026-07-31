@@ -13,18 +13,18 @@ export const request = async (options: AxiosRequestConfig<any>) => {
   const onSuccess = (response: AxiosResponse) => response.data;
   /* eslint-disable */
   const onError = (error: any) => {
-    if (error.response.status === 401) {
+    if (error.response?.status === 401) {
       deleteAllCookies();
       window.location.replace("/login");
     }
-    if (error.response.status >= 500) {
+    if (error.response?.status >= 500) {
       // notification.error({
       //   message: error.response?.data?.title,
       //   description: error.response?.data?.message,
       // });
     }
 
-    return error.response;
+    return error.response || { data: { message: 'Network error' } };
   };
 
   try {

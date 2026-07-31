@@ -325,14 +325,11 @@ const prefersReduced = usePrefersReducedMotion()
         return
       }
 
-      console.log('[PayEMI] Order created')
-
       // Load Cashfree SDK
       setPaymentStatus('loading_sdk')
       try {
         await loadCashfreeSDK()
-      } catch (sdkLoadErr) {
-        console.error('[PayEMI] SDK load failed:', sdkLoadErr)
+      } catch {
         setPaymentStatus('failed')
         setPaymentError('Failed to load payment gateway. Please check your internet connection.')
         return
@@ -347,7 +344,6 @@ const prefersReduced = usePrefersReducedMotion()
       }
 
       const cashfree = window.Cashfree({ mode: 'production' })
-      console.log('[PayEMI] Opening checkout')
 
       setPaymentStatus('processing')
 
@@ -356,7 +352,6 @@ const prefersReduced = usePrefersReducedMotion()
         redirectTarget: '_self',
       })
     } catch (err) {
-      console.error('[PayEMI] Error:', err)
       setPaymentStatus('failed')
       setPaymentError(err.message || 'Network error. Please try again.')
     }
@@ -398,8 +393,8 @@ const prefersReduced = usePrefersReducedMotion()
           return false
         }
       }
-    } catch (err) {
-      console.error('Verify error:', err)
+    } catch {
+      // verify failed
     }
     return false
   }, [amountRaw])

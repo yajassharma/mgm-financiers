@@ -213,14 +213,37 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
     return Object.keys(e).length === 0
   }
 
-  const handleSubmit = (ev) => {
+  const handleSubmit = async (ev) => {
     ev.preventDefault()
     if (!validateForm()) return
-    setFormSubmitted(true)
-    setTimeout(() => {
-      setFormSubmitted(false)
-      setFormState({ name: '', phone: '', email: '', department: '', subject: '', message: '' })
-    }, 5000)
+    try {
+      const response = await fetch('/api/grievances', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formState.name,
+          phone: formState.phone,
+          email: formState.email,
+          category: formState.department,
+          subject: formState.subject,
+          description: formState.message,
+        }),
+      })
+      const result = await response.json()
+      if (result.status === 'success') {
+        setFormSubmitted(true)
+        setTimeout(() => {
+          setFormSubmitted(false)
+          setFormState({ name: '', phone: '', email: '', department: '', subject: '', message: '' })
+        }, 5000)
+      }
+    } catch {
+      setFormSubmitted(true)
+      setTimeout(() => {
+        setFormSubmitted(false)
+        setFormState({ name: '', phone: '', email: '', department: '', subject: '', message: '' })
+      }, 5000)
+    }
   }
 
   return (
