@@ -227,22 +227,6 @@ export default function TransactionDetail() {
               )}
             </div>
           </Card>
-
-          {/* Quick Actions */}
-          <Card>
-            <h3 className="text-sm font-semibold text-mgm-navy mb-4">Quick Actions</h3>
-            <div className="space-y-2">
-              <button className="w-full text-left px-3 py-2.5 text-sm text-mgm-navy bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                Download Receipt
-              </button>
-              <button className="w-full text-left px-3 py-2.5 text-sm text-mgm-navy bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                View on Cashfree
-              </button>
-              <button className="w-full text-left px-3 py-2.5 text-sm text-mgm-navy bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                Export Details
-              </button>
-            </div>
-          </Card>
         </div>
       </div>
     </div>
