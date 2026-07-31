@@ -26,14 +26,25 @@ export class AnalyticsService {
     try {
       const propertyId = this.config.get<string>('GA4_PROPERTY_ID');
       const serviceAccountKey = this.config.get<string>('GA4_SERVICE_ACCOUNT_KEY');
+      const serviceAccountFile = this.config.get<string>('GA4_SERVICE_ACCOUNT_KEY_FILE');
+      const fs = require('fs');
 
-      if (!propertyId || !serviceAccountKey) {
+      let credentials: any;
+      if (serviceAccountKey) {
+        credentials = JSON.parse(serviceAccountKey);
+      } else if (serviceAccountFile && fs.existsSync(serviceAccountFile)) {
+        credentials = JSON.parse(fs.readFileSync(serviceAccountFile, 'utf-8'));
+      } else {
         this.logger.warn('GA4 not configured. Dashboard analytics will show zeros.');
         return;
       }
 
+      if (!propertyId) {
+        this.logger.warn('GA4_PROPERTY_ID not set. Dashboard analytics will show zeros.');
+        return;
+      }
+
       const { BetaAnalyticsDataClient } = require('@google-analytics/data');
-      const credentials = JSON.parse(serviceAccountKey);
 
       this.gaClient = new BetaAnalyticsDataClient({
         credentials: {

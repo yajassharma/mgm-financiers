@@ -94,6 +94,8 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    volumes:
+      - ./ga4-service-account.json:/app/ga4-service-account.json:ro
     deploy:
       resources:
         limits:

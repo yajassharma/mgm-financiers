@@ -13,4 +13,5 @@ export default () => ({
   apiBase: process.env.API_BASE,
   GA4_PROPERTY_ID: process.env.GA4_PROPERTY_ID,
   GA4_SERVICE_ACCOUNT_KEY: process.env.GA4_SERVICE_ACCOUNT_KEY,
+  GA4_SERVICE_ACCOUNT_KEY_FILE: process.env.GA4_SERVICE_ACCOUNT_KEY_FILE,
 });
