@@ -32,8 +32,6 @@ export default function Dashboard() {
   const gs = grievanceStats?.data;
   const ps = paymentStats?.data;
 
-  const hasAnalytics = ov && ov.totalUsers > 0;
-
   const trafficSources = tr?.sources
     ? Object.entries(tr.sources).map(([name, value]) => ({
         name: name.charAt(0).toUpperCase() + name.slice(1),
@@ -75,8 +73,8 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* GA Notice */}
-      {!overviewLoading && !hasAnalytics && (
+      {/* GA Notice - only show if backend GA4 is not responding */}
+      {!overviewLoading && ov && !ov.ga && (
         <Card className="bg-amber-50 border-amber-200">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-lg bg-amber-100 text-amber-600">
