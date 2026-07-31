@@ -268,7 +268,7 @@ export class PaymentsService {
     }
   }
 
-  @Cron(CronExpression.EVERY_15_MINUTES)
+  @Cron('0 */15 * * * *')
   async expireOldPayments() {
     const hardCutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const softCutoff = new Date(Date.now() - 60 * 60 * 1000);
