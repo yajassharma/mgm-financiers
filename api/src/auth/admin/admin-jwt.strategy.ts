@@ -34,7 +34,8 @@ export class AdminJwtStrategy extends PassportStrategy(Strategy, 'admin-jwt') {
   validate(payload: AdminJwtPayload) {
     if (
       payload.data?.roles?.includes('admin') ||
-      payload.data?.roles?.includes('executer')
+      payload.data?.roles?.includes('executer') ||
+      payload.data?.roles?.includes('superadmin')
     ) {
       return payload.data;
     }
