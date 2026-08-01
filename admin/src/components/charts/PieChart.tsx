@@ -29,11 +29,6 @@ const CustomTooltip = ({ active, payload }: any) => {
   );
 };
 
-const renderLabel = ({ name, percent }: any) => {
-  if (percent < 0.05) return null;
-  return `${name} ${(percent * 100).toFixed(0)}%`;
-};
-
 export default function PieChart({
   data,
   colors = DEFAULT_COLORS,
@@ -50,13 +45,11 @@ export default function PieChart({
         <Pie
           data={enriched}
           cx="50%"
-          cy="50%"
+          cy="45%"
           innerRadius={innerRadius}
           outerRadius={innerRadius + 30}
           dataKey="value"
           stroke="none"
-          label={renderLabel}
-          labelLine={false}
         >
           {enriched.map((_, i) => (
             <Cell key={i} fill={colors[i % colors.length]} />
