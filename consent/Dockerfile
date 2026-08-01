@@ -8,6 +8,8 @@ RUN npm ci
 
 # Copy source code and build
 COPY . .
+ARG VITE_APP_BASE_URL=https://api.mgmfinanciers.com
+ENV VITE_APP_BASE_URL=$VITE_APP_BASE_URL
 RUN npm run build
 
 # --- Nginx Runtime Stage ---
