@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
 import PdfPlaceholder from './PdfPlaceholder'
 
 function Header() {
+  const location = useLocation()
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [grievanceOpen, setGrievanceOpen] = useState(false)
@@ -136,6 +137,7 @@ function Header() {
                 {/* Regular Nav Links */}
                 {navLinks.map((link) => (
                   <Link key={link.name} to={link.to}
+                    onClick={() => { if (location.pathname === link.to) window.scrollTo({ top: 0, behavior: 'instant' }) }}
                     className="nav-link-underline relative px-3.5 py-2 text-[13px] font-medium text-black/60 hover:text-black rounded-full hover:bg-white/10 transition-all duration-200 font-body">
                     {link.name}
                   </Link>
@@ -226,6 +228,7 @@ function Header() {
                   </div>
                 </div>
                 <Link to="/contact"
+                  onClick={() => { if (location.pathname === '/contact') window.scrollTo({ top: 0, behavior: 'instant' }) }}
                   className="nav-link-underline relative px-3.5 py-2 text-[13px] font-medium text-black/60 hover:text-black rounded-full hover:bg-white/10 transition-all duration-200 font-body">
                   {'Contact Us'}
                 </Link>
@@ -233,6 +236,7 @@ function Header() {
 
               <div className="hidden xl:flex items-center gap-2.5">
                 <Link to="/pay-emi"
+                  onClick={() => { if (location.pathname === '/pay-emi') window.scrollTo({ top: 0, behavior: 'instant' }) }}
                   className="btn-interactive px-5 py-2 text-[13px] font-medium text-black/80 border border-black/15 rounded-full hover:bg-black/10 hover:text-black transition-all duration-200 font-body">
                   {'Pay EMI'}
                 </Link>
@@ -321,7 +325,7 @@ function Header() {
                 <Link
                   key={link.name}
                   to={link.to}
-                  onClick={closeMenu}
+                  onClick={() => { closeMenu(); if (location.pathname === link.to) window.scrollTo({ top: 0, behavior: 'instant' }) }}
                   className="py-4 text-2xl font-heading font-semibold text-white/80 hover:text-white border-b border-mgm-dark/5 transition-colors"
                   style={{ transitionDelay: isOpen ? `${i * 50}ms` : '0ms' }}
                 >
