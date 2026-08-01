@@ -14,11 +14,18 @@ export class GrievancesService {
 
   async createGrievance(body: any) {
     const { name, customerName, email, mobile, phone, category, subject, description, loanType, loanAccountNumber, address } = body;
+    if (!email || !subject || !description) {
+      return makeResponse({
+        statusCode: 400, title: 'Error',
+        message: 'Email, subject, and description are required.',
+        status: 'error',
+      });
+    }
     const grievance = await this.model.create({
-      name: name || customerName || '',
+      name: name || customerName || 'Anonymous',
       email,
       mobile: mobile || phone || '',
-      category: category || loanType || '',
+      category: category || loanType || 'General',
       subject,
       description,
       loanAccountNumber: loanAccountNumber || '',

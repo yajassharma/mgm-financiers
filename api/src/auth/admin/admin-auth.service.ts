@@ -18,6 +18,16 @@ export class AdminAuthService {
   ) {}
 
   async login({ email, password }: { email: string; password: string }) {
+    if (typeof email !== 'string' || typeof password !== 'string' ||
+        email.length > 254 || password.length > 128 ||
+        typeof email === 'object' || typeof password === 'object') {
+      return makeResponse({
+        statusCode: 400,
+        title: 'Error',
+        message: 'User credentials mismatched',
+        status: 'error',
+      });
+    }
     const admin = await this.admins.validateAdmin(email, password);
     if (!admin) {
       return makeResponse({

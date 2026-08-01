@@ -14,6 +14,13 @@ export class LeadsService {
 
   async createLead(body: any) {
     const { name, phone, email, loanType, amount, cibil, employment, purpose } = body;
+    if (!name || !phone) {
+      return makeResponse({
+        statusCode: 400, title: 'Error',
+        message: 'Name and phone are required.',
+        status: 'error',
+      });
+    }
 
     const lead = await this.model.create({
       name: name?.trim() || '',
