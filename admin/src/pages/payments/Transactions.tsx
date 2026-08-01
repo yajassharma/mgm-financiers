@@ -8,9 +8,10 @@ import PageHeader from "../../components/layout/PageHeader";
 
 const statusTabs = [
   { key: "all", label: "All" },
-  { key: "COMPLETED", label: "Completed" },
+  { key: "SUCCESS", label: "Completed" },
   { key: "PENDING", label: "Pending" },
   { key: "FAILED", label: "Failed" },
+  { key: "EXPIRED", label: "Expired" },
 ];
 
 export default function Transactions() {
@@ -69,9 +70,9 @@ export default function Transactions() {
       render: (item) => (
         <Badge
           variant={
-            item.status === "COMPLETED"
+            item.status === "SUCCESS"
               ? "success"
-              : item.status === "FAILED"
+              : item.status === "FAILED" || item.status === "EXPIRED"
               ? "danger"
               : "warning"
           }
