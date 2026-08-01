@@ -54,6 +54,7 @@ export class PaymentsService {
       order_id: orderId,
       order_amount: Number(amount),
       order_currency: "INR",
+      order_expiry_time: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
       customer_details: {
         customer_id: (eemail || orderId).replace(/[^a-zA-Z0-9_-]/g, '_'),
         customer_name: name,
@@ -261,10 +262,23 @@ export class PaymentsService {
           headers: { "x-client-id": appId, "x-client-secret": secretKey, "x-api-version": apiVersion },
         });
         const data: any = await response.json();
+        this.logger.log(`Verify ${payment.orderId}: cf_status=${data.order_status}`);
         this.applyCashfreeStatus(payment, data);
       } catch (err: any) {
         this.logger.error(`Auto-verify failed for ${payment.orderId}: ${err.message}`);
       }
+    }
+  }
+
+  @Cron('0 */30 * * * *')
+  async expireStalePayments() {
+    const cutoff = new Date(Date.now() - 2 * 60 * 60 * 1000);
+    const result = await this.model.updateMany(
+      { status: "PENDING", createdAt: { $lte: cutoff } },
+      { $set: { status: "EXPIRED", failureReason: "Payment expired (auto - exceeded time limit)" } },
+    );
+    if (result.modifiedCount > 0) {
+      this.logger.log(`Auto-expired ${result.modifiedCount} stale pending payments (>2h)`);
     }
   }
 }
