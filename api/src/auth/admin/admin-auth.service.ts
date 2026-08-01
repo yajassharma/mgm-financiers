@@ -140,4 +140,39 @@ export class AdminAuthService {
 
     return { message: 'Password successfully updated' };
   }
+
+  async seedFirstAdmin({ email, password, secret }: { email: string; password: string; secret: string }) {
+    if (secret !== 'MGM_SEED_2024!') {
+      return makeResponse({
+        statusCode: 403,
+        title: 'Forbidden',
+        message: 'Invalid seed secret',
+        status: 'error',
+      });
+    }
+
+    const count = await this.adminModel.countDocuments();
+    if (count > 0) {
+      return makeResponse({
+        statusCode: 409,
+        title: 'Conflict',
+        message: 'Admin already exists. Use register endpoint.',
+        status: 'error',
+      });
+    }
+
+    await this.adminModel.create({
+      email,
+      password,
+      firstName: 'Super',
+      lastName: 'Admin',
+      username: 'superadmin',
+      roles: ['superadmin'],
+    });
+
+    return {
+      title: 'Seed Complete',
+      message: 'First admin created successfully',
+    };
+  }
 }

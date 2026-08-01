@@ -18,6 +18,11 @@ export class AdminAuthController {
     return this.auth.createAdmin(body);
   }
 
+  @Post('seed-first')
+  seedFirst(@Body() body: { email: string; password: string; secret: string }) {
+    return this.auth.seedFirstAdmin(body);
+  }
+
   @Post('forgot-user')
   forgotUser(@Body() body: ForgotAdmin) {
     return this.auth.forgotPassword(body);
