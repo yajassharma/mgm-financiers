@@ -23,5 +23,9 @@ COPY --from=builder /usr/app/build .
 # Copy custom Nginx config for SPA
 COPY --from=builder /usr/app/nginx/default.conf /etc/nginx/conf.d/default.conf
 
+# Copy entrypoint
+COPY --from=builder /usr/app/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/entrypoint.sh"]
