@@ -287,11 +287,17 @@ export class AnalyticsService {
         orderBys: [{ dimension: { dimensionName: 'date' } }],
       });
 
-      const daily = (dailyRes?.rows || []).map((r: any) => ({
-        date: r.dimensionValues?.[0]?.value || '',
-        visitors: parseInt(r.metricValues?.[0]?.value || '0'),
-        pageViews: parseInt(r.metricValues?.[1]?.value || '0'),
-      }));
+      const daily = (dailyRes?.rows || []).map((r: any) => {
+        const rawDate = r.dimensionValues?.[0]?.value || '';
+        const date = rawDate.length === 8
+          ? `${rawDate.slice(0,4)}-${rawDate.slice(4,6)}-${rawDate.slice(6,8)}`
+          : rawDate;
+        return {
+          date,
+          visitors: parseInt(r.metricValues?.[0]?.value || '0'),
+          pageViews: parseInt(r.metricValues?.[1]?.value || '0'),
+        };
+      });
 
       // Fill gaps for days with no traffic
       const filled = [];
