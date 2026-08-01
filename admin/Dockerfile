@@ -3,10 +3,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install --frozen-lockfile
 COPY . .
-ARG VITE_APP_BASE_URL=https://api.mgmfinanciers.com
-ARG VITE_APP_AUTH_NAME=mgm_admin_auth
-ENV VITE_APP_BASE_URL=$VITE_APP_BASE_URL
-ENV VITE_APP_AUTH_NAME=$VITE_APP_AUTH_NAME
+ARG VITE_APP_BASE_URL
+ARG VITE_APP_AUTH_NAME
+ENV VITE_APP_BASE_URL=${VITE_APP_BASE_URL:-https://api.mgmfinanciers.com}
+ENV VITE_APP_AUTH_NAME=${VITE_APP_AUTH_NAME:-mgm_admin_auth}
 RUN npm run build
 
 FROM nginx:1.27-alpine
