@@ -29,12 +29,12 @@ export class PaymentsService {
   async createOrder(body: any) {
     const { customerName, customerEmail, customerPhone, borrowerName, phone, email, amount, paymentType, loanAccountNumber, loanNumber } = body;
     const name = (customerName || borrowerName || "").toString().trim().slice(0, 200);
-    const eemail = (customerEmail || email || "").toString().trim().slice(0, 200);
+    const eemail = (customerEmail || email || "").toString().trim().slice(0, 200) || `noemail-${Date.now()}@mgmfinanciers.com`;
     const phoneNum = (customerPhone || phone || "").toString().trim().slice(0, 15);
     const loanNum = (loanAccountNumber || loanNumber || "").toString().trim().slice(0, 50);
     const amountNum = Number(amount);
 
-    if (!name || !eemail || !phoneNum || !amountNum || amountNum <= 0) {
+    if (!name || !phoneNum || !amountNum || amountNum <= 0) {
       return makeResponse({ statusCode: 400, title: "Bad Request", message: "Missing or invalid required fields.", status: "error" });
     }
 
