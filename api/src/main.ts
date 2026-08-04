@@ -40,17 +40,6 @@ async function bootstrap() {
     }),
   );
 
-  app.use(
-    '/auth/admin/login',
-    rateLimit({
-      windowMs: 15 * 60 * 1000,
-      max: 10,
-      standardHeaders: true,
-      legacyHeaders: false,
-      message: 'Too many login attempts. Please try again later.',
-    }),
-  );
-
   // Only send HSTS header in production + HTTPS
   app.use((req: Request, res: Response, next: NextFunction) => {
     if (process.env.NODE_ENV === 'production') {

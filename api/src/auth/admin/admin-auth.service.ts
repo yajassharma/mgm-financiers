@@ -9,6 +9,8 @@ import { ForgotAdmin } from './dto/forgotAdmin.dto';
 import { makeResponse } from 'src/common/helpers/response.helper';
 import { CreateAdmin } from './dto/create-admin.dto';
 
+const loginAttempts = new Map<string, { count: number; lockedUntil: number }>();
+
 @Injectable()
 export class AdminAuthService {
   constructor(
@@ -28,8 +30,33 @@ export class AdminAuthService {
         status: 'error',
       });
     }
+
+    const key = email.toLowerCase().trim();
+    const now = Date.now();
+    const record = loginAttempts.get(key);
+    if (record && record.lockedUntil > now) {
+      return makeResponse({
+        statusCode: 429,
+        title: 'Too Many Attempts',
+        message: 'Account temporarily locked. Please try again later.',
+        status: 'error',
+      });
+    }
+
     const admin = await this.admins.validateAdmin(email, password);
     if (!admin) {
+      const attempt = (record?.count || 0) + 1;
+      const lockedUntil = attempt >= 5 ? now + 15 * 60 * 1000 : 0;
+      loginAttempts.set(key, { count: attempt, lockedUntil });
+      return makeResponse({
+        statusCode: 400,
+        title: 'Error',
+        message: 'User credentials mismatched',
+        status: 'error',
+      });
+    }
+
+    loginAttempts.delete(key);
       return makeResponse({
         statusCode: 400,
         title: 'Error',
