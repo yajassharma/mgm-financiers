@@ -24,7 +24,7 @@ export class GrievancesService {
     const grievance = await this.model.create({
       name: name || customerName || 'Anonymous',
       email,
-      mobile: mobile || phone || '',
+      mobile: mobile || phone || 'Not Provided',
       category: category || loanType || 'General',
       subject,
       description,
