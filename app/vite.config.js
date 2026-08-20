@@ -7,7 +7,7 @@ export default defineConfig({
     allowedHosts: true,
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'https://api.mgmfinanciers.com',
+        target: process.env.VITE_API_URL || 'http://localhost:4000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: true,

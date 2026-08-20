@@ -2,18 +2,7 @@ import { Link } from 'react-router-dom'
 import SEO from './SEO'
 import useInView from '../hooks/useInView'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
-
-const MILESTONES = [
-  { year: '1996', title: 'Foundation', desc: 'Established with a vision to make financial assistance accessible and honest.' },
-  { year: '2005', title: 'Customer Growth', desc: 'Thousands of families and entrepreneurs trust us with their financial futures.' },
-  { year: '2012', title: 'Regional Expansion', desc: 'Extended our reach across Punjab, Rajasthan, Haryana and Maharashtra.' },
-  { year: '2013', title: 'Navi Mumbai Expansion', desc: 'Expanded operations to Navi Mumbai, strengthening our Maharashtra presence.' },
-  { year: '2018', title: 'Branch Network', desc: 'Built a network of offices to serve customers with local, personal attention.' },
-  { year: '2022', title: 'Digital Transformation', desc: 'Embraced technology to make processes faster while keeping the human touch.' },
-  { year: '2025', title: 'Sri Ganganagar', desc: 'Expanded to Sri Ganganagar, Rajasthan.' },
-  { year: '2026', title: 'Multi-City Expansion', desc: 'Expanded to Jaipur, Kota and Jhalawar in Rajasthan, and Gurugram in Haryana.' },
-  { year: 'Today', title: 'Trusted Institution', desc: '3,000+ customers, 50+ employees, and a legacy built on relationships.' },
-]
+import useSiteSettings from '../hooks/useSiteSettings'
 
 const PRINCIPLES = [
   { title: 'Customer First', desc: 'Every process, every product and every interaction begins with the customer. Their success defines ours.' },
@@ -24,6 +13,7 @@ const PRINCIPLES = [
 
 export default function AboutPage() {
 const prefersReduced = usePrefersReducedMotion()
+  const { settings } = useSiteSettings()
   const [heroRef, heroInView] = useInView({ threshold: 0.1 })
   const [storyRef, storyInView] = useInView({ threshold: 0.1 })
   const [ceoRef, ceoInView] = useInView({ threshold: 0.15 })
@@ -64,7 +54,7 @@ const prefersReduced = usePrefersReducedMotion()
                 </Link>
               </div>
               <div className={`flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 ${a(heroInView, 320)}`}>
-                {['28+ Years', 'RBI-registered NBFC', 'Customer-First Philosophy'].map((t, i) => (
+                {['28+ Years', settings.rbiWording, 'Customer-First Philosophy'].map((t, i) => (
                   <div key={t} className={`flex items-center gap-2 ${a(heroInView, 320 + i * 80)}`}>
                     <svg className="w-4 h-4 text-mgm-gold flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-mgm-dark/50 font-body text-xs">{t}</span>
@@ -178,7 +168,7 @@ const prefersReduced = usePrefersReducedMotion()
             <div className="relative">
               <div className="absolute top-[28px] left-0 right-0 h-px bg-mgm-gold/15" />
               <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-4">
-                {MILESTONES.map((m, i) => (
+                {settings.milestones.map((m, i) => (
                   <div key={m.year} className={`relative text-center ${a(timeInView, 40 + i * 80)}`}>
                     <div className="w-2.5 h-2.5 rounded-full bg-mgm-gold mx-auto mb-5 relative z-10" />
                     <span className="text-mgm-gold font-heading font-bold text-sm">{m.year}</span>
@@ -191,11 +181,11 @@ const prefersReduced = usePrefersReducedMotion()
           </div>
           {/* Mobile: vertical */}
           <div className="sm:hidden space-y-6">
-            {MILESTONES.map((m, i) => (
+            {settings.milestones.map((m, i) => (
               <div key={m.year} className={`flex gap-4 ${a(timeInView, 40 + i * 60)}`}>
                 <div className="flex flex-col items-center">
                   <div className="w-2.5 h-2.5 rounded-full bg-mgm-gold flex-shrink-0" />
-                  {i < MILESTONES.length - 1 && <div className="w-px flex-1 bg-mgm-gold/15 mt-1" />}
+                  {i < settings.milestones.length - 1 && <div className="w-px flex-1 bg-mgm-gold/15 mt-1" />}
                 </div>
                 <div className="pb-2">
                   <span className="text-mgm-gold font-heading font-bold text-xs">{m.year}</span>

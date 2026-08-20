@@ -11,6 +11,7 @@ const ROUTES = {
   LEADS: "/leads",
   LEAD_DETAIL: "/leads/:id",
   CONSENTS: "/consents",
+  SETTINGS: "/settings",
 } as const;
 
 export default ROUTES;

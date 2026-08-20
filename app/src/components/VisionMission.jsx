@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import SEO from './SEO'
 import useInView from '../hooks/useInView'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
+import useSiteSettings from '../hooks/useSiteSettings'
 const MISSION_BLOCKS = [
   { num: '01', title: 'Understand Every Customer', desc: 'We listen before we lend. Every customer\u2019s circumstances, goals and concerns shape the guidance we provide.' },
   { num: '02', title: 'Provide Responsible Lending', desc: 'Every loan we structure is sustainable. We ensure borrowing empowers rather than overwhelms.' },
@@ -11,6 +12,7 @@ const MISSION_BLOCKS = [
 
 export default function VisionMission() {
 const prefersReduced = usePrefersReducedMotion()
+  const { settings } = useSiteSettings()
   const [heroRef, heroInView] = useInView({ threshold: 0.1 })
   const [whyRef, whyInView] = useInView({ threshold: 0.1 })
   const [visionRef, visionInView] = useInView({ threshold: 0.12 })
@@ -68,9 +70,9 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="flex flex-wrap gap-8 sm:gap-14">
             {[
               { value: '28+', label: 'Years of Trust' },
-              { value: '3,000+', label: 'Customers Served' },
+              { value: `${settings.stats.customersServed.toLocaleString()}+`, label: 'Customers Served' },
               { value: '6', label: 'Branch Offices' },
-              { value: 'RBI-registered NBFC', label: '' },
+              { value: settings.rbiWording, label: '' },
             ].map((s) => (
               <div key={s.label}>
                 <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading tracking-tight">{s.value}</div>

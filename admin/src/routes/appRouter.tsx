@@ -12,6 +12,7 @@ import LeadDashboard from "../pages/leads/LeadDashboard";
 import AllLeads from "../pages/leads/AllLeads";
 import LeadDetail from "../pages/leads/LeadDetail";
 import Consents from "../pages/consents/Consents";
+import Settings from "../pages/settings/Settings";
 import ProtectedRoute from "../routers/Protected.route";
 import PublicRoute from "../routers/Public.route";
 
@@ -44,6 +45,7 @@ export const router = createBrowserRouter([
           { path: "leads", element: <AllLeads /> },
           { path: "leads/:id", element: <LeadDetail /> },
           { path: "consents", element: <Consents /> },
+          { path: "settings", element: <Settings /> },
         ],
       },
     ],

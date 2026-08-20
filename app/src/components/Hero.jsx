@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
+import useSiteSettings from '../hooks/useSiteSettings'
 
 function Hero() {
 const prefersReduced = usePrefersReducedMotion()
+  const { settings } = useSiteSettings()
   const [phoneChecks, setPhoneChecks] = useState([false, false, false, false])
   const [notifVisible, setNotifVisible] = useState(false)
   const [highlightRow, setHighlightRow] = useState(-1)
@@ -94,11 +96,11 @@ const prefersReduced = usePrefersReducedMotion()
           {/* Mobile content — normal flow, all visible */}
           <div className="relative z-10 px-5 pt-28 pb-8">
             <h1 className={`text-[2rem] font-bold text-mgm-dark mb-3 leading-[1.1] font-heading tracking-tight ${headingClass}`}>
-              {'Building Trust, Delivering Growth'}
+              {settings.heroTitle}
             </h1>
 
             <p className={`text-base text-mgm-dark/80 mb-2 font-heading font-medium ${paraClass}`}>
-              {'A premier financial institution based in Ludhiana with 28+ years of excellence in serving the nation'}
+              {settings.companyTagline}
             </p>
 
             <p className={`text-[13px] text-mgm-dark/45 mb-6 font-body leading-relaxed max-w-sm ${paraClass}`}>
@@ -145,15 +147,15 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="relative z-10 px-5 pb-6">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <div className="text-xl font-bold text-mgm-dark font-heading">24hr</div>
-                <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">Loan Approval</div>
+                <div className="text-xl font-bold text-mgm-dark font-heading">{settings.stats.yearsOfLending}+</div>
+                <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">Years of Lending</div>
               </div>
               <div>
                 <div className="text-xl font-bold text-mgm-dark font-heading">100%</div>
-                <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">RBI-registered NBFC</div>
+                <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">{settings.rbiWording}</div>
               </div>
               <div>
-                <div className="text-xl font-bold text-mgm-dark font-heading">3,000+</div>
+                <div className="text-xl font-bold text-mgm-dark font-heading">{settings.stats.customersServed.toLocaleString()}+</div>
                 <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">Happy Clients</div>
               </div>
             </div>
@@ -172,7 +174,7 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="px-5 py-10 text-center">
             <p className="text-[10px] text-mgm-dark/40 mb-4 font-body uppercase tracking-wider">Trusted by leading institutions</p>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 opacity-30">
-              {['Kotak Mahindra Bank', 'Union Bank of India'].map((name) => (
+              {settings.bankNames.map((name) => (
                 <div key={name} className="text-base font-bold text-mgm-dark font-heading trust-logo-hover">
                   {name}
                 </div>
@@ -239,18 +241,18 @@ const prefersReduced = usePrefersReducedMotion()
           </div>
 
           {/* L5: Floating cards — visible, subtle settle then occasional nudge */}
-          <DesktopCards prefersReduced={prefersReduced} cardClass={cardClass} />
+          <DesktopCards prefersReduced={prefersReduced} cardClass={cardClass} settings={settings} />
 
           {/* L6: Hero text — all visible, polish animations */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-30">
             <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 lg:pt-12">
               <div className="w-full lg:w-[48%] lg:pr-4">
                 <h1 className={`text-4xl sm:text-5xl lg:text-[3.5rem] font-bold text-mgm-dark mb-4 leading-[1.1] font-heading tracking-tight ${headingClass}`}>
-                  {'Building Trust, Delivering Growth'}
+                  {settings.heroTitle}
                 </h1>
 
                 <p className={`text-lg sm:text-xl text-mgm-dark/80 mb-3 max-w-md font-heading font-medium ${paraClass}`}>
-                  {'A premier financial institution based in Ludhiana with 28+ years of excellence in serving the nation'}
+                  {settings.companyTagline}
                 </p>
 
                 <p className={`text-[13px] text-mgm-dark/45 mb-8 max-w-sm font-body leading-relaxed ${paraClass}`}>
@@ -271,17 +273,17 @@ const prefersReduced = usePrefersReducedMotion()
 
                 <div className="flex items-center gap-6 sm:gap-8 mt-12 pt-8 border-t border-mgm-dark/5">
                   <div>
-                    <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">24hr</div>
-                    <div className="text-xs text-mgm-dark/50 font-body">Loan Approval</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">{settings.stats.yearsOfLending}+</div>
+                    <div className="text-xs text-mgm-dark/50 font-body">Years of Lending</div>
                   </div>
                   <div className="w-px h-10 bg-mgm-dark/10"></div>
                   <div>
                     <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">100%</div>
-                    <div className="text-xs text-mgm-dark/50 font-body">RBI-registered NBFC</div>
+                    <div className="text-xs text-mgm-dark/50 font-body">{settings.rbiWording}</div>
                   </div>
                   <div className="w-px h-10 bg-mgm-dark/10"></div>
                   <div>
-                    <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">3,000+</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">{settings.stats.customersServed.toLocaleString()}+</div>
                     <div className="text-xs text-mgm-dark/50 font-body">Happy Clients</div>
                   </div>
                 </div>
@@ -302,7 +304,7 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center">
             <p className="text-xs text-mgm-dark/40 mb-6 font-body uppercase tracking-wider">Trusted by leading institutions</p>
             <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 opacity-30">
-              {['Kotak Mahindra Bank', 'Union Bank of India'].map((name) => (
+              {settings.bankNames.map((name) => (
                 <div key={name} className="text-xl font-bold text-mgm-dark font-heading trust-logo-hover">
                   {name}
                 </div>
@@ -317,7 +319,7 @@ const prefersReduced = usePrefersReducedMotion()
 }
 
 /* Desktop floating cards , extracted for periodic nudge logic*/
-function DesktopCards({ prefersReduced, cardClass }) {
+function DesktopCards({ prefersReduced, cardClass, settings }) {
   const [nudge, setNudge] = useState([false, false, false])
   const timersRef = useRef([])
 
@@ -381,7 +383,7 @@ function DesktopCards({ prefersReduced, cardClass }) {
             </svg>
           </div>
           <div>
-            <div className="text-[13px] font-semibold text-mgm-dark font-heading leading-tight">RBI-registered NBFC</div>
+            <div className="text-[13px] font-semibold text-mgm-dark font-heading leading-tight">{settings.rbiWording}</div>
             <div className="text-[11px] text-mgm-dark/50 font-body">100% Safe &amp; Secure</div>
           </div>
         </div>
@@ -397,7 +399,7 @@ function DesktopCards({ prefersReduced, cardClass }) {
           </div>
           <div>
             <div className="text-[13px] font-semibold text-mgm-dark font-heading leading-tight">Made in India</div>
-            <div className="text-[11px] text-mgm-dark/50 font-body">Trusted by 3,000+ Indians</div>
+            <div className="text-[11px] text-mgm-dark/50 font-body">Trusted by {settings.stats.customersServed.toLocaleString()}+ Indians</div>
           </div>
         </div>
       </div>

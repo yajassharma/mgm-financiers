@@ -4,7 +4,8 @@ import SEO from './SEO'
 import useInView from '../hooks/useInView'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
 import useCountUp from '../hooks/useCountUp'
-import { EXECUTIVES, LEADERS, STATS } from '../data/team'
+import useSiteSettings from '../hooks/useSiteSettings'
+import { EXECUTIVES, LEADERS } from '../data/team'
 
 function LeadershipSVG({ prefersReduced }) {
   return (
@@ -111,6 +112,13 @@ function StatCounter({ value, suffix, label, startCounting, inView, delay }) {
 
 export default function Team() {
 const prefersReduced = usePrefersReducedMotion()
+  const { settings } = useSiteSettings()
+  const STATS = [
+    { value: settings.stats.yearsOfLending, suffix: '+', label: 'Years of Lending' },
+    { value: settings.stats.customersServed, suffix: '+', label: 'Customers Served' },
+    { value: settings.stats.employees, suffix: '+', label: 'Employees' },
+    { value: settings.stats.operationalLocations, suffix: '+', label: 'Operational Locations' },
+  ]
 
   const [heroRef, heroInView] = useInView({ threshold: 0.1 })
   const [execRef, execInView] = useInView({ threshold: 0.06 })
@@ -161,7 +169,7 @@ const prefersReduced = usePrefersReducedMotion()
                 </Link>
               </div>
               <div className={`flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 ${anim(heroInView, 320)}`}>
-                {['28+ Years Experience', 'RBI-registered NBFC', '50+ Employees'].map((text, i) => (
+                {['28+ Years Experience', settings.rbiWording, '50+ Employees'].map((text, i) => (
                   <div key={text} className={`flex items-center gap-2 ${anim(heroInView, 320 + i * 80)}`}>
                     <svg className="w-4 h-4 text-mgm-gold flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />

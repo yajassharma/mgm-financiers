@@ -1,18 +1,20 @@
 import useInView from '../hooks/useInView'
 import useCountUp from '../hooks/useCountUp'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
+import useSiteSettings from '../hooks/useSiteSettings'
 
 function About() {
   const [contentRef, contentInView] = useInView({ threshold: 0.2 })
   const [statsRef, statsInView] = useInView({ threshold: 0.3 })
   const prefersReduced = usePrefersReducedMotion()
+  const { settings } = useSiteSettings()
 
   const scrollAnim = (inView, delay = 0) =>
     prefersReduced ? '' : `anim-scroll-fade ${inView ? 'is-visible' : ''} anim-delay-${delay}`
 
-  const yearsCount = useCountUp(28, 900, statsInView)
-  const clientsCount = useCountUp(3, 900, statsInView)
-  const loansCount = useCountUp(25, 900, statsInView)
+  const yearsCount = useCountUp(settings.stats.yearsOfLending, 900, statsInView)
+  const clientsCount = useCountUp(settings.stats.customersServed / 1000, 900, statsInView)
+  const loansCount = useCountUp(settings.stats.loansDisbursedCr, 900, statsInView)
   const complianceCount = useCountUp(100, 900, statsInView)
 
   const values = [
@@ -51,7 +53,7 @@ function About() {
             </h2>
             <p className={`text-mgm-dark/60 mb-4 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 240)}`}>
               MGM Financiers Private Limited has been in the business of loan financing for over 28 years.
-              As an RBI-registered Non-Banking Financial Company (NBFC), we pride ourselves in being able to provide quality solutions
+              As an {settings.rbiWording}, we pride ourselves in being able to provide quality solutions
               that best suit our customers' needs.
             </p>
             <p className={`text-mgm-dark/60 mb-4 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 280)}`}>

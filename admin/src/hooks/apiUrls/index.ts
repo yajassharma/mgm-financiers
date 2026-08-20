@@ -1,5 +1,5 @@
 import { authApis } from "./auth.api";
-import { consentApis, grievanceApis, paymentApis, leadApis, analyticsApis } from "./content.api";
+import { consentApis, grievanceApis, paymentApis, leadApis, analyticsApis, settingsApis } from "./content.api";
 
 export const API_URLS = {
   auth: authApis,
@@ -8,4 +8,5 @@ export const API_URLS = {
   payment: paymentApis,
   lead: leadApis,
   analytics: analyticsApis,
+  settings: settingsApis,
 };

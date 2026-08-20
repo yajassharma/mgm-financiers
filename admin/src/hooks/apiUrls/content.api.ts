@@ -32,3 +32,8 @@ export const analyticsApis = {
   PAGE_VIEWS: "/analytics/page-views",
   REALTIME: "/analytics/realtime",
 };
+
+export const settingsApis = {
+  GET_SETTINGS: "/site-settings",
+  UPDATE_SETTINGS: "/site-settings",
+};
