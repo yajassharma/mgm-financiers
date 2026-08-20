@@ -49,7 +49,7 @@ export default function Settings() {
   }, [data]);
 
   const handleSave = async () => {
-    await updateMutation.mutateAsync(form);
+    await updateMutation.mutateAsync(form as unknown as Record<string, unknown>);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
