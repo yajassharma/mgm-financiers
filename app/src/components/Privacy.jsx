@@ -83,7 +83,7 @@ return (
           <p className="font-heading font-bold text-mgm-dark text-sm mb-1">Mr. Ratul Mohindra (Grievance Officer)</p>
           <p className="text-mgm-dark/45 font-body text-sm">Website: www.mgmfinanciers.com</p>
           <p className="text-mgm-dark/45 font-body text-sm">Email: ratul@mgmfinanciers.com</p>
-          <p className="text-mgm-dark/45 font-body text-sm">Phone: 0161-5047087 / 998881003</p>
+          <p className="text-mgm-dark/45 font-body text-sm">Phone: 0161-5047087 / 9988881003</p>
         </div>
       </Section>
     </LegalPage>
