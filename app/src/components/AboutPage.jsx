@@ -7,9 +7,12 @@ const MILESTONES = [
   { year: '1996', title: 'Foundation', desc: 'Established with a vision to make financial assistance accessible and honest.' },
   { year: '2005', title: 'Customer Growth', desc: 'Thousands of families and entrepreneurs trust us with their financial futures.' },
   { year: '2012', title: 'Regional Expansion', desc: 'Extended our reach across Punjab, Rajasthan, Haryana and Maharashtra.' },
+  { year: '2013', title: 'Navi Mumbai Expansion', desc: 'Expanded operations to Navi Mumbai, strengthening our Maharashtra presence.' },
   { year: '2018', title: 'Branch Network', desc: 'Built a network of offices to serve customers with local, personal attention.' },
   { year: '2022', title: 'Digital Transformation', desc: 'Embraced technology to make processes faster while keeping the human touch.' },
-  { year: 'Today', title: 'Trusted Institution', desc: '50,000+ customers, 50+ employees, and a legacy built on relationships.' },
+  { year: '2025', title: 'Sri Ganganagar', desc: 'Expanded to Sri Ganganagar, Rajasthan.' },
+  { year: '2026', title: 'Multi-City Expansion', desc: 'Expanded to Jaipur, Kota and Jhalawar in Rajasthan, and Gurugram in Haryana.' },
+  { year: 'Today', title: 'Trusted Institution', desc: '3,000+ customers, 50+ employees, and a legacy built on relationships.' },
 ]
 
 const PRINCIPLES = [
@@ -61,7 +64,7 @@ const prefersReduced = usePrefersReducedMotion()
                 </Link>
               </div>
               <div className={`flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 ${a(heroInView, 320)}`}>
-                {['28+ Years', 'RBI Registered NBFC', 'Customer-First Philosophy'].map((t, i) => (
+                {['28+ Years', 'RBI-registered NBFC', 'Customer-First Philosophy'].map((t, i) => (
                   <div key={t} className={`flex items-center gap-2 ${a(heroInView, 320 + i * 80)}`}>
                     <svg className="w-4 h-4 text-mgm-gold flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                     <span className="text-mgm-dark/50 font-body text-xs">{t}</span>
@@ -174,7 +177,7 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="hidden sm:block">
             <div className="relative">
               <div className="absolute top-[28px] left-0 right-0 h-px bg-mgm-gold/15" />
-              <div className="grid grid-cols-6 gap-4">
+              <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-4">
                 {MILESTONES.map((m, i) => (
                   <div key={m.year} className={`relative text-center ${a(timeInView, 40 + i * 80)}`}>
                     <div className="w-2.5 h-2.5 rounded-full bg-mgm-gold mx-auto mb-5 relative z-10" />

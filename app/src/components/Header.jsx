@@ -248,7 +248,7 @@ function Header() {
               </div>
 
               <button
-                className="xl:hidden text-white/80 p-2 hover:bg-white/10 rounded-xl transition-colors relative z-[60]"
+                className="xl:hidden text-mgm-dark/80 p-2 hover:bg-mgm-dark/5 rounded-xl transition-colors relative z-[60]"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label={isOpen ? 'Close menu' : 'Open menu'}
               >
@@ -285,10 +285,10 @@ function Header() {
           <div className="flex justify-end p-5">
             <button
               onClick={closeMenu}
-              className="p-2 -m-2 text-white/60 hover:text-white transition-colors"
+              className="p-2 -m-2 text-mgm-dark/60 hover:text-mgm-dark transition-colors"
               aria-label="Close menu"
             >
-              <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-mgm-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -300,21 +300,21 @@ function Header() {
               <div>
                 <button
                   onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
-                  className="py-4 text-2xl font-heading font-semibold text-white/80 hover:text-white border-b border-mgm-dark/5 transition-colors flex items-center gap-2 w-full"
+                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors flex items-center gap-2 w-full"
                 >
                   {'Services'}
                   <svg className={`w-5 h-5 transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                 </button>
                 <div className={`overflow-hidden transition-all duration-300 ${mobileServicesOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
                   <Link to="/services" onClick={closeMenu}
-                    className="pl-6 py-3 text-lg font-body text-mgm-gold hover:text-white transition-colors block font-medium">
+                    className="pl-6 py-3 text-lg font-body text-mgm-gold hover:text-mgm-dark transition-colors block font-medium">
                     {'View All Services'}
                   </Link>
                   {['personal-loan', 'vehicle-loan', 'gold-loan', 'loan-against-property', 'construction-loan', 'consumer-durable-loan'].map((id) => {
                     const names = { 'personal-loan': 'Personal Loan', 'vehicle-loan': 'Vehicle Loan', 'gold-loan': 'Gold Loan', 'loan-against-property': 'Loan Against Property', 'construction-loan': 'Construction Loan', 'consumer-durable-loan': 'Consumer Durable Loan' }
                     return (
                       <Link key={id} to={`/services/${id}`} onClick={closeMenu}
-                        className="pl-6 py-3 text-lg font-body text-white/60 hover:text-white transition-colors block">
+                        className="pl-6 py-3 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
                         {names[id]}
                       </Link>
                     )
@@ -326,40 +326,40 @@ function Header() {
                   key={link.name}
                   to={link.to}
                   onClick={() => { closeMenu(); if (location.pathname === link.to) window.scrollTo({ top: 0, behavior: 'instant' }) }}
-                  className="py-4 text-2xl font-heading font-semibold text-white/80 hover:text-white border-b border-mgm-dark/5 transition-colors"
+                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors"
                   style={{ transitionDelay: isOpen ? `${i * 50}ms` : '0ms' }}
                 >
                   {link.name}
                 </Link>
               ))}
               <Link to="/contact" onClick={closeMenu}
-                className="py-4 text-2xl font-heading font-semibold text-white/80 hover:text-white border-b border-mgm-dark/5 transition-colors">
+                className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors">
                 {'Contact Us'}
               </Link>
               {/* Mobile Governance */}
               <div>
                 <button
                   onClick={() => setMobileGovernanceOpen(!mobileGovernanceOpen)}
-                  className="py-4 text-2xl font-heading font-semibold text-white/80 hover:text-white border-b border-mgm-dark/5 transition-colors flex items-center gap-2 w-full"
+                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors flex items-center gap-2 w-full"
                 >
                   {'Governance'}
                   <svg className={`w-5 h-5 transition-transform duration-200 ${mobileGovernanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                 </button>
                 <div className={`overflow-hidden transition-all duration-300 ${mobileGovernanceOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                   <Link to="/terms-conditions" onClick={closeMenu}
-                    className="pl-6 py-2.5 text-lg font-body text-white/60 hover:text-white transition-colors block">
+                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
                     {'Terms & Conditions'}
                   </Link>
                   <Link to="/privacy-policy" onClick={closeMenu}
-                    className="pl-6 py-2.5 text-lg font-body text-white/60 hover:text-white transition-colors block">
+                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
                     {'Privacy Policy'}
                   </Link>
                   <Link to="/rbi-guidelines" onClick={closeMenu}
-                    className="pl-6 py-2.5 text-lg font-body text-white/60 hover:text-white transition-colors block">
+                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
                     {'RBI Guidelines'}
                   </Link>
                   <Link to="/grievance" onClick={closeMenu}
-                    className="pl-6 py-2.5 text-lg font-body text-white/60 hover:text-white transition-colors block">
+                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
                     {'Grievance Redressal'}
                   </Link>
                   <div className="border-t border-white/5 mx-6 my-1" />
@@ -376,12 +376,12 @@ function Header() {
                   ].map((item) => item.href ? (
                     <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer"
                       onClick={closeMenu}
-                      className="pl-6 py-2.5 text-lg font-body text-white/40 hover:text-white transition-colors block">
+                      className="pl-6 py-2.5 text-lg font-body text-mgm-dark/40 hover:text-mgm-dark transition-colors block">
                       {item.label}
                     </a>
                   ) : (
                     <button key={item.label} onClick={() => { closeMenu(); setPdfTitle(item.label) }}
-                      className="pl-6 py-2.5 text-lg font-body text-white/40 hover:text-white transition-colors block w-full text-left">
+                      className="pl-6 py-2.5 text-lg font-body text-mgm-dark/40 hover:text-mgm-dark transition-colors block w-full text-left">
                       {item.label}
                     </button>
                   ))}
@@ -391,18 +391,18 @@ function Header() {
               <div>
                 <button
                   onClick={() => setMobileGrievanceOpen(!mobileGrievanceOpen)}
-                  className="py-4 text-2xl font-heading font-semibold text-white/80 hover:text-white border-b border-mgm-dark/5 transition-colors flex items-center gap-2 w-full"
+                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors flex items-center gap-2 w-full"
                 >
                   {'Grievance'}
                   <svg className={`w-5 h-5 transition-transform duration-200 ${mobileGrievanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                 </button>
                 <div className={`overflow-hidden transition-all duration-300 ${mobileGrievanceOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
                   <Link to="/grievance" onClick={closeMenu}
-                    className="pl-6 py-3 text-lg font-body text-white/60 hover:text-white transition-colors block">
+                    className="pl-6 py-3 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
                     {'Submit Grievance'}
                   </Link>
                   <Link to="/grievance" onClick={closeMenu}
-                    className="pl-6 py-3 text-lg font-body text-white/60 hover:text-white transition-colors block">
+                    className="pl-6 py-3 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
                     {'Track Your Grievance'}
                   </Link>
                 </div>
@@ -413,7 +413,7 @@ function Header() {
           <div className="px-8 pb-10 pt-6 border-t border-mgm-dark/5 flex flex-col gap-3">
             <Link to="/pay-emi"
               onClick={closeMenu}
-              className="btn-interactive py-4 text-center text-sm font-medium text-white border border-white/15 rounded-2xl font-body hover:bg-white/5 transition-all"
+              className="btn-interactive py-4 text-center text-sm font-medium text-mgm-dark border border-mgm-dark/15 rounded-2xl font-body hover:bg-mgm-dark/5 transition-all"
             >
               {'Pay EMI'}
             </Link>

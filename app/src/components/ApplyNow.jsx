@@ -222,7 +222,7 @@ const [section, setSection] = useState(0)
             {'Fill in your details below'}
           </p>
           <div className="flex items-center gap-3 sm:gap-4 mt-2.5 sm:mt-3">
-            {['RBI Registered NBFC', 'Secure Information', 'No Hidden Charges'].map((t) => (
+            {['RBI-registered NBFC', 'Secure Information', 'No Hidden Charges'].map((t) => (
               <span key={t} className="flex items-center gap-1.5 text-mgm-dark/40 text-[10px] sm:text-[11px] font-body">
                 <svg className="w-3 h-3 text-mgm-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12" />

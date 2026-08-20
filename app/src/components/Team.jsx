@@ -161,7 +161,7 @@ const prefersReduced = usePrefersReducedMotion()
                 </Link>
               </div>
               <div className={`flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 ${anim(heroInView, 320)}`}>
-                {['28+ Years Experience', 'RBI Registered NBFC', '50+ Employees'].map((text, i) => (
+                {['28+ Years Experience', 'RBI-registered NBFC', '50+ Employees'].map((text, i) => (
                   <div key={text} className={`flex items-center gap-2 ${anim(heroInView, 320 + i * 80)}`}>
                     <svg className="w-4 h-4 text-mgm-gold flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />

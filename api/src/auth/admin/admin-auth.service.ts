@@ -57,13 +57,6 @@ export class AdminAuthService {
     }
 
     loginAttempts.delete(key);
-      return makeResponse({
-        statusCode: 400,
-        title: 'Error',
-        message: 'User credentials mismatched',
-        status: 'error',
-      });
-    }
 
     const secret = process.env.ADMIN_JWT_SECRET;
     if (!secret) {

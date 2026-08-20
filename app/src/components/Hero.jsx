@@ -150,10 +150,10 @@ const prefersReduced = usePrefersReducedMotion()
               </div>
               <div>
                 <div className="text-xl font-bold text-mgm-dark font-heading">100%</div>
-                <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">RBI Compliant</div>
+                <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">RBI-registered NBFC</div>
               </div>
               <div>
-                <div className="text-xl font-bold text-mgm-dark font-heading">50K+</div>
+                <div className="text-xl font-bold text-mgm-dark font-heading">3,000+</div>
                 <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">Happy Clients</div>
               </div>
             </div>
@@ -172,7 +172,7 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="px-5 py-10 text-center">
             <p className="text-[10px] text-mgm-dark/40 mb-4 font-body uppercase tracking-wider">Trusted by leading institutions</p>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 opacity-30">
-              {['SBI', 'HDFC', 'ICICI', 'Axis Bank', 'PNB'].map((name) => (
+              {['Kotak Mahindra Bank', 'Union Bank of India'].map((name) => (
                 <div key={name} className="text-base font-bold text-mgm-dark font-heading trust-logo-hover">
                   {name}
                 </div>
@@ -277,11 +277,11 @@ const prefersReduced = usePrefersReducedMotion()
                   <div className="w-px h-10 bg-mgm-dark/10"></div>
                   <div>
                     <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">100%</div>
-                    <div className="text-xs text-mgm-dark/50 font-body">RBI Compliant</div>
+                    <div className="text-xs text-mgm-dark/50 font-body">RBI-registered NBFC</div>
                   </div>
                   <div className="w-px h-10 bg-mgm-dark/10"></div>
                   <div>
-                    <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">50K+</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">3,000+</div>
                     <div className="text-xs text-mgm-dark/50 font-body">Happy Clients</div>
                   </div>
                 </div>
@@ -302,7 +302,7 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center">
             <p className="text-xs text-mgm-dark/40 mb-6 font-body uppercase tracking-wider">Trusted by leading institutions</p>
             <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 opacity-30">
-              {['SBI', 'HDFC', 'ICICI', 'Axis Bank', 'PNB'].map((name) => (
+              {['Kotak Mahindra Bank', 'Union Bank of India'].map((name) => (
                 <div key={name} className="text-xl font-bold text-mgm-dark font-heading trust-logo-hover">
                   {name}
                 </div>
@@ -381,7 +381,7 @@ function DesktopCards({ prefersReduced, cardClass }) {
             </svg>
           </div>
           <div>
-            <div className="text-[13px] font-semibold text-mgm-dark font-heading leading-tight">RBI Certified</div>
+            <div className="text-[13px] font-semibold text-mgm-dark font-heading leading-tight">RBI-registered NBFC</div>
             <div className="text-[11px] text-mgm-dark/50 font-body">100% Safe &amp; Secure</div>
           </div>
         </div>
@@ -397,7 +397,7 @@ function DesktopCards({ prefersReduced, cardClass }) {
           </div>
           <div>
             <div className="text-[13px] font-semibold text-mgm-dark font-heading leading-tight">Made in India</div>
-            <div className="text-[11px] text-mgm-dark/50 font-body">Trusted by 50K+ Indians</div>
+            <div className="text-[11px] text-mgm-dark/50 font-body">Trusted by 3,000+ Indians</div>
           </div>
         </div>
       </div>

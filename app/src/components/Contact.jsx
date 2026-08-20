@@ -301,7 +301,7 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
               {/* Trust indicators */}
               <div className={`flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 ${anim(heroInView, 320)}`}>
                 {[
-                  'RBI Registered NBFC',
+                  'RBI-registered NBFC',
                   '28+ Years of Experience',
                   'Transparent & Customer-First',
                 ].map((text, i) => (

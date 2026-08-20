@@ -67,7 +67,7 @@ export const LEADERS = [
 
 export const STATS = [
   { value: 28, suffix: '+', label: 'Years of Lending' },
-  { value: 50, suffix: 'K+', label: 'Customers Served' },
+  { value: 3, suffix: ',000+', label: 'Customers Served' },
   { value: 50, suffix: '+', label: 'Employees' },
   { value: 35, suffix: '+', label: 'Operational Locations' },
 ]

@@ -68,9 +68,9 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="flex flex-wrap gap-8 sm:gap-14">
             {[
               { value: '28+', label: 'Years of Trust' },
-              { value: '50K+', label: 'Customers Served' },
+              { value: '3,000+', label: 'Customers Served' },
               { value: '6', label: 'Branch Offices' },
-              { value: 'RBI', label: 'Registered NBFC' },
+              { value: 'RBI-registered NBFC', label: '' },
             ].map((s) => (
               <div key={s.label}>
                 <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading tracking-tight">{s.value}</div>

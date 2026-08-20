@@ -155,7 +155,7 @@ function ServiceCollection() {
 function WhyMGM() {
 const [ref, visible] = useInView(0.1)
   const rows = [
-    { title: 'RBI Regulated', desc: 'Fully compliant with RBI regulations for your financial safety' },
+    { title: 'RBI-registered NBFC', desc: 'Fully compliant with RBI regulations for your financial safety' },
     { title: 'Quick Approval', desc: 'Get loan approval within 48 hours of application' },
     { title: 'Competitive Rates', desc: 'Some of the best interest rates in the market' },
     { title: 'Transparent Process', desc: 'No hidden charges, clear terms and conditions' },

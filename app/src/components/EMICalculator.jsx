@@ -759,7 +759,7 @@ const prefersReduced = usePrefersReducedMotion()
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <span className="text-mgm-dark/60 font-body text-sm">RBI Approved · 28+ Years · 100% Transparent</span>
+                  <span className="text-mgm-dark/60 font-body text-sm">RBI-registered NBFC · 28+ Years · 100% Transparent</span>
                 </div>
               </div>
             </div>

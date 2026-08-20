@@ -11,8 +11,8 @@ function About() {
     prefersReduced ? '' : `anim-scroll-fade ${inView ? 'is-visible' : ''} anim-delay-${delay}`
 
   const yearsCount = useCountUp(28, 900, statsInView)
-  const clientsCount = useCountUp(50, 900, statsInView)
-  const loansCount = useCountUp(500, 900, statsInView)
+  const clientsCount = useCountUp(3, 900, statsInView)
+  const loansCount = useCountUp(25, 900, statsInView)
   const complianceCount = useCountUp(100, 900, statsInView)
 
   const values = [
@@ -51,7 +51,7 @@ function About() {
             </h2>
             <p className={`text-mgm-dark/60 mb-4 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 240)}`}>
               MGM Financiers Private Limited has been in the business of loan financing for over 28 years.
-              As an RBI approved company, we pride ourselves in being able to provide quality solutions
+              As an RBI-registered Non-Banking Financial Company (NBFC), we pride ourselves in being able to provide quality solutions
               that best suit our customers' needs.
             </p>
             <p className={`text-mgm-dark/60 mb-4 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 280)}`}>
@@ -85,16 +85,16 @@ function About() {
             <div className="text-mgm-dark/50 font-body text-xs">Years of Excellence</div>
           </div>
           <div className={`bg-mgm-dark p-6 sm:p-7 rounded-2xl text-center ${scrollAnim(statsInView, 80)}`}>
-            <div className="text-3xl sm:text-4xl font-bold text-white mb-1 font-heading">{clientsCount}K+</div>
+            <div className="text-3xl sm:text-4xl font-bold text-white mb-1 font-heading">{clientsCount},000+</div>
             <div className="text-white/40 font-body text-xs">Happy Clients</div>
           </div>
           <div className={`bg-mgm-gold p-6 sm:p-7 rounded-2xl text-center ${scrollAnim(statsInView, 160)}`}>
             <div className="text-3xl sm:text-4xl font-bold text-mgm-dark mb-1 font-heading">₹{loansCount}Cr+</div>
-            <div className="text-mgm-dark/60 font-body text-xs">Loans Disbursed</div>
+            <div className="text-mgm-dark/60 font-body text-xs">Disbursed</div>
           </div>
           <div className={`bg-mgm-light p-6 sm:p-7 rounded-2xl text-center ${scrollAnim(statsInView, 240)}`}>
             <div className="text-3xl sm:text-4xl font-bold text-mgm-dark mb-1 font-heading">{complianceCount}%</div>
-            <div className="text-mgm-dark/50 font-body text-xs">RBI Compliant</div>
+            <div className="text-mgm-dark/50 font-body text-xs">RBI-registered NBFC</div>
           </div>
         </div>
       </div>
