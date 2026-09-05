@@ -110,6 +110,8 @@ export class ConsentsController {
       status,
       page,
       limit,
+      undefined,
+      1000,
     );
 
     const workbook = new ExcelJS.Workbook();

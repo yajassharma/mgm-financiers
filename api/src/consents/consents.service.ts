@@ -120,6 +120,7 @@ export class ConsentsService {
     page = 1,
     limit = 10,
     role?: string,
+    maxLimit?: number,
   ) {
     const stages: PipelineStage[] = [];
 
@@ -158,6 +159,7 @@ export class ConsentsService {
       {
         page,
         limit,
+        maxLimit,
         sort: { _id: -1 },
       },
       stages,
