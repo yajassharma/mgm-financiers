@@ -248,11 +248,11 @@ function Header() {
               </div>
 
               <button
-                className="xl:hidden text-mgm-dark/80 p-2 hover:bg-mgm-dark/5 rounded-xl transition-colors relative z-[60]"
+                className="xl:hidden p-2.5 rounded-full transition-colors relative z-[60] bg-white/90 backdrop-blur-md shadow-lg shadow-black/10 border border-black/5"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label={isOpen ? 'Close menu' : 'Open menu'}
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-mgm-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {isOpen ? (
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   ) : (
@@ -274,33 +274,38 @@ function Header() {
         }`}
         onClick={closeMenu}
       >
-        <div className="absolute inset-0 bg-mgm-dark/60 backdrop-blur-sm" />
+        {/* Backdrop */}
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
 
+        {/* Drawer */}
         <div
-          className={`absolute inset-0 flex flex-col bg-mgm-light/98 backdrop-blur-xl transition-transform duration-300 ease-out ${
+          className={`absolute inset-0 flex flex-col transition-transform duration-300 ease-out ${
             isOpen ? 'translate-y-0' : '-translate-y-full'
           }`}
+          style={{ backgroundColor: '#faf9f6' }}
           onClick={(e) => e.stopPropagation()}
         >
+          {/* Close button */}
           <div className="flex justify-end p-5">
             <button
               onClick={closeMenu}
-              className="p-2 -m-2 text-mgm-dark/60 hover:text-mgm-dark transition-colors"
+              className="p-2.5 -m-2.5 rounded-full bg-white/80 hover:bg-white transition-colors shadow-sm border border-black/5"
               aria-label="Close menu"
             >
-              <svg className="w-6 h-6 text-mgm-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-mgm-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
           </div>
 
-          <nav className="flex-1 overflow-y-auto px-8 pb-8 pt-4">
-            <div className="flex flex-col gap-1">
+          {/* Scrollable nav content */}
+          <nav className="flex-1 overflow-y-auto px-8 pb-8 pt-4 overscroll-contain">
+            <div className="flex flex-col gap-0">
               {/* Mobile Services */}
               <div>
                 <button
                   onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
-                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors flex items-center gap-2 w-full"
+                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors flex items-center gap-2 w-full"
                 >
                   {'Services'}
                   <svg className={`w-5 h-5 transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
@@ -326,21 +331,21 @@ function Header() {
                   key={link.name}
                   to={link.to}
                   onClick={() => { closeMenu(); if (location.pathname === link.to) window.scrollTo({ top: 0, behavior: 'instant' }) }}
-                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors"
+                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors"
                   style={{ transitionDelay: isOpen ? `${i * 50}ms` : '0ms' }}
                 >
                   {link.name}
                 </Link>
               ))}
               <Link to="/contact" onClick={closeMenu}
-                className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors">
+                className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors">
                 {'Contact Us'}
               </Link>
               {/* Mobile Governance */}
               <div>
                 <button
                   onClick={() => setMobileGovernanceOpen(!mobileGovernanceOpen)}
-                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors flex items-center gap-2 w-full"
+                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors flex items-center gap-2 w-full"
                 >
                   {'Governance'}
                   <svg className={`w-5 h-5 transition-transform duration-200 ${mobileGovernanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
@@ -362,7 +367,7 @@ function Header() {
                     className="pl-6 py-2.5 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
                     {'Grievance Redressal'}
                   </Link>
-                  <div className="border-t border-white/5 mx-6 my-1" />
+                  <div className="border-t border-mgm-dark/10 mx-6 my-1" />
                   {[
                     { label: 'Fair Practice Code', pdf: true },
                     { label: 'Refund Policy', pdf: true },
@@ -391,7 +396,7 @@ function Header() {
               <div>
                 <button
                   onClick={() => setMobileGrievanceOpen(!mobileGrievanceOpen)}
-                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark/80 hover:text-mgm-dark border-b border-mgm-dark/5 transition-colors flex items-center gap-2 w-full"
+                  className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors flex items-center gap-2 w-full"
                 >
                   {'Grievance'}
                   <svg className={`w-5 h-5 transition-transform duration-200 ${mobileGrievanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
@@ -410,7 +415,8 @@ function Header() {
             </div>
           </nav>
 
-          <div className="px-8 pb-10 pt-6 border-t border-mgm-dark/5 flex flex-col gap-3">
+          {/* Bottom buttons */}
+          <div className="px-8 pb-10 pt-6 border-t border-mgm-dark/10 flex flex-col gap-3" style={{ paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))' }}>
             <Link to="/pay-emi"
               onClick={closeMenu}
               className="btn-interactive py-4 text-center text-sm font-medium text-mgm-dark border border-mgm-dark/15 rounded-2xl font-body hover:bg-mgm-dark/5 transition-all"
