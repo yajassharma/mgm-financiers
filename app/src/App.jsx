@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, useLocation, useParams } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation, useParams } from 'react-router-dom'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Services from './components/Services'
@@ -207,6 +207,8 @@ function App() {
           </PageLayout>
         } />
         <Route path="/rbi-guidelines" element={<RBIHandler />} />
+        <Route path="/about-us" element={<Navigate to="/about" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   )
