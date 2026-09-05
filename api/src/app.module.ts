@@ -18,8 +18,6 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { SiteSettingsModule } from './site-settings/site-settings.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { Grievance, GrievanceSchema } from './grievances/schema/grievances.schema';
-import { NotificationLog, NotificationLogSchema } from './notifications/schema/notification-log.schema';
 
 @Module({
   imports: [
@@ -33,10 +31,6 @@ import { NotificationLog, NotificationLogSchema } from './notifications/schema/n
         autoIndex: false,
       }),
     }),
-    MongooseModule.forFeature([
-      { name: Grievance.name, schema: GrievanceSchema },
-      { name: NotificationLog.name, schema: NotificationLogSchema },
-    ]),
     CommonModule,
     AdminModule,
     UsersModule,
