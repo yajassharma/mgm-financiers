@@ -40,6 +40,41 @@ async function bootstrap() {
     }),
   );
 
+  // Stricter limits for public endpoints that trigger emails or create records
+  const publicWriteLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 10,                   // 10 requests per 15 min per IP
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { statusCode: 429, status: 'error', title: 'Rate Limited', message: 'Too many requests. Please try again later.' },
+  });
+
+  const trackingLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { statusCode: 429, status: 'error', title: 'Rate Limited', message: 'Too many tracking requests. Please try again later.' },
+  });
+
+  // Apply strict limits to public write endpoints (grievances, leads, payments)
+  app.use('/grievances', (req: Request, res: Response, next: NextFunction) => {
+    if (req.method === 'POST') return publicWriteLimiter(req, res, next);
+    next();
+  });
+  app.use('/leads', (req: Request, res: Response, next: NextFunction) => {
+    if (req.method === 'POST') return publicWriteLimiter(req, res, next);
+    next();
+  });
+  app.use('/payments/create-order', (req: Request, res: Response, next: NextFunction) => {
+    if (req.method === 'POST') return publicWriteLimiter(req, res, next);
+    next();
+  });
+
+  // Tracking endpoints (read-only but email-triggering)
+  app.use('/grievances/track-by-email', trackingLimiter);
+  app.use('/payments/track', trackingLimiter);
+
   // Only send HSTS header in production + HTTPS
   app.use((req: Request, res: Response, next: NextFunction) => {
     if (process.env.NODE_ENV === 'production') {
