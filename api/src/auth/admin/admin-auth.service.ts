@@ -9,7 +9,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ForgotAdmin } from './dto/forgotAdmin.dto';
 import { makeResponse } from 'src/common/helpers/response.helper';
 import { CreateAdmin } from './dto/create-admin.dto';
-import { ConfigService } from '@nestjs/config';
 
 const loginAttempts = new Map<string, { count: number; lockedUntil: number }>();
 
@@ -23,7 +22,6 @@ export class AdminAuthService {
     private readonly admins: AdminService,
     private mailer: MailerService,
     @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
-    private readonly config: ConfigService,
   ) {}
 
   async login({ email, password }: { email: string; password: string }) {
@@ -181,7 +179,7 @@ export class AdminAuthService {
   }
 
   async seedFirstAdmin({ email, password, secret }: { email: string; password: string; secret: string }) {
-    const seedSecret = this.config.get<string>('seedAdminSecret');
+    const seedSecret = process.env.SEED_ADMIN_SECRET;
     if (!seedSecret || secret !== seedSecret) {
       return makeResponse({
         statusCode: 403,
