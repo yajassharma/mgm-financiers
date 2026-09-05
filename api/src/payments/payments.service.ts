@@ -7,6 +7,7 @@ import { paginate } from "../common/helpers/pagination.helper";
 import { escapeRegex } from "../common/helpers/regex.helper";
 import { ConfigService } from "@nestjs/config";
 import { Cron, CronExpression } from "@nestjs/schedule";
+import { EmailNotificationService } from "../notifications/email-notification.service";
 
 @Injectable()
 export class PaymentsService {
@@ -15,6 +16,7 @@ export class PaymentsService {
   constructor(
     @InjectModel(Payment.name) readonly model: Model<PaymentDocument>,
     private readonly config: ConfigService,
+    private readonly emailNotifications: EmailNotificationService,
   ) {}
 
   private getCashfreeConfig() {
@@ -124,6 +126,7 @@ export class PaymentsService {
 
   private applyCashfreeStatus(payment: PaymentDocument, data: any) {
     const orderStatus = data.order_status;
+    const previousStatus = payment.status;
 
     if (orderStatus === "PAID") {
       payment.status = "SUCCESS";
@@ -137,13 +140,27 @@ export class PaymentsService {
       payment.status = "EXPIRED";
       payment.failureReason = "Payment session expired";
     } else if (orderStatus === "ACTIVE") {
-      // Still pending
       payment.status = "PENDING";
     } else if (orderStatus === "PARTIAL") {
       payment.status = "PROCESSING";
     }
 
     payment.save().catch(err => this.logger.error(`Failed to save payment ${payment.orderId}: ${err.message}`));
+
+    // Send email notification on successful payment (only when transitioning to SUCCESS)
+    if (payment.status === "SUCCESS" && previousStatus !== "SUCCESS") {
+      this.emailNotifications.sendPaymentSuccess({
+        customerName: payment.customerName,
+        customerEmail: payment.customerEmail,
+        customerPhone: payment.customerPhone,
+        amount: payment.amount,
+        paymentType: payment.paymentType,
+        orderId: payment.orderId,
+        cfPaymentId: payment.cfPaymentId,
+        paidAt: payment.paidAt || new Date(),
+        paymentMethod: payment.paymentMethod,
+      }).catch(err => this.logger.error(`Payment notification failed for ${payment.orderId}: ${err.message}`));
+    }
   }
 
   async handleWebhook(body: any) {

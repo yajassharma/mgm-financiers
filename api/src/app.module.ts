@@ -16,6 +16,7 @@ import { PaymentsModule } from './payments/payments.module';
 import { LeadsModule } from './leads/leads.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { SiteSettingsModule } from './site-settings/site-settings.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
@@ -41,6 +42,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     LeadsModule,
     AnalyticsModule,
     SiteSettingsModule,
+    NotificationsModule,
   ],
 
   controllers: [AppController],

@@ -14,4 +14,7 @@ export default () => ({
   GA4_PROPERTY_ID: process.env.GA4_PROPERTY_ID,
   GA4_SERVICE_ACCOUNT_KEY: process.env.GA4_SERVICE_ACCOUNT_KEY,
   GA4_SERVICE_ACCOUNT_KEY_FILE: process.env.GA4_SERVICE_ACCOUNT_KEY_FILE,
+  resendApiKey: process.env.RESEND_API_KEY,
+  resendFromEmail: process.env.RESEND_FROM_EMAIL,
+  mgmNotificationEmail: process.env.MGM_NOTIFICATION_EMAIL,
 });

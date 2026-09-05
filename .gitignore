@@ -2,7 +2,9 @@ node_modules/
 dist/
 build/
 .env
+.env.development
 *.tar.gz
 *.log
 .DS_Store
 ga4-service-account.json
+railway-backup*/

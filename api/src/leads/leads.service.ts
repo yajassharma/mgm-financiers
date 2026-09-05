@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Lead, LeadDocument } from './schema/leads.schema';
 import { Model } from 'mongoose';
 import { makeResponse } from '../common/helpers/response.helper';
 import { paginate } from '../common/helpers/pagination.helper';
 import { escapeRegex } from '../common/helpers/regex.helper';
+import { EmailNotificationService } from '../notifications/email-notification.service';
 
 @Injectable()
 export class LeadsService {
+  private readonly logger = new Logger(LeadsService.name);
+
   constructor(
     @InjectModel(Lead.name) readonly model: Model<LeadDocument>,
+    private readonly emailNotifications: EmailNotificationService,
   ) {}
 
   async createLead(body: any) {
@@ -36,6 +40,20 @@ export class LeadsService {
         { timestamp: new Date(), status: 'NEW', note: 'Lead submitted from website' },
       ],
     });
+
+    // Send email notification (fire-and-forget)
+    this.emailNotifications.sendLeadNew({
+      leadId: lead.leadId,
+      name: lead.name,
+      phone: lead.phone,
+      email: lead.email,
+      loanType: lead.loanType,
+      amount: lead.amount,
+      cibil: lead.cibil,
+      employment: lead.employment,
+      purpose: lead.purpose,
+      createdAt: new Date(),
+    }).catch(err => this.logger.error(`Lead notification failed for ${lead.leadId}: ${err.message}`));
 
     return makeResponse({ statusCode: 201, status: 'success', title: 'Lead Created', message: 'Lead captured successfully.', data: lead });
   }

@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Grievance, GrievanceDocument } from './schema/grievances.schema';
 import { Model, PipelineStage } from 'mongoose';
 import { makeResponse } from 'src/common/helpers/response.helper';
 import { paginate } from 'src/common/helpers/pagination.helper';
 import { escapeRegex } from 'src/common/helpers/regex.helper';
+import { EmailNotificationService } from '../notifications/email-notification.service';
 
 @Injectable()
 export class GrievancesService {
+  private readonly logger = new Logger(GrievancesService.name);
+
   constructor(
     @InjectModel(Grievance.name) readonly model: Model<GrievanceDocument>,
+    private readonly emailNotifications: EmailNotificationService,
   ) {}
 
   async createGrievance(body: any) {
@@ -32,6 +36,18 @@ export class GrievancesService {
       address: address || '',
       statusHistory: [{ timestamp: new Date(), status: 'RECEIVED', note: 'Grievance submitted' }],
     });
+
+    // Send email notification (fire-and-forget)
+    this.emailNotifications.sendGrievanceNew({
+      grievanceId: grievance.grievanceId,
+      name: grievance.name,
+      email: grievance.email,
+      mobile: grievance.mobile,
+      category: grievance.category,
+      subject: grievance.subject,
+      createdAt: new Date(),
+    }).catch(err => this.logger.error(`Grievance notification failed for ${grievance.grievanceId}: ${err.message}`));
+
     return makeResponse({
       statusCode: 201, title: 'Grievance Submitted',
       message: 'Your grievance has been registered successfully.',
@@ -79,6 +95,8 @@ export class GrievancesService {
     if (!grievance) {
       return makeResponse({ statusCode: 404, title: 'Not Found', message: 'Grievance not found.', status: 'error' });
     }
+
+    const previousStatus = grievance.status;
     if (body.status) grievance.status = body.status;
     if (body.customerUpdate) grievance.customerUpdate = body.customerUpdate;
     if (body.internalNotes) grievance.internalNotes = body.internalNotes;
@@ -88,6 +106,19 @@ export class GrievancesService {
       note: body.customerUpdate || `Status updated to ${body.status || grievance.status}`,
     });
     await grievance.save();
+
+    // Send email notification on status change (fire-and-forget)
+    if (body.status && body.status !== previousStatus) {
+      this.emailNotifications.sendGrievanceUpdate({
+        grievanceId: grievance.grievanceId,
+        name: grievance.name,
+        previousStatus,
+        newStatus: body.status,
+        updateNote: body.customerUpdate || '',
+        updatedAt: new Date(),
+      }).catch(err => this.logger.error(`Grievance update notification failed for ${grievance.grievanceId}: ${err.message}`));
+    }
+
     return makeResponse({ statusCode: 200, title: 'Updated', message: 'Status updated successfully.', status: 'success', data: grievance });
   }
 
