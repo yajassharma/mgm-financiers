@@ -25,6 +25,7 @@ export class GrievancesService {
         status: 'error',
       });
     }
+    const now = new Date();
     const grievance = await this.model.create({
       name: name || customerName || 'Anonymous',
       email,
@@ -34,7 +35,7 @@ export class GrievancesService {
       description,
       loanAccountNumber: loanAccountNumber || '',
       address: address || '',
-      statusHistory: [{ timestamp: new Date(), status: 'RECEIVED', note: 'Grievance submitted' }],
+      statusHistory: [{ timestamp: now, status: 'RECEIVED', note: 'Grievance submitted' }],
     });
 
     // Send email notification (fire-and-forget)
@@ -45,7 +46,7 @@ export class GrievancesService {
       mobile: grievance.mobile,
       category: grievance.category,
       subject: grievance.subject,
-      createdAt: new Date(),
+      createdAt: now,
     }).catch(err => this.logger.error(`Grievance notification failed for ${grievance.grievanceId}: ${err.message}`));
 
     return makeResponse({
@@ -97,11 +98,12 @@ export class GrievancesService {
     }
 
     const previousStatus = grievance.status;
+    const now = new Date();
     if (body.status) grievance.status = body.status;
     if (body.customerUpdate) grievance.customerUpdate = body.customerUpdate;
     if (body.internalNotes) grievance.internalNotes = body.internalNotes;
     grievance.statusHistory.push({
-      timestamp: new Date(),
+      timestamp: now,
       status: body.status || grievance.status,
       note: body.customerUpdate || `Status updated to ${body.status || grievance.status}`,
     });
@@ -115,7 +117,7 @@ export class GrievancesService {
         previousStatus,
         newStatus: body.status,
         updateNote: body.customerUpdate || '',
-        updatedAt: new Date(),
+        updatedAt: now,
       }).catch(err => this.logger.error(`Grievance update notification failed for ${grievance.grievanceId}: ${err.message}`));
     }
 
@@ -133,8 +135,10 @@ export class GrievancesService {
       return makeResponse({ statusCode: 400, title: 'Bad Request', message: 'Message is required.', status: 'error' });
     }
 
+    const now = new Date();
+
     grievance.followUps.push({
-      timestamp: new Date(),
+      timestamp: now,
       message: message.trim(),
       name: name || grievance.name,
       email: email || grievance.email,
@@ -148,7 +152,7 @@ export class GrievancesService {
       email: email || grievance.email,
       message: message.trim(),
       currentStatus: grievance.status,
-      createdAt: new Date(),
+      createdAt: now,
     }).catch(err => this.logger.error(`Grievance follow-up notification failed for ${grievance.grievanceId}: ${err.message}`));
 
     return makeResponse({ statusCode: 200, title: 'Follow-up Added', message: 'Your follow-up has been submitted.', status: 'success', data: grievance });

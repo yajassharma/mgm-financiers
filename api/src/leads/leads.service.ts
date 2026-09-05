@@ -26,6 +26,7 @@ export class LeadsService {
       });
     }
 
+    const now = new Date();
     const lead = await this.model.create({
       name: name?.trim() || '',
       phone: phone?.trim() || '',
@@ -37,7 +38,7 @@ export class LeadsService {
       purpose: purpose?.trim() || '',
       source: 'Website - Apply Now',
       statusHistory: [
-        { timestamp: new Date(), status: 'NEW', note: 'Lead submitted from website' },
+        { timestamp: now, status: 'NEW', note: 'Lead submitted from website' },
       ],
     });
 
@@ -52,7 +53,7 @@ export class LeadsService {
       cibil: lead.cibil,
       employment: lead.employment,
       purpose: lead.purpose,
-      createdAt: new Date(),
+      createdAt: now,
     }).catch(err => this.logger.error(`Lead notification failed for ${lead.leadId}: ${err.message}`));
 
     return makeResponse({ statusCode: 201, status: 'success', title: 'Lead Created', message: 'Lead captured successfully.', data: lead });
