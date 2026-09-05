@@ -122,6 +122,38 @@ export class GrievancesService {
     return makeResponse({ statusCode: 200, title: 'Updated', message: 'Status updated successfully.', status: 'success', data: grievance });
   }
 
+  async addFollowUp(grievanceId: string, body: { name: string; email: string; message: string }) {
+    const grievance = await this.model.findOne({ grievanceId });
+    if (!grievance) {
+      return makeResponse({ statusCode: 404, title: 'Not Found', message: 'Grievance not found.', status: 'error' });
+    }
+
+    const { name, email, message } = body;
+    if (!message || !message.trim()) {
+      return makeResponse({ statusCode: 400, title: 'Bad Request', message: 'Message is required.', status: 'error' });
+    }
+
+    grievance.followUps.push({
+      timestamp: new Date(),
+      message: message.trim(),
+      name: name || grievance.name,
+      email: email || grievance.email,
+    });
+    await grievance.save();
+
+    // Send email notification (fire-and-forget)
+    this.emailNotifications.sendGrievanceFollowUp({
+      grievanceId: grievance.grievanceId,
+      name: name || grievance.name,
+      email: email || grievance.email,
+      message: message.trim(),
+      currentStatus: grievance.status,
+      createdAt: new Date(),
+    }).catch(err => this.logger.error(`Grievance follow-up notification failed for ${grievance.grievanceId}: ${err.message}`));
+
+    return makeResponse({ statusCode: 200, title: 'Follow-up Added', message: 'Your follow-up has been submitted.', status: 'success', data: grievance });
+  }
+
   async getStats() {
     const [total, received, inReview, pendingCustomer, resolved, closed] = await Promise.all([
       this.model.countDocuments(),

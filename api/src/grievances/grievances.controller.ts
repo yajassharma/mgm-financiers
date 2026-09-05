@@ -9,6 +9,11 @@ export class GrievancesController {
   @Post()
   create(@Body() body: any) { return this.service.createGrievance(body); }
 
+  @Post(':grievanceId/follow-up')
+  addFollowUp(@Param('grievanceId') grievanceId: string, @Body() body: { name: string; email: string; message: string }) {
+    return this.service.addFollowUp(grievanceId, body);
+  }
+
   @Post('track-by-email')
   trackByEmail(@Body() body: { email: string }) { return this.service.trackByEmail(body); }
 

@@ -8,6 +8,7 @@ import {
   paymentSuccessEmail,
   grievanceNewEmail,
   grievanceUpdateEmail,
+  grievanceFollowUpEmail,
   leadNewEmail,
 } from './email-templates';
 
@@ -184,6 +185,30 @@ export class EmailNotificationService implements OnModuleInit {
     });
 
     await this.send(this.adminEmail, `Grievance Updated — ${data.grievanceId} → ${data.newStatus}`, html, 'GRIEVANCE_UPDATE', key);
+  }
+
+  // ─── Grievance follow-up notification ─────────────────────────────
+  async sendGrievanceFollowUp(data: {
+    grievanceId: string;
+    name: string;
+    email: string;
+    message: string;
+    currentStatus: string;
+    createdAt: Date;
+  }) {
+    const key = `${data.grievanceId}-followup-${data.createdAt.getTime()}`;
+    if (!(await this.shouldSend('GRIEVANCE_FOLLOW_UP', key))) return;
+
+    const html = grievanceFollowUpEmail({
+      grievanceId: data.grievanceId,
+      name: data.name,
+      email: data.email,
+      message: data.message,
+      currentStatus: data.currentStatus,
+      createdAt: data.createdAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+    });
+
+    await this.send(this.adminEmail, `Customer Follow-up — ${data.grievanceId} (${data.name})`, html, 'GRIEVANCE_FOLLOW_UP', key);
   }
 
   // ─── Lead notification ─────────────────────────────────────────────

@@ -219,7 +219,7 @@ function SuccessAnimation() {
   );
 }
 
-function Timeline({ timeline, currentStatus }) {
+function Timeline({ timeline, currentStatus, followUps }) {
 ;
   const statusLabels = {
     RECEIVED: 'Submitted',
@@ -232,16 +232,47 @@ function Timeline({ timeline, currentStatus }) {
   const statusOrder = ['RECEIVED', 'IN_REVIEW', 'PENDING_CUSTOMER', 'RESOLVED', 'CLOSED'];
   const currentIdx = statusOrder.indexOf(currentStatus);
   const entries = timeline || [];
+  const followUpEntries = (followUps || []).map(f => ({ type: 'followup', ...f }));
 
-  if (entries.length === 0) {
+  // Merge and sort by timestamp
+  const allEntries = [
+    ...entries.map(e => ({ type: 'status', ...e })),
+    ...followUpEntries,
+  ].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+  if (allEntries.length === 0) {
     return <p className="text-sm text-gray-400">No status updates yet.</p>;
   }
 
   return (
     <div className="space-y-0">
-      {entries.map((entry, idx) => {
+      {allEntries.map((entry, idx) => {
+        const isLatest = idx === allEntries.length - 1;
+
+        if (entry.type === 'followup') {
+          return (
+            <div key={`fu-${idx}`} className="flex gap-4">
+              <div className="flex flex-col items-center">
+                <div className="w-4 h-4 rounded-full border-2 flex-shrink-0 bg-white border-[#c9a227] scale-110" />
+                {idx < allEntries.length - 1 && (
+                  <div className="w-0.5 flex-1 min-h-[40px] bg-[#1a1a2e]" />
+                )}
+              </div>
+              <div className="pb-6">
+                <p className="text-sm font-semibold text-[#c9a227]">Customer Follow-up</p>
+                <div className="mt-1">
+                  <p className="text-xs text-gray-500">
+                    {new Date(entry.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-0.5">{entry.name}</p>
+                  <p className="text-sm text-gray-600 mt-1 bg-[#f5f0e0] rounded-lg px-3 py-2">{entry.message}</p>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
         const entryIdx = statusOrder.indexOf(entry.status);
-        const isLatest = idx === entries.length - 1;
 
         return (
           <div key={idx} className="flex gap-4">
@@ -250,7 +281,7 @@ function Timeline({ timeline, currentStatus }) {
                 isLatest ? 'bg-[#c9a227] border-[#c9a227] scale-125' :
                 'bg-[#1a1a2e] border-[#1a1a2e]'
               }`} />
-              {idx < entries.length - 1 && (
+              {idx < allEntries.length - 1 && (
                 <div className="w-0.5 flex-1 min-h-[40px] bg-[#1a1a2e]" />
               )}
             </div>
@@ -470,6 +501,11 @@ function TrackTab() {
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [followUpName, setFollowUpName] = useState('');
+  const [followUpEmail, setFollowUpEmail] = useState('');
+  const [followUpMessage, setFollowUpMessage] = useState('');
+  const [followUpSubmitting, setFollowUpSubmitting] = useState(false);
+  const [followUpResult, setFollowUpResult] = useState(null);
 
   const handleEmailSubmit = async () => {
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
@@ -510,6 +546,34 @@ function TrackTab() {
     setLoading(false);
   };
 
+  const submitFollowUp = async () => {
+    if (!followUpMessage.trim()) return;
+    setFollowUpSubmitting(true);
+    setFollowUpResult(null);
+    try {
+      const res = await fetch(`${API}/grievances/${selected.grievanceId}/follow-up`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: followUpName || selected.name,
+          email: followUpEmail || selected.email,
+          message: followUpMessage.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setFollowUpResult({ type: 'success', message: 'Your follow-up has been submitted.' });
+        setSelected(data.data);
+        setFollowUpMessage('');
+      } else {
+        setFollowUpResult({ type: 'error', message: data.message || 'Failed to submit follow-up.' });
+      }
+    } catch {
+      setFollowUpResult({ type: 'error', message: 'Network error. Please try again.' });
+    }
+    setFollowUpSubmitting(false);
+  };
+
   if (step === 'detail' && selected) {
     const detailStatusLabels = {
       RECEIVED: 'Submitted',
@@ -546,8 +610,51 @@ function TrackTab() {
         </div>
         <div className="bg-white rounded-2xl border border-gray-100 p-6">
           <h4 className="text-base font-bold text-[#1a1a2e] mb-6">{'Track Your Grievance'}</h4>
-          <Timeline timeline={selected.statusHistory} currentStatus={selected.status} />
+          <Timeline timeline={selected.statusHistory} currentStatus={selected.status} followUps={selected.followUps} />
         </div>
+        {selected.status !== 'CLOSED' && (
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 mt-4">
+            <h4 className="text-base font-bold text-[#1a1a2e] mb-4">Add Follow-up Message</h4>
+            <p className="text-sm text-gray-500 mb-4">Provide additional information or reply to an admin request.</p>
+            <div className="space-y-3">
+              <input
+                type="text"
+                placeholder="Your name"
+                value={followUpName}
+                onChange={(e) => setFollowUpName(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#c9a227] transition-colors"
+                defaultValue={selected.name}
+              />
+              <input
+                type="email"
+                placeholder="Your email"
+                value={followUpEmail}
+                onChange={(e) => setFollowUpEmail(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#c9a227] transition-colors"
+                defaultValue={selected.email}
+              />
+              <textarea
+                placeholder="Your message or additional information..."
+                value={followUpMessage}
+                onChange={(e) => setFollowUpMessage(e.target.value)}
+                rows={4}
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#c9a227] transition-colors resize-none"
+              />
+              {followUpResult && (
+                <p className={`text-sm ${followUpResult.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                  {followUpResult.message}
+                </p>
+              )}
+              <button
+                onClick={submitFollowUp}
+                disabled={followUpSubmitting || !followUpMessage.trim()}
+                className="px-6 py-2.5 bg-[#1a1a2e] text-white text-sm font-semibold rounded-xl hover:bg-[#2a2a3e] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                {followUpSubmitting ? 'Submitting...' : 'Submit Follow-up'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

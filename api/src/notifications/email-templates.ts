@@ -160,6 +160,41 @@ export function grievanceUpdateEmail(data: {
   );
 }
 
+export function grievanceFollowUpEmail(data: {
+  grievanceId: string;
+  name: string;
+  email: string;
+  message: string;
+  currentStatus: string;
+  createdAt: string;
+}): string {
+  return wrap(
+    header('Customer Follow-up Received') +
+    `<tr><td style="padding:24px 32px;">
+      <p style="margin:0 0 16px;font-size:14px;color:${BRAND.text};">A customer has added a follow-up message to their grievance.</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${BRAND.bg};border-radius:8px;padding:4px 16px;border:1px solid ${BRAND.border};">
+        <tr><td style="padding:12px 0;">
+          <span style="font-size:16px;font-weight:700;color:${BRAND.dark};">${data.grievanceId}</span>
+          <span style="margin-left:8px;">${badge('FOLLOW-UP', BRAND.gold)}</span>
+        </td></tr>
+      </table>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:8px;">
+        ${section('Follow-up Details',
+          row('Ticket ID', data.grievanceId) +
+          row('Customer', data.name) +
+          row('Email', data.email) +
+          row('Current Status', data.currentStatus)
+        )}
+        ${section('Customer Message',
+          `<tr><td colspan="2" style="padding:8px 0;font-size:13px;color:${BRAND.text};font-weight:400;line-height:1.6;white-space:pre-wrap;background:${BRAND.bg};border-radius:8px;padding:12px;border:1px solid ${BRAND.border};">${data.message}</td></tr>`
+        )}
+        ${section('Timestamp', row('Date', data.createdAt))}
+      </table>
+    </td></tr>` +
+    footer()
+  );
+}
+
 export function leadNewEmail(data: {
   leadId: string;
   name: string;

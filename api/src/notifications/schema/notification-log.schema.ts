@@ -5,7 +5,7 @@ export type NotificationLogDocument = NotificationLog & Document;
 
 @Schema({ timestamps: true })
 export class NotificationLog {
-  @Prop({ required: true, enum: ['PAYMENT_SUCCESS', 'GRIEVANCE_NEW', 'GRIEVANCE_UPDATE', 'LEAD_NEW'] })
+  @Prop({ required: true, enum: ['PAYMENT_SUCCESS', 'GRIEVANCE_NEW', 'GRIEVANCE_UPDATE', 'GRIEVANCE_FOLLOW_UP', 'LEAD_NEW'] })
   notificationType!: string;
 
   @Prop({ required: true })

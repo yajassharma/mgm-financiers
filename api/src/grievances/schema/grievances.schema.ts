@@ -54,6 +54,9 @@ export class Grievance {
 
   @Prop({ type: [{ timestamp: Date, status: String, note: String }], default: [] })
   statusHistory!: { timestamp: Date; status: string; note: string }[];
+
+  @Prop({ type: [{ timestamp: Date, message: String, name: String, email: String }], default: [] })
+  followUps!: { timestamp: Date; message: string; name: string; email: string }[];
 }
 
 export const GrievanceSchema = SchemaFactory.createForClass(Grievance);
