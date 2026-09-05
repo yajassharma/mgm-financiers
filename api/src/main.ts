@@ -9,11 +9,14 @@ import { NextFunction, Response, Request } from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { RolesGuard } from './common/guards/roles.guard';
+import { Reflector } from '@nestjs/core';
 import rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
+    rawBody: true,
   });
 
   // 2) Security middlewares
@@ -57,6 +60,15 @@ async function bootstrap() {
     message: { statusCode: 429, status: 'error', title: 'Rate Limited', message: 'Too many tracking requests. Please try again later.' },
   });
 
+  // Auth endpoint rate limiting (prevent brute-force and email spam)
+  const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 15,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { statusCode: 429, status: 'error', title: 'Rate Limited', message: 'Too many authentication attempts. Please try again later.' },
+  });
+
   // Apply strict limits to public write endpoints (grievances, leads, payments)
   app.use('/grievances', (req: Request, res: Response, next: NextFunction) => {
     if (req.method === 'POST') return publicWriteLimiter(req, res, next);
@@ -74,6 +86,11 @@ async function bootstrap() {
   // Tracking endpoints (read-only but email-triggering)
   app.use('/grievances/track-by-email', trackingLimiter);
   app.use('/payments/track', trackingLimiter);
+
+  // Auth endpoints rate limiting
+  app.use('/auth/admin/login', authLimiter);
+  app.use('/auth/user/login', authLimiter);
+  app.use('/auth/admin/forgot-user', authLimiter);
 
   // Only send HSTS header in production + HTTPS
   app.use((req: Request, res: Response, next: NextFunction) => {
@@ -114,6 +131,10 @@ async function bootstrap() {
 
   // 6) Global error filter
   app.useGlobalFilters(new AllExceptionsFilter());
+
+  // 7) Global guards (RolesGuard checks @Roles() decorators, passes through if none set)
+  const reflector = app.get(Reflector);
+  app.useGlobalGuards(new RolesGuard(reflector));
 
   // const redisHost = '127.0.0.1';
   // const pubClient = createClient({ url: `redis://${redisHost}:6379` });

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
 import { SiteSettingsService } from './site-settings.service';
 import { AdminJwtGuard } from 'src/common/guards/admin-jwt.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('site-settings')
 export class SiteSettingsController {
@@ -13,6 +14,7 @@ export class SiteSettingsController {
 
   @Patch()
   @UseGuards(AdminJwtGuard)
+  @Roles('superadmin')
   update(@Body() body: any) {
     return this.service.update(body);
   }

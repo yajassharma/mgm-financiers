@@ -3,6 +3,7 @@ import { AdminAuthService } from './admin-auth.service';
 import { CreateAdmin } from './dto/create-admin.dto';
 import { ForgotAdmin } from './dto/forgotAdmin.dto';
 import { AdminJwtGuard } from 'src/common/guards/admin-jwt.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('auth/admin')
 export class AdminAuthController {
@@ -15,6 +16,7 @@ export class AdminAuthController {
 
   @Post('register')
   @UseGuards(AdminJwtGuard)
+  @Roles('superadmin')
   register(@Body() body: CreateAdmin) {
     return this.auth.createAdmin(body);
   }

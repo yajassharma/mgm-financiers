@@ -8,6 +8,7 @@ import { escapeRegex } from "../common/helpers/regex.helper";
 import { ConfigService } from "@nestjs/config";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { EmailNotificationService } from "../notifications/email-notification.service";
+import * as crypto from "crypto";
 
 @Injectable()
 export class PaymentsService {
@@ -163,8 +164,28 @@ export class PaymentsService {
     }
   }
 
-  async handleWebhook(body: any) {
+  private verifyWebhookSignature(rawBody: string | Buffer, signature: string): boolean {
+    const { secretKey } = this.getCashfreeConfig();
+    if (!secretKey) {
+      this.logger.error('Cashfree secret key not configured — cannot verify webhook signature');
+      return false;
+    }
+    const bodyStr = typeof rawBody === 'string' ? rawBody : rawBody.toString('utf8');
+    const computedSignature = crypto.createHmac('sha256', secretKey).update(bodyStr).digest('base64');
+    try {
+      return crypto.timingSafeEqual(Buffer.from(computedSignature), Buffer.from(signature));
+    } catch {
+      return false;
+    }
+  }
+
+  async handleWebhook(body: any, rawBody: string | Buffer, signature: string) {
     this.logger.log(`Webhook received for order: ${body?.order_id}, status: ${body?.order_status}`);
+
+    if (!this.verifyWebhookSignature(rawBody, signature)) {
+      this.logger.warn(`Invalid webhook signature for order: ${body?.order_id}`);
+      return makeResponse({ statusCode: 401, title: "Unauthorized", message: "Invalid webhook signature.", status: "error" });
+    }
 
     const { order_id, order_status, cf_order_id, payment_method } = body;
 

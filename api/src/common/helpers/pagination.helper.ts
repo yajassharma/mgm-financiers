@@ -4,10 +4,14 @@ import { escapeRegex } from './regex.helper';
 interface PaginationOptions {
   page?: number;
   limit?: number;
+  maxLimit?: number; // Override default max limit (default: 100)
   searchField?: string; // e.g. "title"
   search?: string;
   sort?: Record<string, 1 | -1>;
 }
+
+const DEFAULT_MAX_LIMIT = 100;
+const ABSOLUTE_MAX_LIMIT = 1000;
 
 export async function paginate<T>(
   model: Model<T>,
@@ -16,7 +20,8 @@ export async function paginate<T>(
   pipeline: PipelineStage[] = [], // optional aggregation pipeline
 ) {
   const page = Math.max(Number(options.page) || 1, 1);
-  const limit = Math.max(Number(options.limit) || 10, 1);
+  const maxLimit = Math.min(Number(options.maxLimit) || DEFAULT_MAX_LIMIT, ABSOLUTE_MAX_LIMIT);
+  const limit = Math.min(Math.max(Number(options.limit) || 10, 1), maxLimit);
   const skip = (page - 1) * limit;
   const sort = options.sort || { _id: -1 };
 

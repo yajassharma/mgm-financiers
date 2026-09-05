@@ -17,4 +17,5 @@ export default () => ({
   resendApiKey: process.env.RESEND_API_KEY,
   resendFromEmail: process.env.RESEND_FROM_EMAIL,
   mgmNotificationEmail: process.env.MGM_NOTIFICATION_EMAIL,
+  seedAdminSecret: process.env.SEED_ADMIN_SECRET,
 });

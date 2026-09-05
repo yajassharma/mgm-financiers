@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ConsentsService } from './consents.service';
 import { AdminJwtGuard } from 'src/common/guards/admin-jwt.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
 import * as ExcelJS from 'exceljs';
 import { Response } from 'express';
 import moment from 'moment-timezone';
@@ -20,6 +21,7 @@ export class ConsentsController {
 
   @Get()
   @UseGuards(AdminJwtGuard)
+  @Roles('admin', 'superadmin')
   findAll(
     @Req() req: any,
     @Query('search') search: string,
@@ -38,6 +40,7 @@ export class ConsentsController {
 
   @Post('sent-consent')
   @UseGuards(AdminJwtGuard)
+  @Roles('superadmin')
   sent(
     @Req() req: any,
     @Body()
@@ -53,6 +56,7 @@ export class ConsentsController {
 
   @Post('resent-link')
   @UseGuards(AdminJwtGuard)
+  @Roles('superadmin')
   resentLink(
     @Body()
     body: {
@@ -93,12 +97,13 @@ export class ConsentsController {
 
   @Get('export-xlsx')
   @UseGuards(AdminJwtGuard)
+  @Roles('admin', 'superadmin')
   async exportXlsx(
     @Res() res: Response,
     @Query('search') search: string,
     @Query('status') status: string,
     @Query('page') page = 1,
-    @Query('limit') limit = 10000,
+    @Query('limit') limit = 1000,
   ) {
     const consents = await this.consentsService.allConsents(
       search,

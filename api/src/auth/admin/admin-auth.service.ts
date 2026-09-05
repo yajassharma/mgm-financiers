@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { AdminService } from '../../admin/admin.service';
 import * as jwt from 'jsonwebtoken';
+import * as crypto from 'crypto';
 import { MailerService } from 'src/common/services/mailer.service';
 import { Admin, AdminDocument } from 'src/admin/schemas/admin.schema';
 import { Model } from 'mongoose';
@@ -8,8 +9,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ForgotAdmin } from './dto/forgotAdmin.dto';
 import { makeResponse } from 'src/common/helpers/response.helper';
 import { CreateAdmin } from './dto/create-admin.dto';
+import { ConfigService } from '@nestjs/config';
 
 const loginAttempts = new Map<string, { count: number; lockedUntil: number }>();
+
+function hashToken(token: string): string {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
 
 @Injectable()
 export class AdminAuthService {
@@ -17,6 +23,7 @@ export class AdminAuthService {
     private readonly admins: AdminService,
     private mailer: MailerService,
     @InjectModel(Admin.name) private adminModel: Model<AdminDocument>,
+    private readonly config: ConfigService,
   ) {}
 
   async login({ email, password }: { email: string; password: string }) {
@@ -112,7 +119,7 @@ export class AdminAuthService {
       const resetExpire = new Date(Date.now() + 60 * 60 * 1000); // 1h
 
       // Save hashed token in DB
-      admin.resetPasswordToken = resetToken;
+      admin.resetPasswordToken = hashToken(resetToken);
       admin.resetPasswordExpires = resetExpire;
       await admin.save();
 
@@ -132,8 +139,9 @@ export class AdminAuthService {
   }
 
   async verifyResetToken(token: string) {
+    const hashedToken = hashToken(token);
     const admin = await this.adminModel.findOne({
-      resetPasswordToken: token,
+      resetPasswordToken: hashedToken,
       resetPasswordExpires: { $gt: new Date() },
     });
     if (!admin) {
@@ -151,8 +159,9 @@ export class AdminAuthService {
   }
 
   async resetPassword(token: string, newPassword: string) {
+    const hashedToken = hashToken(token);
     const admin = await this.adminModel.findOne({
-      resetPasswordToken: token,
+      resetPasswordToken: hashedToken,
       resetPasswordExpires: { $gt: new Date() },
     });
     if (!admin) {
@@ -172,7 +181,8 @@ export class AdminAuthService {
   }
 
   async seedFirstAdmin({ email, password, secret }: { email: string; password: string; secret: string }) {
-    if (secret !== 'MGM_SEED_2024!') {
+    const seedSecret = this.config.get<string>('seedAdminSecret');
+    if (!seedSecret || secret !== seedSecret) {
       return makeResponse({
         statusCode: 403,
         title: 'Forbidden',

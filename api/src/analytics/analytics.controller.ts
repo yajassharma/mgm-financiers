@@ -1,9 +1,11 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
 import { AdminJwtGuard } from '../common/guards/admin-jwt.guard';
+import { Roles } from '../common/decorators/roles.decorator';
 
 @Controller('analytics')
 @UseGuards(AdminJwtGuard)
+@Roles('admin', 'superadmin')
 export class AnalyticsController {
   constructor(private readonly service: AnalyticsService) {}
 
