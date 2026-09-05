@@ -125,7 +125,7 @@ export class EmailNotificationService implements OnModuleInit {
       amount: data.amount,
       paymentType: data.paymentType,
       orderId: data.orderId,
-      paidAt: data.paidAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+      paidAt: data.paidAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }),
       paymentMethod: data.paymentMethod,
     });
 
@@ -157,7 +157,7 @@ export class EmailNotificationService implements OnModuleInit {
       mobile: data.mobile,
       category: data.category,
       subject: data.subject,
-      createdAt: data.createdAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+      createdAt: data.createdAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }),
     });
 
     await this.send(this.adminEmail, `New Grievance — ${data.grievanceId} (${data.subject})`, html, 'GRIEVANCE_NEW', data.grievanceId);
@@ -181,7 +181,7 @@ export class EmailNotificationService implements OnModuleInit {
       previousStatus: data.previousStatus,
       newStatus: data.newStatus,
       updateNote: data.updateNote,
-      updatedAt: data.updatedAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+      updatedAt: data.updatedAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }),
     });
 
     await this.send(this.adminEmail, `Grievance Updated — ${data.grievanceId} → ${data.newStatus}`, html, 'GRIEVANCE_UPDATE', key);
@@ -205,7 +205,7 @@ export class EmailNotificationService implements OnModuleInit {
       email: data.email,
       message: data.message,
       currentStatus: data.currentStatus,
-      createdAt: data.createdAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+      createdAt: data.createdAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }),
     });
 
     await this.send(this.adminEmail, `Customer Follow-up — ${data.grievanceId} (${data.name})`, html, 'GRIEVANCE_FOLLOW_UP', key);
@@ -236,7 +236,7 @@ export class EmailNotificationService implements OnModuleInit {
       cibil: data.cibil,
       employment: data.employment,
       purpose: data.purpose,
-      createdAt: data.createdAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+      createdAt: data.createdAt.toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' }),
     });
 
     await this.send(this.adminEmail, `New Lead — ${data.name} (${data.loanType})`, html, 'LEAD_NEW', data.leadId);
