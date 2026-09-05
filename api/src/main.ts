@@ -9,8 +9,6 @@ import { NextFunction, Response, Request } from 'express';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
-import { RolesGuard } from './common/guards/roles.guard';
-import { Reflector } from '@nestjs/core';
 import rateLimit from 'express-rate-limit';
 
 async function bootstrap() {
@@ -131,10 +129,6 @@ async function bootstrap() {
 
   // 6) Global error filter
   app.useGlobalFilters(new AllExceptionsFilter());
-
-  // 7) Global guards (RolesGuard checks @Roles() decorators, passes through if none set)
-  const reflector = app.get(Reflector);
-  app.useGlobalGuards(new RolesGuard(reflector));
 
   // const redisHost = '127.0.0.1';
   // const pubClient = createClient({ url: `redis://${redisHost}:6379` });

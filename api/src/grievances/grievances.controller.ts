@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { GrievancesService } from './grievances.service';
 import { AdminJwtGuard } from 'src/common/guards/admin-jwt.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('grievances')
@@ -22,19 +23,19 @@ export class GrievancesController {
   trackById(@Param('grievanceId') id: string) { return this.service.trackById(id); }
 
   @Get()
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('admin', 'superadmin')
   findAll(@Query('search') search: string, @Query('status') status: string, @Query('page') page = 1, @Query('limit') limit = 10) {
     return this.service.findAll(search, status, +page, +limit);
   }
 
   @Get('stats')
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('admin', 'superadmin')
   getStats() { return this.service.getStats(); }
 
   @Patch(':id/status')
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('superadmin')
   updateStatus(@Param('id') id: string, @Body() body: { status?: string; adminResponse?: string; customerUpdate?: string; internalNotes?: string }) {
     return this.service.updateStatus(id, body);

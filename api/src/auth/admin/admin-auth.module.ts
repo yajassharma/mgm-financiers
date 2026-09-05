@@ -7,9 +7,11 @@ import { AdminJwtStrategy } from './admin-jwt.strategy';
 import { CommonModule } from 'src/common/common.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Admin, AdminSchema } from 'src/admin/schemas/admin.schema';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule,
     PassportModule,
     AdminModule,
     CommonModule,

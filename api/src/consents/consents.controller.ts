@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ConsentsService } from './consents.service';
 import { AdminJwtGuard } from 'src/common/guards/admin-jwt.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import * as ExcelJS from 'exceljs';
 import { Response } from 'express';
@@ -20,7 +21,7 @@ export class ConsentsController {
   constructor(private readonly consentsService: ConsentsService) {}
 
   @Get()
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('admin', 'superadmin')
   findAll(
     @Req() req: any,
@@ -39,7 +40,7 @@ export class ConsentsController {
   }
 
   @Post('sent-consent')
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('superadmin')
   sent(
     @Req() req: any,
@@ -55,7 +56,7 @@ export class ConsentsController {
   }
 
   @Post('resent-link')
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('superadmin')
   resentLink(
     @Body()
@@ -96,7 +97,7 @@ export class ConsentsController {
   }
 
   @Get('export-xlsx')
-  @UseGuards(AdminJwtGuard)
+  @UseGuards(AdminJwtGuard, RolesGuard)
   @Roles('admin', 'superadmin')
   async exportXlsx(
     @Res() res: Response,
