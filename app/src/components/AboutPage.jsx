@@ -36,11 +36,11 @@ const prefersReduced = usePrefersReducedMotion()
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div>
-              <span className={`inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5 ${a(heroInView, 0)}`}>{'About MGM Financiers'}</span>
+              <span className={`inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5 ${a(heroInView, 0)}`}>{'About MGM Financiers'}</span>
               <h1 className={`text-4xl sm:text-5xl lg:text-[3.4rem] font-bold text-mgm-dark font-heading leading-[1.08] tracking-tight mb-6 ${a(heroInView, 80)}`}>
                 Built on Trust.<br />Growing Through Relationships.
               </h1>
-              <p className={`text-mgm-dark/45 font-body text-[15px] leading-relaxed max-w-lg mb-9 ${a(heroInView, 160)}`}>
+              <p className={`text-mgm-dark/70 font-body text-[15px] leading-relaxed max-w-lg mb-9 ${a(heroInView, 160)}`}>
                 {'28 years of trust, growth, and unwavering commitment to our customers\' financial success'}
               </p>
               <div className={`flex flex-wrap gap-3 mb-10 ${a(heroInView, 240)}`}>
@@ -57,7 +57,7 @@ const prefersReduced = usePrefersReducedMotion()
                 {['28+ Years', settings.rbiWording, 'Customer-First Philosophy'].map((t, i) => (
                   <div key={t} className={`flex items-center gap-2 ${a(heroInView, 320 + i * 80)}`}>
                     <svg className="w-4 h-4 text-mgm-gold flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-                    <span className="text-mgm-dark/50 font-body text-xs">{t}</span>
+                    <span className="text-mgm-dark/70 font-body text-xs">{t}</span>
                   </div>
                 ))}
               </div>
@@ -84,9 +84,9 @@ const prefersReduced = usePrefersReducedMotion()
               </div>
             </div>
             <div className={`order-1 lg:order-2 ${a(storyInView, 0)}`}>
-              <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4">{'Our Journey'}</span>
+              <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4">{'Our Journey'}</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight mb-6">Where We Started,<br />Where We Stand</h2>
-              <div className="space-y-4 text-mgm-dark/45 font-body text-[15px] leading-relaxed">
+              <div className="space-y-4 text-mgm-dark/70 font-body text-[15px] leading-relaxed">
                 <p>MGM Financiers began with a simple belief: that financial assistance should be accessible, honest and built on genuine relationships. What started as a small lending institution has grown into a trusted name serving communities across multiple states.</p>
                 <p>Over twenty-eight years, we have walked alongside families buying their first homes, entrepreneurs expanding their businesses, and individuals navigating life's unexpected moments. Every loan we process carries a promise &mdash; that we are invested in our customers' success, not just their repayment.</p>
                 <p>Our growth has been deliberate. We expanded when we could maintain quality. We added branches where we could offer personal attention. And we embraced technology where it helped us serve customers faster without losing the human touch that defines us.</p>
@@ -112,7 +112,7 @@ const prefersReduced = usePrefersReducedMotion()
                 <div className="w-10 h-px bg-mgm-gold/40" />
                 <div>
                   <p className="font-heading font-bold text-mgm-dark text-sm">Kushinder Paul Mohindra</p>
-                  <p className="text-mgm-gold font-body text-xs tracking-wide uppercase mt-0.5">Chief Executive Officer</p>
+                  <p className="text-mgm-gold-text font-body text-xs tracking-wide uppercase mt-0.5">Chief Executive Officer</p>
                 </div>
               </div>
             </div>
@@ -136,7 +136,7 @@ const prefersReduced = usePrefersReducedMotion()
       <section ref={prinRef} className="py-16 sm:py-28 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className={`mb-12 ${a(prinRef, 0)}`}>
-            <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">{'Our Guiding Principles'}</span>
+            <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">{'Our Guiding Principles'}</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight">The Principles That Guide<br className="hidden sm:block" /> Every Decision</h2>
           </div>
           {/* Editorial layout: 2x2 with generous spacing */}
@@ -144,10 +144,10 @@ const prefersReduced = usePrefersReducedMotion()
             {PRINCIPLES.map((p, i) => (
               <div key={p.title} className={`${a(prinRef, 60 + i * 80)}`}>
                 <div className="flex items-start gap-4">
-                  <span className="text-mgm-gold/30 font-heading font-bold text-3xl leading-none mt-0.5">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="text-mgm-gold-text font-heading font-bold text-3xl leading-none mt-0.5">{String(i + 1).padStart(2, '0')}</span>
                   <div>
                     <h3 className="font-heading font-bold text-mgm-dark text-lg mb-2">{p.title}</h3>
-                    <p className="text-mgm-dark/40 font-body text-sm leading-relaxed">{p.desc}</p>
+                    <p className="text-mgm-dark/70 font-body text-sm leading-relaxed">{p.desc}</p>
                   </div>
                 </div>
               </div>
@@ -160,7 +160,7 @@ const prefersReduced = usePrefersReducedMotion()
       <section ref={timeRef} className="py-16 sm:py-28 px-4 sm:px-6 lg:px-8 bg-mgm-light/30">
         <div className="max-w-7xl mx-auto">
           <div className={`mb-14 ${a(timeInView, 0)}`}>
-            <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">{'Key milestones in our growth story'}</span>
+            <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">{'Key milestones in our growth story'}</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight">Milestones That Define Us</h2>
           </div>
           {/* Desktop: horizontal */}
@@ -171,9 +171,9 @@ const prefersReduced = usePrefersReducedMotion()
                 {settings.milestones.map((m, i) => (
                   <div key={m.year} className={`relative text-center ${a(timeInView, 40 + i * 80)}`}>
                     <div className="w-2.5 h-2.5 rounded-full bg-mgm-gold mx-auto mb-5 relative z-10" />
-                    <span className="text-mgm-gold font-heading font-bold text-sm">{m.year}</span>
+                    <span className="text-mgm-gold-text font-heading font-bold text-sm">{m.year}</span>
                     <h3 className="font-heading font-semibold text-mgm-dark text-sm mt-1 mb-2">{m.title}</h3>
-                    <p className="text-mgm-dark/35 font-body text-xs leading-relaxed">{m.desc}</p>
+                    <p className="text-mgm-dark/70 font-body text-xs leading-relaxed">{m.desc}</p>
                   </div>
                 ))}
               </div>
@@ -188,9 +188,9 @@ const prefersReduced = usePrefersReducedMotion()
                   {i < settings.milestones.length - 1 && <div className="w-px flex-1 bg-mgm-gold/15 mt-1" />}
                 </div>
                 <div className="pb-2">
-                  <span className="text-mgm-gold font-heading font-bold text-xs">{m.year}</span>
+                  <span className="text-mgm-gold-text font-heading font-bold text-xs">{m.year}</span>
                   <h3 className="font-heading font-semibold text-mgm-dark text-sm mt-0.5">{m.title}</h3>
-                  <p className="text-mgm-dark/35 font-body text-xs leading-relaxed mt-1">{m.desc}</p>
+                  <p className="text-mgm-dark/70 font-body text-xs leading-relaxed mt-1">{m.desc}</p>
                 </div>
               </div>
             ))}
@@ -203,7 +203,7 @@ const prefersReduced = usePrefersReducedMotion()
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <div className="order-2 lg:order-1">
-              <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4">Our Approach</span>
+              <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4">Our Approach</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight mb-8">
                 Built Around<br />Your Needs
               </h2>
@@ -214,10 +214,10 @@ const prefersReduced = usePrefersReducedMotion()
                   { num: '03', title: 'Stay Connected', desc: 'Our relationship does not end at disbursal. We remain a call away for guidance, support and the next chapter of your financial journey.' },
                 ].map((item, i) => (
                   <div key={item.num} className="flex gap-5">
-                    <span className="text-mgm-gold/30 font-heading font-bold text-2xl leading-none mt-1">{item.num}</span>
+                    <span className="text-mgm-gold-text font-heading font-bold text-2xl leading-none mt-1">{item.num}</span>
                     <div>
                       <h3 className="font-heading font-bold text-mgm-dark text-base mb-1">{item.title}</h3>
-                      <p className="text-mgm-dark/40 font-body text-sm leading-relaxed">{item.desc}</p>
+                      <p className="text-mgm-dark/70 font-body text-sm leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -241,9 +241,9 @@ const prefersReduced = usePrefersReducedMotion()
       <section ref={relRef} className="py-16 sm:py-28 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <div className={a(relRef, 0)}>
-            <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4">Our Culture</span>
+            <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4">Our Culture</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight mb-6">Relationships That Last</h2>
-            <div className="space-y-4 text-mgm-dark/45 font-body text-[15px] leading-relaxed">
+            <div className="space-y-4 text-mgm-dark/70 font-body text-[15px] leading-relaxed">
               <p>Every customer who walks through our doors receives more than a loan. They receive a relationship &mdash; one built on personal guidance, complete transparency and genuine care for their financial wellbeing.</p>
               <p>We don't believe in one-size-fits-all solutions. Our relationship managers take the time to understand each customer's unique circumstances, goals and concerns before recommending a path forward.</p>
               <p>This philosophy is why customers return to us generation after generation. It's why families refer their neighbours. It's why businesses trust us with their growth. The relationship doesn't end when the loan is disbursed &mdash; it deepens.</p>
@@ -255,8 +255,8 @@ const prefersReduced = usePrefersReducedMotion()
                 { num: '03', label: 'Responsible Borrowing' },
               ].map((item) => (
                 <div key={item.num} className="flex items-center gap-3">
-                  <span className="text-mgm-gold/40 font-heading font-bold text-xs">{item.num}</span>
-                  <span className="text-mgm-dark/60 font-body text-sm font-medium">{item.label}</span>
+                  <span className="text-mgm-gold-text font-heading font-bold text-xs">{item.num}</span>
+                  <span className="text-mgm-dark/70 font-body text-sm font-medium">{item.label}</span>
                 </div>
               ))}
             </div>
@@ -284,9 +284,9 @@ const prefersReduced = usePrefersReducedMotion()
               { title: 'Long-Term Relationships', desc: 'Our partnership continues long after the loan is disbursed.' },
             ].map((p, i) => (
               <div key={p.title}>
-                <span className="text-mgm-gold/30 font-heading font-bold text-2xl">{String(i + 1).padStart(2, '0')}</span>
+                <span className="text-mgm-gold/60 font-heading font-bold text-2xl">{String(i + 1).padStart(2, '0')}</span>
                 <h3 className="font-heading font-bold text-white text-sm mt-2 mb-2">{p.title}</h3>
-                <p className="text-white/30 font-body text-xs leading-relaxed">{p.desc}</p>
+                <p className="text-white/60 font-body text-xs leading-relaxed">{p.desc}</p>
               </div>
             ))}
           </div>

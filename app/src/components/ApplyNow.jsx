@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useId } from 'react'
 const WHATSAPP_NUMBER = '919988881003'
 
 const LOAN_TYPES = [
@@ -86,6 +86,8 @@ const [section, setSection] = useState(0)
   const [isMobile, setIsMobile] = useState(false)
   const modalRef = useRef(null)
   const firstInputRef = useRef(null)
+  const contentRef = useRef(null)
+  const triggerRef = useRef(null)
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -115,15 +117,45 @@ const [section, setSection] = useState(0)
   }, [isOpen])
 
   useEffect(() => {
-    if (isOpen && firstInputRef.current) {
-      setTimeout(() => firstInputRef.current?.focus(), 400)
+    if (isOpen) {
+      triggerRef.current = document.activeElement
+      if (firstInputRef.current) setTimeout(() => firstInputRef.current?.focus(), 400)
+    } else if (triggerRef.current && typeof triggerRef.current.focus === 'function') {
+      triggerRef.current.focus()
+      triggerRef.current = null
     }
-  }, [isOpen, section])
+  }, [isOpen])
+
+  useEffect(() => {
+    if (isOpen) contentRef.current?.focus()
+  }, [section])
 
   useEffect(() => {
     if (!isOpen) return
     const handleKey = (e) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        onClose()
+        return
+      }
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusables = modalRef.current.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+        if (!focusables.length) return
+        const first = focusables[0]
+        const last = focusables[focusables.length - 1]
+        const active = document.activeElement
+        if (!modalRef.current.contains(active)) {
+          e.preventDefault()
+          first.focus()
+        } else if (e.shiftKey && active === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
     }
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
@@ -218,13 +250,13 @@ const [section, setSection] = useState(0)
               </svg>
             </button>
           </div>
-          <p className="text-mgm-dark/45 font-body text-xs sm:text-sm leading-relaxed">
+          <p className="text-mgm-dark/70 font-body text-xs sm:text-sm leading-relaxed">
             {'Fill in your details below'}
           </p>
           <div className="flex items-center gap-3 sm:gap-4 mt-2.5 sm:mt-3">
             {['RBI-registered NBFC', 'Secure Information', 'No Hidden Charges'].map((t) => (
-              <span key={t} className="flex items-center gap-1.5 text-mgm-dark/40 text-[10px] sm:text-[11px] font-body">
-                <svg className="w-3 h-3 text-mgm-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <span key={t} className="flex items-center gap-1.5 text-mgm-dark/70 text-[10px] sm:text-[11px] font-body">
+                <svg aria-hidden="true" className="w-3 h-3 text-mgm-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
                 {t}
@@ -246,13 +278,13 @@ const [section, setSection] = useState(0)
               </div>
             ))}
           </div>
-          <p className="text-mgm-dark/30 text-[11px] font-body mt-1.5 sm:mt-2">
+          <p className="text-mgm-dark/70 text-[11px] font-body mt-1.5 sm:mt-2">
             Step {section + 1} of 4 &mdash; {sectionTitles[section]}
           </p>
         </div>
 
         {/* Scrollable Body */}
-        <div className="flex-1 overflow-y-auto px-5 py-4 sm:px-6 sm:py-5">
+        <div ref={contentRef} tabIndex={-1} className="flex-1 overflow-y-auto px-5 py-4 sm:px-6 sm:py-5">
           {/* Section 0: Your Details */}
           {section === 0 && (
             <div className="space-y-5 anim-section-enter">
@@ -264,6 +296,7 @@ const [section, setSection] = useState(0)
                 onChange={(v) => update('name', v)}
                 error={errors.name}
                 placeholder={'Enter your full name'}
+                autoComplete="name"
               />
               <InputField
                 label={'Mobile Number'}
@@ -275,6 +308,7 @@ const [section, setSection] = useState(0)
                 }}
                 error={errors.phone}
                 placeholder={'Enter 10-digit mobile number'}
+                autoComplete="tel"
                 type="tel"
                 prefix="+91"
               />
@@ -284,9 +318,10 @@ const [section, setSection] = useState(0)
                 onChange={(v) => update('email', v)}
                 error={errors.email}
                 placeholder={'Enter your email'}
+                autoComplete="email"
                 type="email"
               />
-              <p className="text-mgm-dark/25 text-[11px] font-body">Email is optional but helps us send you loan details.</p>
+              <p className="text-mgm-dark/70 text-[11px] font-body">Email is optional but helps us send you loan details.</p>
             </div>
           )}
 
@@ -303,25 +338,27 @@ const [section, setSection] = useState(0)
                 error={errors.loanType}
               />
               <div>
-                <label className="block text-mgm-dark/50 text-xs font-body font-medium mb-2">
-                  {'Loan Amount'} <span className="text-mgm-gold">*</span>
+                <label htmlFor="apply-amount" className="block text-mgm-dark/70 text-xs font-body font-medium mb-2">
+                  {'Loan Amount'} <span className="text-mgm-gold-text" aria-hidden="true">*</span>
                 </label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-mgm-dark/40 font-body text-sm font-medium">₹</span>
+                  <span aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 text-mgm-dark/70 font-body text-sm font-medium">₹</span>
                   <input
+                    id="apply-amount"
                     type="text"
                     inputMode="numeric"
+                    aria-invalid={!!errors.amount} aria-describedby={errors.amount ? 'apply-amount-error' : undefined}
                     value={amount}
                     onChange={(e) => setAmount(formatCurrency(e.target.value))}
                     placeholder={'Enter desired loan amount'}
                     className={`w-full pl-8 pr-4 py-3.5 bg-gray-50 border ${
-                      errors.amount ? 'border-red-300' : 'border-gray-200'
-                    } rounded-2xl text-mgm-dark font-body text-sm focus:outline-none focus:border-mgm-gold focus:ring-2 focus:ring-mgm-gold/10 transition-all placeholder:text-gray-300`}
+                      errors.amount ? 'border-red-600' : 'border-gray-500'
+                    } rounded-2xl text-mgm-dark font-body text-sm focus:outline-none focus:border-mgm-gold-text focus:ring-2 focus:ring-mgm-gold/10 transition-all placeholder:text-gray-500`}
                   />
                 </div>
-                {errors.amount && <p className="text-red-500 text-xs mt-1.5 font-body">{errors.amount}</p>}
+                {errors.amount && <p id="apply-amount-error" role="alert" className="text-red-600 text-xs mt-1.5 font-body">{errors.amount}</p>}
                 {amount && parseCurrency(amount) >= 1000 && (
-                  <p className="text-mgm-dark/30 text-[11px] font-body mt-1.5">
+                  <p className="text-mgm-dark/70 text-[11px] font-body mt-1.5">
                     Estimated Requirement: ₹{formatCurrency(amount)}
                   </p>
                 )}
@@ -332,10 +369,10 @@ const [section, setSection] = useState(0)
           {/* Section 2: Credit Profile */}
           {section === 2 && (
             <div className="space-y-5 anim-section-enter">
-              <label className="block text-mgm-dark/50 text-xs font-body font-medium">
+              <span id="apply-cibil-label" className="block text-mgm-dark/70 text-xs font-body font-medium">
                 Do you know your CIBIL Score?
-              </label>
-              <div className="flex gap-3">
+              </span>
+              <div role="group" aria-labelledby="apply-cibil-label" className="flex gap-3">
                 {[
                   { val: 'yes', label: 'Yes' },
                   { val: 'not-sure', label: "I'm Not Sure" },
@@ -346,17 +383,18 @@ const [section, setSection] = useState(0)
                       setCibilKnown(opt.val)
                       if (errors.cibil) setErrors((e) => ({ ...e, cibil: null }))
                     }}
+                    aria-pressed={cibilKnown === opt.val}
                     className={`flex-1 py-3.5 rounded-2xl text-sm font-body font-medium border transition-all duration-300 ${
                       cibilKnown === opt.val
-                        ? 'bg-mgm-gold text-white border-mgm-gold shadow-md shadow-mgm-gold/20'
-                        : 'bg-gray-50 text-mgm-dark/60 border-gray-200 hover:border-gray-300'
+                        ? 'bg-mgm-gold text-mgm-dark border-mgm-gold shadow-md shadow-mgm-gold/20'
+                        : 'bg-gray-50 text-mgm-dark/70 border-gray-500 hover:border-gray-600'
                     }`}
                   >
                     {opt.label}
                   </button>
                 ))}
               </div>
-              {errors.cibil && <p className="text-red-500 text-xs font-body">{errors.cibil}</p>}
+              {errors.cibil && <p role="alert" className="text-red-600 text-xs font-body">{errors.cibil}</p>}
 
               <div
                 className={`overflow-hidden transition-all duration-500 ease-out ${
@@ -382,7 +420,7 @@ const [section, setSection] = useState(0)
                 }`}
               >
                 <div className="bg-mgm-gold/5 border border-mgm-gold/15 rounded-2xl p-4">
-                  <p className="text-mgm-dark/50 font-body text-sm leading-relaxed">
+                  <p className="text-mgm-dark/70 font-body text-sm leading-relaxed">
                     Our loan advisor can help you understand your eligibility and guide you through the next steps.
                   </p>
                 </div>
@@ -401,13 +439,14 @@ const [section, setSection] = useState(0)
                 placeholder={'Select employment type'}
               />
               <div>
-                <label className="block text-mgm-dark/50 text-xs font-body font-medium mb-2">{'Purpose of Loan'}</label>
+                <label htmlFor="apply-purpose" className="block text-mgm-dark/70 text-xs font-body font-medium mb-2">{'Purpose of Loan'}</label>
                 <textarea
+                  id="apply-purpose"
                   value={form.purpose}
                   onChange={(e) => update('purpose', e.target.value)}
                   rows={3}
                   placeholder={PURPOSE_PLACEHOLDERS.join(' · ')}
-                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-2xl text-mgm-dark font-body text-sm focus:outline-none focus:border-mgm-gold focus:ring-2 focus:ring-mgm-gold/10 transition-all resize-none placeholder:text-gray-300"
+                  className="w-full px-4 py-3.5 bg-gray-50 border border-gray-500 rounded-2xl text-mgm-dark font-body text-sm focus:outline-none focus:border-mgm-gold-text focus:ring-2 focus:ring-mgm-gold/10 transition-all resize-none placeholder:text-gray-500"
                 />
               </div>
             </div>
@@ -418,10 +457,10 @@ const [section, setSection] = useState(0)
         <div className="px-5 pb-5 pt-3 border-t border-gray-100 flex-shrink-0 sm:px-6 sm:pb-6 sm:pt-4">
           {/* Privacy note */}
           <div className="flex items-start gap-2 mb-4">
-            <svg className="w-3.5 h-3.5 text-mgm-dark/25 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+            <svg aria-hidden="true" className="w-3.5 h-3.5 text-mgm-dark/70 mt-0.5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z" />
             </svg>
-            <p className="text-mgm-dark/30 text-[11px] font-body leading-relaxed">
+            <p className="text-mgm-dark/70 text-[11px] font-body leading-relaxed">
               Your information is used only for processing your enquiry. No spam. No unnecessary communication.
             </p>
           </div>
@@ -431,7 +470,7 @@ const [section, setSection] = useState(0)
             {section > 0 && (
               <button
                 onClick={prevSection}
-                className="px-5 py-3.5 rounded-2xl border border-gray-200 text-mgm-dark/60 text-sm font-body font-medium hover:bg-gray-50 transition-colors"
+                className="px-5 py-3.5 rounded-2xl border border-gray-500 text-mgm-dark/70 text-sm font-body font-medium hover:bg-gray-50 transition-colors"
               >
                 {'Previous'}
               </button>
@@ -447,16 +486,16 @@ const [section, setSection] = useState(0)
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="flex-1 py-3.5 rounded-2xl bg-mgm-gold text-white text-sm font-body font-semibold hover:bg-mgm-gold/90 transition-all btn-interactive flex items-center justify-center gap-2.5 disabled:opacity-60"
+                className="flex-1 py-3.5 rounded-2xl bg-mgm-gold text-mgm-dark text-sm font-body font-semibold hover:bg-mgm-gold/90 transition-all btn-interactive flex items-center justify-center gap-2.5 disabled:opacity-60"
               >
                 {loading ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-mgm-dark/30 border-t-mgm-dark rounded-full animate-spin" />
                     {'Submitting...'}
                   </>
                 ) : (
                   <>
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <svg aria-hidden="true" className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                     </svg>
                     {'Submit Application'}
@@ -466,7 +505,7 @@ const [section, setSection] = useState(0)
             )}
           </div>
           {section === 3 && !loading && (
-            <p className="text-mgm-dark/25 text-[11px] font-body text-center mt-3">
+            <p className="text-mgm-dark/70 text-[11px] font-body text-center mt-3">
               No payment required. No obligation. Our advisor will guide you personally.
             </p>
           )}
@@ -480,55 +519,64 @@ const [section, setSection] = useState(0)
 
 import { forwardRef } from 'react'
 
-const InputField = forwardRef(function InputField({ label, required, value, onChange, error, placeholder, type = 'text', prefix }, ref) {
+const InputField = forwardRef(function InputField({ label, required, value, onChange, error, placeholder, type = 'text', prefix, autoComplete }, ref) {
   const [focused, setFocused] = useState(false)
+  const inputId = useId()
+  const errorId = `${inputId}-error`
   return (
     <div>
-      <label className="block text-mgm-dark/50 text-xs font-body font-medium mb-2">
-        {label} {required && <span className="text-mgm-gold">*</span>}
+      <label htmlFor={inputId} className="block text-mgm-dark/70 text-xs font-body font-medium mb-2">
+        {label} {required && <span className="text-mgm-gold-text" aria-hidden="true">*</span>}
       </label>
       <div className="relative">
         {prefix && (
-          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-mgm-dark/40 font-body text-sm font-medium">
+          <span aria-hidden="true" className="absolute left-4 top-1/2 -translate-y-1/2 text-mgm-dark/70 font-body text-sm font-medium">
             {prefix}
           </span>
         )}
         <input
           ref={ref}
+          id={inputId}
           type={type}
+          autoComplete={autoComplete}
           inputMode={type === 'tel' ? 'numeric' : type === 'email' ? 'email' : 'text'}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder={placeholder}
+          aria-invalid={!!error} aria-describedby={error ? errorId : undefined}
           className={`w-full ${prefix ? 'pl-14' : 'pl-4'} pr-4 py-3.5 bg-gray-50 border ${
-            error ? 'border-red-300' : focused ? 'border-mgm-gold ring-2 ring-mgm-gold/10' : 'border-gray-200'
-          } rounded-2xl text-mgm-dark font-body text-sm focus:outline-none transition-all placeholder:text-gray-300`}
+            error ? 'border-red-600' : focused ? 'border-mgm-gold-text ring-2 ring-mgm-gold/10' : 'border-gray-500'
+          } rounded-2xl text-mgm-dark font-body text-sm focus:outline-none transition-all placeholder:text-gray-500`}
         />
       </div>
-      {error && <p className="text-red-500 text-xs mt-1.5 font-body">{error}</p>}
+      {error && <p id={errorId} role="alert" className="text-red-600 text-xs mt-1.5 font-body">{error}</p>}
     </div>
   )
 })
 
 function SelectField({ label, required, value, onChange, options, placeholder, error }) {
   const [focused, setFocused] = useState(false)
+  const selectId = useId()
+  const errorId = `${selectId}-error`
   return (
     <div>
-      <label className="block text-mgm-dark/50 text-xs font-body font-medium mb-2">
-        {label} {required && <span className="text-mgm-gold">*</span>}
+      <label htmlFor={selectId} className="block text-mgm-dark/70 text-xs font-body font-medium mb-2">
+        {label} {required && <span className="text-mgm-gold-text" aria-hidden="true">*</span>}
       </label>
       <div className="relative">
         <select
+          id={selectId}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
+          aria-invalid={!!error} aria-describedby={error ? errorId : undefined}
           className={`w-full appearance-none px-4 py-3.5 bg-gray-50 border ${
-            error ? 'border-red-300' : focused ? 'border-mgm-gold ring-2 ring-mgm-gold/10' : 'border-gray-200'
+            error ? 'border-red-600' : focused ? 'border-mgm-gold-text ring-2 ring-mgm-gold/10' : 'border-gray-500'
           } rounded-2xl text-mgm-dark font-body text-sm focus:outline-none transition-all ${
-            value ? '' : 'text-gray-300'
+            value ? '' : 'text-gray-500'
           }`}
         >
           <option value="" disabled>{placeholder}</option>
@@ -536,11 +584,11 @@ function SelectField({ label, required, value, onChange, options, placeholder, e
             <option key={o} value={o}>{o}</option>
           ))}
         </select>
-        <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mgm-dark/30 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg aria-hidden="true" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mgm-dark/70 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="6,9 12,15 18,9" />
         </svg>
       </div>
-      {error && <p className="text-red-500 text-xs mt-1.5 font-body">{error}</p>}
+      {error && <p id={errorId} role="alert" className="text-red-600 text-xs mt-1.5 font-body">{error}</p>}
     </div>
   )
 }

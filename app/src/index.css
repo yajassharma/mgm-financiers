@@ -43,13 +43,47 @@ h1, h2, h3, h4, h5, h6 {
   background: #888;
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ACCESSIBILITY — FOCUS INDICATOR + SKIP LINK
+   ═══════════════════════════════════════════════════════════ */
+
+*:focus-visible {
+  outline: 2px solid #1a1a2e !important;
+  outline-offset: 2px !important;
+}
+
+footer :focus-visible,
+.bg-mgm-dark :focus-visible,
+.bg-mgm-dark:focus-visible {
+  outline-color: #fdb92e !important;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 300;
+  padding: 12px 24px;
+  background-color: #1a1a2e;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 0 0 12px 0;
+}
+
+.skip-link:focus {
+  left: 0;
 }
 
 ::selection {
   background-color: #c9a227;
-  color: white;
+  color: #1a1a2e;
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -357,6 +391,11 @@ html {
 
 .slider-input:focus {
   outline: none;
+}
+
+.slider-input:focus-visible {
+  outline: 2px solid #1a1a2e !important;
+  outline-offset: 4px !important;
 }
 
 .slider-input::-webkit-slider-runnable-track {

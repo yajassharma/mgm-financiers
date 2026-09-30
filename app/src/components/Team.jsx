@@ -105,7 +105,7 @@ function StatCounter({ value, suffix, label, startCounting, inView, delay }) {
       <div className="text-4xl sm:text-5xl font-bold text-mgm-dark font-heading tracking-tight">
         {count}{suffix}
       </div>
-      <div className="text-mgm-dark/40 font-body text-sm mt-1.5">{label}</div>
+      <div className="text-mgm-dark/70 font-body text-sm mt-1.5">{label}</div>
     </div>
   )
 }
@@ -147,13 +147,13 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left */}
             <div>
-              <span className={`inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5 ${anim(heroInView, 0)}`}>
+              <span className={`inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5 ${anim(heroInView, 0)}`}>
                 {'Our Esteemed Leaders'}
               </span>
               <h1 className={`text-4xl sm:text-5xl lg:text-[3.4rem] font-bold text-mgm-dark font-heading leading-[1.08] tracking-tight mb-6 ${anim(heroInView, 80)}`}>
                 {'Guided by experience, driven by vision'}
               </h1>
-              <p className={`text-mgm-dark/45 font-body text-[15px] leading-relaxed max-w-lg mb-9 ${anim(heroInView, 160)}`}>
+              <p className={`text-mgm-dark/70 font-body text-[15px] leading-relaxed max-w-lg mb-9 ${anim(heroInView, 160)}`}>
                 {'Meet the visionaries who have shaped MGM Financiers into a trusted financial institution over the past 28 years.'}
               </p>
               <div className={`flex flex-wrap gap-3 mb-10 ${anim(heroInView, 240)}`}>
@@ -174,7 +174,7 @@ const prefersReduced = usePrefersReducedMotion()
                     <svg className="w-4 h-4 text-mgm-gold flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="text-mgm-dark/50 font-body text-xs">{text}</span>
+                    <span className="text-mgm-dark/70 font-body text-xs">{text}</span>
                   </div>
                 ))}
               </div>
@@ -205,7 +205,7 @@ const prefersReduced = usePrefersReducedMotion()
       <section id="leadership" ref={execRef} className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 bg-mgm-light/30">
         <div className="max-w-7xl mx-auto">
           <div className={`mb-10 ${anim(execInView, 0)}`}>
-            <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">
+            <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">
               {'Our Executive Team'}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight">
@@ -230,8 +230,8 @@ const prefersReduced = usePrefersReducedMotion()
                 </div>
                 <div className="p-4 sm:p-5">
                   <h3 className="font-heading font-bold text-mgm-dark text-sm sm:text-base">{exec.name}</h3>
-                  <p className="text-mgm-gold font-body text-[11px] sm:text-xs tracking-wide uppercase mt-0.5">{exec.role}</p>
-                  <p className="text-mgm-dark/35 font-body text-xs sm:text-sm leading-relaxed mt-2 italic">
+                  <p className="text-mgm-gold-text font-body text-[11px] sm:text-xs tracking-wide uppercase mt-0.5">{exec.role}</p>
+                  <p className="text-mgm-dark/70 font-body text-xs sm:text-sm leading-relaxed mt-2 italic">
                     &ldquo;{exec.quote}&rdquo;
                   </p>
                 </div>
@@ -245,13 +245,13 @@ const prefersReduced = usePrefersReducedMotion()
       <section ref={leadersRef} className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className={`mb-10 ${anim(leadersInView, 0)}`}>
-            <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">
+            <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">
               {'Our Leadership Team'}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight mb-3">
               {'Meet the visionaries driving MGM Financiers forward'}
             </h2>
-            <p className="text-mgm-dark/40 font-body text-sm max-w-lg leading-relaxed">
+            <p className="text-mgm-dark/70 font-body text-sm max-w-lg leading-relaxed">
               The strength of MGM is built through every relationship our team creates with customers across India.
             </p>
           </div>
@@ -275,7 +275,7 @@ const prefersReduced = usePrefersReducedMotion()
                   </div>
                   <div className="p-5 text-center">
                     <h3 className="font-heading font-bold text-mgm-dark text-base">{leader.name}</h3>
-                    <p className="text-mgm-dark/40 font-body text-xs mt-0.5">{leader.role}</p>
+                    <p className="text-mgm-dark/70 font-body text-xs mt-0.5">{leader.role}</p>
                   </div>
                 </div>
               ))}
@@ -297,7 +297,7 @@ const prefersReduced = usePrefersReducedMotion()
                   </div>
                   <div className="p-5 text-center">
                     <h3 className="font-heading font-bold text-mgm-dark text-base">{leader.name}</h3>
-                    <p className="text-mgm-dark/40 font-body text-xs mt-0.5">{leader.role}</p>
+                    <p className="text-mgm-dark/70 font-body text-xs mt-0.5">{leader.role}</p>
                   </div>
                 </div>
               ))}
@@ -322,7 +322,7 @@ const prefersReduced = usePrefersReducedMotion()
                   </div>
                   <div className="p-3 text-center">
                     <h3 className="font-heading font-semibold text-mgm-dark text-xs leading-tight">{leader.name}</h3>
-                    <p className="text-mgm-dark/40 font-body text-[10px] mt-0.5 leading-tight">{leader.role}</p>
+                    <p className="text-mgm-dark/70 font-body text-[10px] mt-0.5 leading-tight">{leader.role}</p>
                   </div>
                 </div>
               ))}
@@ -340,7 +340,7 @@ const prefersReduced = usePrefersReducedMotion()
                 </div>
                 <div className="p-3 text-center">
                   <h3 className="font-heading font-semibold text-mgm-dark text-xs leading-tight">{LEADERS[4].name}</h3>
-                  <p className="text-mgm-dark/40 font-body text-[10px] mt-0.5 leading-tight">{LEADERS[4].role}</p>
+                  <p className="text-mgm-dark/70 font-body text-[10px] mt-0.5 leading-tight">{LEADERS[4].role}</p>
                 </div>
               </div>
             </div>
@@ -363,7 +363,7 @@ const prefersReduced = usePrefersReducedMotion()
           <h3 className={`text-2xl sm:text-3xl font-bold text-white font-heading tracking-tight mb-3 ${anim(leadersInView, 320)}`}>
             These are a few faces of MGM.
           </h3>
-          <p className={`text-white/35 font-body text-sm max-w-lg mx-auto leading-relaxed ${anim(leadersInView, 360)}`}>
+          <p className={`text-white/60 font-body text-sm max-w-lg mx-auto leading-relaxed ${anim(leadersInView, 360)}`}>
             Behind every loan we process, every customer we serve, and every branch we operate &mdash; there is a dedicated team working together to make MGM Financiers a name trusted across India.
           </p>
         </div>
@@ -373,7 +373,7 @@ const prefersReduced = usePrefersReducedMotion()
       <section ref={statsRef} className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className={`text-center mb-12 ${anim(statsInView, 0)}`}>
-            <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">
+            <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">
               Our Impact
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight">
@@ -408,7 +408,7 @@ const prefersReduced = usePrefersReducedMotion()
             <h2 className="text-3xl sm:text-4xl font-bold text-white font-heading tracking-tight mb-4">
               The greatest institutions<br />are built by great people.
             </h2>
-            <p className="text-white/40 font-body text-sm mb-8 max-w-md mx-auto leading-relaxed">
+            <p className="text-white/60 font-body text-sm mb-8 max-w-md mx-auto leading-relaxed">
               Every customer interaction, every financial solution and every relationship reflects the people behind MGM Financiers.
             </p>
             <div className="flex flex-wrap justify-center gap-3">

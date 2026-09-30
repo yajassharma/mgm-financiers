@@ -25,7 +25,7 @@ const related = getRelatedServices(service)
     <section ref={ref} className="py-16 sm:py-28 px-4 sm:px-6 lg:px-8 bg-mgm-light/30">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
-          <span className={`inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4 ${a(0)}`}>
+          <span className={`inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4 ${a(0)}`}>
             {'Explore our other financial solutions'}
           </span>
           <h2 className={`text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight ${a(0)}`} style={{ transitionDelay: '80ms' }}>

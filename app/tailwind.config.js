@@ -9,6 +9,7 @@ export default {
       colors: {
         'mgm-blue': '#1e3a5f',
         'mgm-gold': '#FDB92E',
+        'mgm-gold-text': '#8a6d00',
         'mgm-dark': '#1a1a2e',
         'mgm-light': '#f2f3f5',
       },

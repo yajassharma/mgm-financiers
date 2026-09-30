@@ -26,7 +26,7 @@ function IndividualService({ serviceId }) {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-mgm-dark font-heading mb-4">Service Not Found</h1>
-          <Link to="/services" className="text-mgm-gold font-semibold font-body hover:underline">View All Services</Link>
+          <Link to="/services" className="text-mgm-gold-text font-semibold font-body hover:underline">View All Services</Link>
         </div>
       </div>
     )
@@ -78,7 +78,7 @@ function IndividualService({ serviceId }) {
                 {service.tagline}
               </h1>
 
-              <p className={`text-mgm-dark/50 text-lg font-body leading-relaxed mb-8 max-w-lg ${scrollAnim(heroInView, 200)}`}>
+              <p className={`text-mgm-dark/70 text-lg font-body leading-relaxed mb-8 max-w-lg ${scrollAnim(heroInView, 200)}`}>
                 {service.description}
               </p>
 
@@ -159,11 +159,11 @@ function IndividualService({ serviceId }) {
 
             {/* Text */}
             <div className={scrollAnim(overviewInView, 100)}>
-              <span className="text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body">About This Loan</span>
+              <span className="text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body">About This Loan</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 mb-6 font-heading">
                 {service.name} Overview
               </h2>
-              <p className="text-mgm-dark/50 font-body leading-relaxed mb-8">
+              <p className="text-mgm-dark/70 font-body leading-relaxed mb-8">
                 {service.description}
               </p>
 
@@ -172,7 +172,7 @@ function IndividualService({ serviceId }) {
                 {service.highlights.map((h, i) => (
                   <div key={i} className="p-4 rounded-xl bg-mgm-light/50 border border-mgm-dark/5">
                     <div className="text-xl font-bold font-heading" style={{ color: service.accentColor }}>{h.value}</div>
-                    <div className="text-xs text-mgm-dark/50 font-body mt-1">{h.label}</div>
+                    <div className="text-xs text-mgm-dark/70 font-body mt-1">{h.label}</div>
                   </div>
                 ))}
               </div>
@@ -185,7 +185,7 @@ function IndividualService({ serviceId }) {
       <section ref={benefitsRef} className="py-20 sm:py-24 bg-mgm-light/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center mb-14 ${scrollAnim(benefitsInView, 0)}`}>
-            <span className="text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body">Benefits</span>
+            <span className="text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body">Benefits</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 font-heading">
               Why {service.name}
             </h2>
@@ -200,7 +200,7 @@ function IndividualService({ serviceId }) {
                   </svg>
                 </div>
                 <h3 className="text-lg font-bold text-mgm-dark font-heading mb-2">{benefit.title}</h3>
-                <p className="text-mgm-dark/50 font-body text-sm leading-relaxed">{benefit.desc}</p>
+                <p className="text-mgm-dark/70 font-body text-sm leading-relaxed">{benefit.desc}</p>
               </div>
             ))}
           </div>
@@ -212,11 +212,11 @@ function IndividualService({ serviceId }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div className={scrollAnim(eligInView, 0)}>
-              <span className="text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body">Eligibility</span>
+              <span className="text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body">Eligibility</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 mb-6 font-heading">
                 Am I Eligible?
               </h2>
-              <p className="text-mgm-dark/50 font-body leading-relaxed mb-8">
+              <p className="text-mgm-dark/70 font-body leading-relaxed mb-8">
                 Check if you meet the basic eligibility criteria for our {service.name.toLowerCase()}. Final approval is subject to document verification and credit assessment.
               </p>
 
@@ -229,7 +229,7 @@ function IndividualService({ serviceId }) {
                       </svg>
                     </div>
                     <div>
-                      <div className="text-xs text-mgm-dark/40 font-body">{item.label}</div>
+                      <div className="text-xs text-mgm-dark/70 font-body">{item.label}</div>
                       <div className="text-sm font-semibold text-mgm-dark font-body">{item.value}</div>
                     </div>
                   </div>
@@ -270,11 +270,11 @@ function IndividualService({ serviceId }) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             <div className={scrollAnim(docsInView, 0)}>
-              <span className="text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body">Documents</span>
+              <span className="text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body">Documents</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 mb-6 font-heading">
                 Required Documents
               </h2>
-              <p className="text-mgm-dark/50 font-body leading-relaxed mb-8">
+              <p className="text-mgm-dark/70 font-body leading-relaxed mb-8">
                 Keep these documents handy for a smooth application process. Originals will be verified and returned.
               </p>
 
@@ -293,7 +293,7 @@ function IndividualService({ serviceId }) {
                         </div>
                         <span className="text-sm font-semibold text-mgm-dark font-body">{doc.category}</span>
                       </div>
-                      <svg className={`w-5 h-5 text-mgm-dark/30 transition-transform duration-200 ${openDoc === i ? 'rotate-180' : ''}`}
+                      <svg className={`w-5 h-5 text-mgm-dark/70 transition-transform duration-200 ${openDoc === i ? 'rotate-180' : ''}`}
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="6,9 12,15 18,9" />
                       </svg>
@@ -302,7 +302,7 @@ function IndividualService({ serviceId }) {
                       <div className="px-4 pb-4 pl-16">
                         <ul className="space-y-2">
                           {doc.items.map((item, j) => (
-                            <li key={j} className="flex items-center gap-2 text-sm text-mgm-dark/60 font-body">
+                            <li key={j} className="flex items-center gap-2 text-sm text-mgm-dark/70 font-body">
                               <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke={service.accentColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M20 6L9 17l-5-5" />
                               </svg>
@@ -333,7 +333,7 @@ function IndividualService({ serviceId }) {
       <section ref={stepsRef} className="py-20 sm:py-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center mb-14 ${scrollAnim(stepsInView, 0)}`}>
-            <span className="text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body">Process</span>
+            <span className="text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body">Process</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 font-heading">
               How It Works
             </h2>
@@ -355,7 +355,7 @@ function IndividualService({ serviceId }) {
                   {step.num}
                 </div>
                 <h3 className="text-sm font-bold text-mgm-dark font-heading mb-2">{step.title}</h3>
-                <p className="text-mgm-dark/50 font-body text-xs leading-relaxed">{step.desc}</p>
+                <p className="text-mgm-dark/70 font-body text-xs leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -366,7 +366,7 @@ function IndividualService({ serviceId }) {
       <section ref={highlightsRef} className="py-20 sm:py-24" style={{ backgroundColor: `${service.accentColor}05` }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center mb-14 ${scrollAnim(highlightsInView, 0)}`}>
-            <span className="text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body">At a Glance</span>
+            <span className="text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body">At a Glance</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 font-heading">
               {service.name} Highlights
             </h2>
@@ -378,7 +378,7 @@ function IndividualService({ serviceId }) {
                 <div className="text-3xl sm:text-4xl font-bold font-heading mb-2" style={{ color: service.accentColor }}>
                   {h.value}
                 </div>
-                <div className="text-sm text-mgm-dark/50 font-body">{h.label}</div>
+                <div className="text-sm text-mgm-dark/70 font-body">{h.label}</div>
               </div>
             ))}
           </div>
@@ -389,7 +389,7 @@ function IndividualService({ serviceId }) {
       <section ref={faqsRef} className="py-20 sm:py-24 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center mb-14 ${scrollAnim(faqsInView, 0)}`}>
-            <span className="text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body">FAQs</span>
+            <span className="text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body">FAQs</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 font-heading">
               Frequently Asked Questions
             </h2>
@@ -403,13 +403,13 @@ function IndividualService({ serviceId }) {
                   className="w-full flex items-center justify-between p-5 text-left"
                 >
                   <span className="text-sm font-semibold text-mgm-dark font-body pr-4">{faq.q}</span>
-                  <svg className={`w-5 h-5 flex-shrink-0 text-mgm-dark/30 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
+                  <svg className={`w-5 h-5 flex-shrink-0 text-mgm-dark/70 transition-transform duration-200 ${openFaq === i ? 'rotate-180' : ''}`}
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="6,9 12,15 18,9" />
                   </svg>
                 </button>
                 <div className={`overflow-hidden transition-all duration-300 ${openFaq === i ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
-                  <p className="px-5 pb-5 text-sm text-mgm-dark/50 font-body leading-relaxed">{faq.a}</p>
+                  <p className="px-5 pb-5 text-sm text-mgm-dark/70 font-body leading-relaxed">{faq.a}</p>
                 </div>
               </div>
             ))}
@@ -426,7 +426,7 @@ function IndividualService({ serviceId }) {
             </svg>
             <span className="text-sm font-semibold text-mgm-dark font-heading">Responsible Lending</span>
           </div>
-          <p className="text-mgm-dark/50 font-body text-sm leading-relaxed max-w-2xl mx-auto">
+          <p className="text-mgm-dark/70 font-body text-sm leading-relaxed max-w-2xl mx-auto">
             At MGM Financiers, we believe in responsible lending. We assess your repayment capacity to ensure the loan fits your financial situation.
             Please borrow responsibly and only what you can repay. If you face financial difficulties, contact us immediately.
           </p>
@@ -438,7 +438,7 @@ function IndividualService({ serviceId }) {
         <section ref={relatedRef} className="py-20 sm:py-24 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className={`text-center mb-14 ${scrollAnim(relatedInView, 0)}`}>
-              <span className="text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body">Explore More</span>
+              <span className="text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body">Explore More</span>
               <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 font-heading">
                 Related Services
               </h2>
@@ -453,8 +453,8 @@ function IndividualService({ serviceId }) {
                       <path d={rel.iconPath} />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-bold text-mgm-dark font-heading mb-2 group-hover:text-mgm-gold transition-colors">{rel.name}</h3>
-                  <p className="text-mgm-dark/50 font-body text-sm leading-relaxed mb-4">{rel.shortDesc}</p>
+                  <h3 className="text-lg font-bold text-mgm-dark font-heading mb-2 group-hover:text-mgm-gold-text transition-colors">{rel.name}</h3>
+                  <p className="text-mgm-dark/70 font-body text-sm leading-relaxed mb-4">{rel.shortDesc}</p>
                   <div className="flex items-center gap-2 text-sm font-semibold font-body" style={{ color: rel.accentColor }}>
                     Learn More
                     <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>

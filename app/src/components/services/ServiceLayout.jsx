@@ -18,7 +18,7 @@ export default function ServiceLayout({ service }) {
         canonical={`/services/${service.id}`}
       />
       <Header />
-      <main>
+      <main id="main-content">
         <ServiceHero service={service} />
         <FeatureHighlights service={service} />
         <ProcessTimeline service={service} />

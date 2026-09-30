@@ -48,27 +48,27 @@ function ReviewCard({ review }) {
   return (
     <div className="flex-shrink-0 w-[340px] sm:w-[380px] bg-white p-6 rounded-2xl border border-mgm-dark/[0.04] mx-3 hover:shadow-lg hover:shadow-mgm-dark/[0.04] transition-shadow duration-300">
       {/* Stars */}
-      <div className="flex gap-0.5 mb-3">
+      <div className="flex gap-0.5 mb-3" role="img" aria-label="Rated 5 out of 5 stars">
         {[...Array(5)].map((_, i) => (
-          <svg key={i} className="w-3.5 h-3.5 text-mgm-gold" fill="currentColor" viewBox="0 0 20 20">
+          <svg key={i} className="w-3.5 h-3.5 text-mgm-gold-text" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
           </svg>
         ))}
       </div>
       {/* Review text */}
-      <p className="text-mgm-dark/60 font-body text-sm leading-relaxed mb-4">
+      <p className="text-mgm-dark/70 font-body text-sm leading-relaxed mb-4">
         &ldquo;{review.text}&rdquo;
       </p>
       {/* Author */}
       <div className="flex items-center gap-3">
         <div className="w-9 h-9 rounded-full bg-mgm-dark flex items-center justify-center flex-shrink-0">
-          <span className="text-mgm-gold font-heading font-bold text-xs">
+          <span className="text-mgm-gold-text font-heading font-bold text-xs">
             {review.name.split(' ').map(n => n[0]).join('')}
           </span>
         </div>
         <div>
           <p className="font-heading font-semibold text-mgm-dark text-sm">{review.name}</p>
-          <p className="text-mgm-dark/35 font-body text-[11px]">{review.location}</p>
+          <p className="text-mgm-dark/70 font-body text-[11px]">{review.location}</p>
         </div>
       </div>
     </div>
@@ -88,13 +88,13 @@ export default function Reviews() {
     <section className="py-20 sm:py-28 bg-mgm-light/30 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
         <div ref={headingRef} className="text-center">
-          <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(headingInView, 0)}`}>
+          <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(headingInView, 0)}`}>
             Trusted by Thousands
           </span>
           <h2 className={`text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 mb-4 font-heading ${scrollAnim(headingInView, 80)}`}>
             What Our Customers Say
           </h2>
-          <p className={`text-mgm-dark/45 max-w-lg mx-auto font-body text-sm leading-relaxed ${scrollAnim(headingInView, 160)}`}>
+          <p className={`text-mgm-dark/70 max-w-lg mx-auto font-body text-sm leading-relaxed ${scrollAnim(headingInView, 160)}`}>
             Real experiences from people who trusted MGM Financiers with their financial needs.
           </p>
         </div>

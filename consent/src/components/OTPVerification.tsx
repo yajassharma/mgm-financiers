@@ -130,7 +130,11 @@ const OTPVerification = () => {
           .
         </p>
 
-        <div className="flex justify-between gap-1.5 mb-5">
+        <div
+          className="flex justify-between gap-1.5 mb-5"
+          role="group"
+          aria-label="Enter the 6-digit security code"
+        >
           {otp.map((digit, idx) => (
             <input
               key={idx}
@@ -139,18 +143,26 @@ const OTPVerification = () => {
               }}
               type="text"
               inputMode="numeric"
+              autoComplete={idx === 0 ? "one-time-code" : "off"}
+              aria-label={`Digit ${idx + 1} of 6`}
+              aria-invalid={error ? true : undefined}
+              aria-describedby={error ? "otp-error" : undefined}
               maxLength={1}
               value={digit}
               onChange={(e) => handleChange(idx, e.target.value)}
               onKeyDown={(e) => handleKeyDown(idx, e)}
               onPaste={handlePaste} // 🔥 ADD THIS
-              className="w-full aspect-square text-center text-lg font-bold border-2 border-gray-100 rounded-lg focus:border-blue-800 focus:outline-none transition-all shadow-sm"
+              className="w-full aspect-square text-center text-lg font-bold border-2 border-gray-500 rounded-lg focus:border-blue-800 transition-all shadow-sm"
             />
           ))}
         </div>
 
         {error && (
-          <p className="text-red-500 text-[10px] font-bold mb-4 bg-red-50 p-2 rounded text-center">
+          <p
+            id="otp-error"
+            role="alert"
+            className="text-red-500 text-[10px] font-bold mb-4 bg-red-50 p-2 rounded text-center"
+          >
             {error}
           </p>
         )}

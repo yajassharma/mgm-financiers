@@ -28,7 +28,7 @@ const SuccessScreen = () => {
       </p>
 
       <div className="w-full bg-gray-50 rounded-xl p-4 border border-gray-100 mb-6">
-        <div className="text-[10px] text-gray-400 uppercase font-bold tracking-tighter">
+        <div className="text-[10px] text-gray-500 uppercase font-bold tracking-tighter">
           Reference ID
         </div>
         <div className="text-sm font-mono font-bold text-blue-900">

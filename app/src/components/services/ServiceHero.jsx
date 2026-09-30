@@ -21,7 +21,7 @@ const ref = useRef(null)
         {/* Desktop: 2-col grid. Mobile: stacked per exact hierarchy */}
         <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 lg:gap-20 items-center">
           {/* 1. Brand — mobile only */}
-          <span className={`order-1 lg:hidden inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body ${a(0)}`} style={d(0)}>
+          <span className={`order-1 lg:hidden inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body ${a(0)}`} style={d(0)}>
             MGM Financiers
           </span>
 
@@ -29,11 +29,11 @@ const ref = useRef(null)
           <h1 className={`order-2 lg:hidden text-3xl font-bold text-mgm-dark font-heading tracking-tight leading-[1.1] mb-2 ${a(0)}`} style={d(1)}>
             {service.name}
             <br />
-            <span className="text-mgm-gold">{service.tagline}</span>
+            <span className="text-mgm-gold-text">{service.tagline}</span>
           </h1>
 
           {/* 3. Description — mobile only */}
-          <p className={`order-3 lg:hidden text-mgm-dark/50 font-body text-sm leading-relaxed max-w-lg mb-4 ${a(0)}`} style={d(2)}>
+          <p className={`order-3 lg:hidden text-mgm-dark/70 font-body text-sm leading-relaxed max-w-lg mb-4 ${a(0)}`} style={d(2)}>
             {service.shortDesc}
           </p>
 
@@ -59,15 +59,15 @@ const ref = useRef(null)
 
           {/* Desktop: grouped text + buttons */}
           <div className="hidden lg:block order-1">
-            <span className={`inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4 ${a(0)}`} style={d(0)}>
+            <span className={`inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4 ${a(0)}`} style={d(0)}>
               MGM Financiers
             </span>
             <h1 className={`text-5xl lg:text-[3.5rem] font-bold text-mgm-dark font-heading tracking-tight leading-[1.1] mb-6 ${a(0)}`} style={d(1)}>
               {service.name}
               <br />
-              <span className="text-mgm-gold">{service.tagline}</span>
+              <span className="text-mgm-gold-text">{service.tagline}</span>
             </h1>
-            <p className={`text-mgm-dark/50 font-body text-lg leading-relaxed max-w-lg mb-8 ${a(0)}`} style={d(2)}>
+            <p className={`text-mgm-dark/70 font-body text-lg leading-relaxed max-w-lg mb-8 ${a(0)}`} style={d(2)}>
               {service.shortDesc}
             </p>
             <div className={`flex flex-row gap-3 ${a(0)}`} style={d(3)}>

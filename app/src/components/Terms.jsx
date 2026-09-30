@@ -4,7 +4,7 @@ function Section({ title, children }) {
   return (
     <div className="mb-10">
       <h2 className="text-xl font-bold text-mgm-dark font-heading tracking-tight mb-4">{title}</h2>
-      <div className="text-mgm-dark/50 font-body text-[14.5px] leading-[1.85] space-y-4">
+      <div className="text-mgm-dark/70 font-body text-[14.5px] leading-[1.85] space-y-4">
         {children}
       </div>
     </div>

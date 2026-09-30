@@ -22,24 +22,24 @@ const ref = useRef(null)
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 items-start">
           {/* Text — first on mobile, first on desktop */}
           <div className="order-1 lg:order-1">
-            <span className={`inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3 sm:mb-4 ${a(0)}`} style={{ transitionDelay: '100ms' }}>
+            <span className={`inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3 sm:mb-4 ${a(0)}`} style={{ transitionDelay: '100ms' }}>
               {'Key Features'}
             </span>
             <h2 className={`text-2xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight mb-4 sm:mb-6 ${a(0)}`} style={{ transitionDelay: '150ms' }}>
               {`Why choose our ${service.name}`}
             </h2>
-            <p className={`text-mgm-dark/45 font-body text-sm sm:text-sm leading-relaxed mb-6 sm:mb-10 ${a(0)}`} style={{ transitionDelay: '180ms' }}>
+            <p className={`text-mgm-dark/70 font-body text-sm sm:text-sm leading-relaxed mb-6 sm:mb-10 ${a(0)}`} style={{ transitionDelay: '180ms' }}>
               {service.overviewDesc}
             </p>
             <div className="space-y-6 sm:space-y-8">
               {service.featureDetails.map((f, i) => (
                 <div key={i} className={`flex gap-4 sm:gap-5 ${a(0)}`} style={{ transitionDelay: `${200 + i * 80}ms` }}>
-                  <span className="text-mgm-gold/30 font-heading font-bold text-xl sm:text-2xl leading-none mt-1 flex-shrink-0">
+                  <span className="text-mgm-gold-text font-heading font-bold text-xl sm:text-2xl leading-none mt-1 flex-shrink-0">
                     {String(i + 1).padStart(2, '0')}
                   </span>
                   <div>
                     <h3 className="font-heading font-bold text-mgm-dark text-sm sm:text-base mb-1 sm:mb-1.5">{f.title}</h3>
-                    <p className="text-mgm-dark/45 font-body text-xs sm:text-sm leading-relaxed">{f.desc}</p>
+                    <p className="text-mgm-dark/70 font-body text-xs sm:text-sm leading-relaxed">{f.desc}</p>
                   </div>
                 </div>
               ))}

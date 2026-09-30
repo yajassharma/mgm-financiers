@@ -20,13 +20,13 @@ const ref = useRef(null)
       <div className="max-w-4xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div>
-            <span className={`inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4 ${a(0)}`}>
+            <span className={`inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-4 ${a(0)}`}>
               {'Eligibility Criteria'}
             </span>
             <h2 className={`text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight mb-6 ${a(0)}`} style={{ transitionDelay: '80ms' }}>
               {`Check if you qualify for our ${service.name}`}
             </h2>
-            <p className={`text-mgm-dark/45 font-body text-sm leading-relaxed mb-8 ${a(0)}`} style={{ transitionDelay: '120ms' }}>
+            <p className={`text-mgm-dark/70 font-body text-sm leading-relaxed mb-8 ${a(0)}`} style={{ transitionDelay: '120ms' }}>
               Our eligibility criteria are designed to be accessible while ensuring responsible lending. Speak with our relationship managers for a personalised assessment.
             </p>
           </div>
@@ -38,7 +38,7 @@ const ref = useRef(null)
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
-                <span className="text-mgm-dark/60 font-body text-sm leading-relaxed">{item}</span>
+                <span className="text-mgm-dark/70 font-body text-sm leading-relaxed">{item}</span>
               </div>
             ))}
           </div>

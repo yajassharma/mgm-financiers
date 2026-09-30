@@ -25,7 +25,7 @@ const ref = useRef(null)
         <h2 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-heading tracking-tight mb-4 ${a(0)}`}>
           {'Ready to Get Started?'}
         </h2>
-        <p className={`text-white/40 font-body text-base sm:text-lg mb-10 ${a(0)}`} style={{ transitionDelay: '80ms' }}>
+        <p className={`text-white/60 font-body text-base sm:text-lg mb-10 ${a(0)}`} style={{ transitionDelay: '80ms' }}>
           {`Apply for our ${service.name} today and achieve your financial goals`}
         </p>
         <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 ${a(0)}`} style={{ transitionDelay: '160ms' }}>

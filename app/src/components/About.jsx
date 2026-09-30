@@ -45,23 +45,23 @@ function About() {
 
           {/* Text */}
           <div className="max-w-3xl">
-            <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(contentInView, 80)}`}>
+            <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(contentInView, 80)}`}>
               Who Are We
             </span>
             <h2 className={`text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 mb-6 font-heading leading-tight ${scrollAnim(contentInView, 160)}`}>
               28 Years of Trust,<br className="hidden sm:block" /> Built on Simple Values
             </h2>
-            <p className={`text-mgm-dark/60 mb-4 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 240)}`}>
+            <p className={`text-mgm-dark/70 mb-4 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 240)}`}>
               MGM Financiers Private Limited has been in the business of loan financing for over 28 years.
               As an {settings.rbiWording}, we pride ourselves in being able to provide quality solutions
               that best suit our customers' needs.
             </p>
-            <p className={`text-mgm-dark/60 mb-4 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 280)}`}>
+            <p className={`text-mgm-dark/70 mb-4 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 280)}`}>
               At MGM we aim to not only resolve crisis but to help our customers grow as we grow.
               We provide our clients with not only instant financial assistance but also financial advice
               to help them utilise their funds the best.
             </p>
-            <p className={`text-mgm-dark/60 mb-8 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 320)}`}>
+            <p className={`text-mgm-dark/70 mb-8 font-body text-sm leading-relaxed ${scrollAnim(contentInView, 320)}`}>
               We believe in accountability, promptitude, and simple systems. We take extra care to
               spend time with our customers to make sure we can offer them the best possible solutions.
               We ask for minimum documents, levy no hidden charges, and are absolutely transparent
@@ -73,7 +73,7 @@ function About() {
               {values.map((v, i) => (
                 <div key={i} className="bg-mgm-light rounded-xl px-5 py-3 border border-mgm-dark/5">
                   <span className="font-semibold text-mgm-dark font-heading text-sm">{v.title}</span>
-                  <span className="text-mgm-dark/40 font-body text-xs ml-2 hidden sm:inline">, {v.desc}</span>
+                  <span className="text-mgm-dark/70 font-body text-xs ml-2 hidden sm:inline">, {v.desc}</span>
                 </div>
               ))}
             </div>
@@ -84,19 +84,19 @@ function About() {
         <div ref={statsRef} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <div className={`bg-mgm-light p-6 sm:p-7 rounded-2xl text-center ${scrollAnim(statsInView, 0)}`}>
             <div className="text-3xl sm:text-4xl font-bold text-mgm-dark mb-1 font-heading">{yearsCount}+</div>
-            <div className="text-mgm-dark/50 font-body text-xs">Years of Excellence</div>
+            <div className="text-mgm-dark/70 font-body text-xs">Years of Excellence</div>
           </div>
           <div className={`bg-mgm-dark p-6 sm:p-7 rounded-2xl text-center ${scrollAnim(statsInView, 80)}`}>
             <div className="text-3xl sm:text-4xl font-bold text-white mb-1 font-heading">{clientsCount},000+</div>
-            <div className="text-white/40 font-body text-xs">Happy Clients</div>
+            <div className="text-white/60 font-body text-xs">Happy Clients</div>
           </div>
           <div className={`bg-mgm-gold p-6 sm:p-7 rounded-2xl text-center ${scrollAnim(statsInView, 160)}`}>
             <div className="text-3xl sm:text-4xl font-bold text-mgm-dark mb-1 font-heading">₹{loansCount}Cr+</div>
-            <div className="text-mgm-dark/60 font-body text-xs">Disbursed</div>
+            <div className="text-mgm-dark/70 font-body text-xs">Disbursed</div>
           </div>
           <div className={`bg-mgm-light p-6 sm:p-7 rounded-2xl text-center ${scrollAnim(statsInView, 240)}`}>
             <div className="text-3xl sm:text-4xl font-bold text-mgm-dark mb-1 font-heading">{complianceCount}%</div>
-            <div className="text-mgm-dark/50 font-body text-xs">RBI-registered NBFC</div>
+            <div className="text-mgm-dark/70 font-body text-xs">RBI-registered NBFC</div>
           </div>
         </div>
       </div>

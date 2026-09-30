@@ -103,7 +103,7 @@ const prefersReduced = usePrefersReducedMotion()
               {settings.companyTagline}
             </p>
 
-            <p className={`text-[13px] text-mgm-dark/45 mb-6 font-body leading-relaxed max-w-sm ${paraClass}`}>
+            <p className={`text-[13px] text-mgm-dark/70 mb-6 font-body leading-relaxed max-w-sm ${paraClass}`}>
               Loan Against Property, Personal Loans, Vehicle Loans & more. Competitive rates, fast processing, flexible repayment.
             </p>
 
@@ -137,7 +137,7 @@ const prefersReduced = usePrefersReducedMotion()
                 </div>
                 <div>
                   <div className="text-[9px] font-semibold text-mgm-dark font-heading leading-tight">Instant Approval</div>
-                  <div className="text-[9px] text-mgm-dark/50 font-body">24/7 Available</div>
+                  <div className="text-[9px] text-mgm-dark/70 font-body">24/7 Available</div>
                 </div>
               </div>
             </div>
@@ -148,15 +148,15 @@ const prefersReduced = usePrefersReducedMotion()
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
                 <div className="text-xl font-bold text-mgm-dark font-heading">{settings.stats.yearsOfLending}+</div>
-                <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">Years of Lending</div>
+                <div className="text-[10px] text-mgm-dark/70 font-body mt-0.5">Years of Lending</div>
               </div>
               <div>
                 <div className="text-xl font-bold text-mgm-dark font-heading">100%</div>
-                <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">{settings.rbiWording}</div>
+                <div className="text-[10px] text-mgm-dark/70 font-body mt-0.5">{settings.rbiWording}</div>
               </div>
               <div>
                 <div className="text-xl font-bold text-mgm-dark font-heading">{settings.stats.customersServed.toLocaleString()}+</div>
-                <div className="text-[10px] text-mgm-dark/50 font-body mt-0.5">Happy Clients</div>
+                <div className="text-[10px] text-mgm-dark/70 font-body mt-0.5">Happy Clients</div>
               </div>
             </div>
           </div>
@@ -172,8 +172,8 @@ const prefersReduced = usePrefersReducedMotion()
         {/* Mobile Trusted By — visible */}
         <div className="md:hidden bg-white relative z-20">
           <div className="px-5 py-10 text-center">
-            <p className="text-[10px] text-mgm-dark/40 mb-4 font-body uppercase tracking-wider">Trusted by leading institutions</p>
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 opacity-30">
+            <p className="text-[10px] text-mgm-dark/70 mb-4 font-body uppercase tracking-wider">Trusted by leading institutions</p>
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 opacity-60">
               {settings.bankNames.map((name) => (
                 <div key={name} className="text-base font-bold text-mgm-dark font-heading trust-logo-hover">
                   {name}
@@ -255,7 +255,7 @@ const prefersReduced = usePrefersReducedMotion()
                   {settings.companyTagline}
                 </p>
 
-                <p className={`text-[13px] text-mgm-dark/45 mb-8 max-w-sm font-body leading-relaxed ${paraClass}`}>
+                <p className={`text-[13px] text-mgm-dark/70 mb-8 max-w-sm font-body leading-relaxed ${paraClass}`}>
                   Loan Against Property, Personal Loans, Vehicle Loans & more. Competitive rates, fast processing, flexible repayment.
                 </p>
 
@@ -274,17 +274,17 @@ const prefersReduced = usePrefersReducedMotion()
                 <div className="flex items-center gap-6 sm:gap-8 mt-12 pt-8 border-t border-mgm-dark/5">
                   <div>
                     <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">{settings.stats.yearsOfLending}+</div>
-                    <div className="text-xs text-mgm-dark/50 font-body">Years of Lending</div>
+                    <div className="text-xs text-mgm-dark/70 font-body">Years of Lending</div>
                   </div>
                   <div className="w-px h-10 bg-mgm-dark/10"></div>
                   <div>
                     <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">100%</div>
-                    <div className="text-xs text-mgm-dark/50 font-body">{settings.rbiWording}</div>
+                    <div className="text-xs text-mgm-dark/70 font-body">{settings.rbiWording}</div>
                   </div>
                   <div className="w-px h-10 bg-mgm-dark/10"></div>
                   <div>
                     <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading">{settings.stats.customersServed.toLocaleString()}+</div>
-                    <div className="text-xs text-mgm-dark/50 font-body">Happy Clients</div>
+                    <div className="text-xs text-mgm-dark/70 font-body">Happy Clients</div>
                   </div>
                 </div>
               </div>
@@ -302,8 +302,8 @@ const prefersReduced = usePrefersReducedMotion()
         {/* Desktop Trusted By — visible */}
         <div className="hidden md:block bg-white relative z-[30]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 text-center">
-            <p className="text-xs text-mgm-dark/40 mb-6 font-body uppercase tracking-wider">Trusted by leading institutions</p>
-            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 opacity-30">
+            <p className="text-xs text-mgm-dark/70 mb-6 font-body uppercase tracking-wider">Trusted by leading institutions</p>
+            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12 opacity-60">
               {settings.bankNames.map((name) => (
                 <div key={name} className="text-xl font-bold text-mgm-dark font-heading trust-logo-hover">
                   {name}
@@ -369,7 +369,7 @@ function DesktopCards({ prefersReduced, cardClass, settings }) {
           </div>
           <div>
             <div className="text-[13px] font-semibold text-mgm-dark font-heading leading-tight">Instant Approval</div>
-            <div className="text-[11px] text-mgm-dark/50 font-body">24/7 Available</div>
+            <div className="text-[11px] text-mgm-dark/70 font-body">24/7 Available</div>
           </div>
         </div>
       </div>
@@ -384,7 +384,7 @@ function DesktopCards({ prefersReduced, cardClass, settings }) {
           </div>
           <div>
             <div className="text-[13px] font-semibold text-mgm-dark font-heading leading-tight">{settings.rbiWording}</div>
-            <div className="text-[11px] text-mgm-dark/50 font-body">100% Safe &amp; Secure</div>
+            <div className="text-[11px] text-mgm-dark/70 font-body">100% Safe &amp; Secure</div>
           </div>
         </div>
       </div>
@@ -399,7 +399,7 @@ function DesktopCards({ prefersReduced, cardClass, settings }) {
           </div>
           <div>
             <div className="text-[13px] font-semibold text-mgm-dark font-heading leading-tight">Made in India</div>
-            <div className="text-[11px] text-mgm-dark/50 font-body">Trusted by {settings.stats.customersServed.toLocaleString()}+ Indians</div>
+            <div className="text-[11px] text-mgm-dark/70 font-body">Trusted by {settings.stats.customersServed.toLocaleString()}+ Indians</div>
           </div>
         </div>
       </div>

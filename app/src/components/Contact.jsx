@@ -158,7 +158,7 @@ function StateChip({ state, isOpen, onToggle, prefersReduced }) {
           <span className="font-medium">{state.name}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`text-xs ${isOpen ? 'text-white/50' : 'text-mgm-dark/35'}`}>{state.cities.length} locations</span>
+          <span className={`text-xs ${isOpen ? 'text-white/50' : 'text-mgm-dark/70'}`}>{state.cities.length} locations</span>
           <svg className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
           </svg>
@@ -270,13 +270,13 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left — Content */}
             <div>
-              <span className={`inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5 ${anim(heroInView, 0)}`}>
+              <span className={`inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5 ${anim(heroInView, 0)}`}>
                 Connect With Us
               </span>
               <h1 className={`text-4xl sm:text-5xl lg:text-[3.4rem] font-bold text-mgm-dark font-heading leading-[1.08] tracking-tight mb-6 ${anim(heroInView, 80)}`}>
                 {'Connect With Us'}
               </h1>
-              <p className={`text-mgm-dark/45 font-body text-[15px] leading-relaxed max-w-lg mb-9 ${anim(heroInView, 160)}`}>
+              <p className={`text-mgm-dark/70 font-body text-[15px] leading-relaxed max-w-lg mb-9 ${anim(heroInView, 160)}`}>
                 {'Get in touch with our team for personalized assistance'}
               </p>
               <div className={`flex flex-wrap gap-3 mb-10 ${anim(heroInView, 240)}`}>
@@ -309,7 +309,7 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
                     <svg className="w-4 h-4 text-mgm-gold flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="text-mgm-dark/50 font-body text-xs">{text}</span>
+                    <span className="text-mgm-dark/70 font-body text-xs">{text}</span>
                   </div>
                 ))}
               </div>
@@ -342,13 +342,13 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
               <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight mb-4">
                 Get in Touch
               </h2>
-              <p className="text-mgm-dark/45 font-body text-sm leading-relaxed max-w-md mb-8">
+              <p className="text-mgm-dark/70 font-body text-sm leading-relaxed max-w-md mb-8">
                 MGM Financiers has built a strong regional presence across North and Western India, serving communities in Punjab, Rajasthan, Haryana and Maharashtra with trusted financial solutions.
               </p>
 
               {/* Branch Network */}
               <div className="mb-6">
-                <h3 className="text-xs uppercase tracking-[0.15em] text-mgm-dark/40 font-body font-semibold mb-3">Our Branch Network</h3>
+                <h3 className="text-xs uppercase tracking-[0.15em] text-mgm-dark/70 font-body font-semibold mb-3">Our Branch Network</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {BRANCHES_DATA.map((b) => (
                     <div key={b.name} className="flex items-center gap-2.5 p-3 rounded-xl bg-white border border-mgm-dark/5">
@@ -359,7 +359,7 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
                       </div>
                       <div>
                         <p className="font-heading font-semibold text-mgm-dark text-sm leading-tight">{b.name}</p>
-                        <p className="text-mgm-dark/35 font-body text-[11px]">{b.type}</p>
+                        <p className="text-mgm-dark/70 font-body text-[11px]">{b.type}</p>
                       </div>
                     </div>
                   ))}
@@ -368,7 +368,7 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
 
               {/* Operational Presence — State Chips */}
               <div>
-                <h3 className="text-xs uppercase tracking-[0.15em] text-mgm-dark/40 font-body font-semibold mb-3">Operational Presence</h3>
+                <h3 className="text-xs uppercase tracking-[0.15em] text-mgm-dark/70 font-body font-semibold mb-3">Operational Presence</h3>
                 <div className="space-y-2">
                   {STATES_DATA.map((state) => (
                     <StateChip
@@ -393,65 +393,65 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
             {/* Left — Form */}
             <div className={`${anim(connectInView, 0)}`}>
               <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight mb-2">{'Send Us a Message'}</h2>
-              <p className="text-mgm-dark/40 font-body text-sm mb-8">{'Fill out the form below and we\'ll get back to you shortly'}</p>
+              <p className="text-mgm-dark/70 font-body text-sm mb-8">{'Fill out the form below and we\'ll get back to you shortly'}</p>
 
               {formSubmitted ? (
-                <div className="bg-mgm-light/50 p-12 rounded-2xl border border-mgm-dark/5 text-center">
+                <div role="status" className="bg-mgm-light/50 p-12 rounded-2xl border border-mgm-dark/5 text-center">
                   <div className="w-14 h-14 mx-auto mb-5 rounded-full bg-green-50 flex items-center justify-center">
                     <svg className="w-7 h-7 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
                   <h3 className="text-lg font-bold text-mgm-dark font-heading mb-1">{'Message sent successfully! We\'ll get back to you soon.'}</h3>
-                  <p className="text-mgm-dark/50 font-body text-sm">{'Sending...'}</p>
+                  <p className="text-mgm-dark/70 font-body text-sm">{'Sending...'}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-mgm-dark/60 mb-1.5 font-medium text-xs font-body">{'Full Name'} *</label>
-                      <input type="text" value={formState.name} onChange={(e) => setFormState({ ...formState, name: e.target.value })}
-                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/25 ${formErrors.name ? 'border-red-300 focus:border-red-400 focus:ring-red-400/20' : 'border-mgm-dark/10 focus:border-mgm-gold focus:ring-mgm-gold/15'}`}
+                      <label htmlFor="contact-name" className="block text-mgm-dark/70 mb-1.5 font-medium text-xs font-body">{'Full Name'} *</label>
+                      <input id="contact-name" type="text" autoComplete="name" aria-invalid={!!formErrors.name} aria-describedby={formErrors.name ? 'contact-name-error' : undefined} value={formState.name} onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/65 ${formErrors.name ? 'border-red-600 focus:border-red-600 focus:ring-red-400/20' : 'border-mgm-dark/50 focus:border-mgm-gold-text focus:ring-mgm-gold/15'}`}
                         placeholder="Your name" />
-                      {formErrors.name && <p className="text-red-500 text-[11px] font-body mt-1">{formErrors.name}</p>}
+                      {formErrors.name && <p id="contact-name-error" role="alert" className="text-red-600 text-[11px] font-body mt-1">{formErrors.name}</p>}
                     </div>
                     <div>
-                      <label className="block text-mgm-dark/60 mb-1.5 font-medium text-xs font-body">{'Phone Number'} *</label>
-                      <input type="tel" value={formState.phone} onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
-                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/25 ${formErrors.phone ? 'border-red-300 focus:border-red-400 focus:ring-red-400/20' : 'border-mgm-dark/10 focus:border-mgm-gold focus:ring-mgm-gold/15'}`}
+                      <label htmlFor="contact-phone" className="block text-mgm-dark/70 mb-1.5 font-medium text-xs font-body">{'Phone Number'} *</label>
+                      <input id="contact-phone" type="tel" autoComplete="tel" aria-invalid={!!formErrors.phone} aria-describedby={formErrors.phone ? 'contact-phone-error' : undefined} value={formState.phone} onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
+                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/65 ${formErrors.phone ? 'border-red-600 focus:border-red-600 focus:ring-red-400/20' : 'border-mgm-dark/50 focus:border-mgm-gold-text focus:ring-mgm-gold/15'}`}
                         placeholder="+91 98765 43210" />
-                      {formErrors.phone && <p className="text-red-500 text-[11px] font-body mt-1">{formErrors.phone}</p>}
+                      {formErrors.phone && <p id="contact-phone-error" role="alert" className="text-red-600 text-[11px] font-body mt-1">{formErrors.phone}</p>}
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-mgm-dark/60 mb-1.5 font-medium text-xs font-body">{'Email Address'}</label>
-                      <input type="email" value={formState.email} onChange={(e) => setFormState({ ...formState, email: e.target.value })}
-                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/25 ${formErrors.email ? 'border-red-300 focus:border-red-400 focus:ring-red-400/20' : 'border-mgm-dark/10 focus:border-mgm-gold focus:ring-mgm-gold/15'}`}
+                      <label htmlFor="contact-email" className="block text-mgm-dark/70 mb-1.5 font-medium text-xs font-body">{'Email Address'}</label>
+                      <input id="contact-email" type="email" autoComplete="email" aria-invalid={!!formErrors.email} aria-describedby={formErrors.email ? 'contact-email-error' : undefined} value={formState.email} onChange={(e) => setFormState({ ...formState, email: e.target.value })}
+                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/65 ${formErrors.email ? 'border-red-600 focus:border-red-600 focus:ring-red-400/20' : 'border-mgm-dark/50 focus:border-mgm-gold-text focus:ring-mgm-gold/15'}`}
                         placeholder="you@example.com" />
-                      {formErrors.email && <p className="text-red-500 text-[11px] font-body mt-1">{formErrors.email}</p>}
+                      {formErrors.email && <p id="contact-email-error" role="alert" className="text-red-600 text-[11px] font-body mt-1">{formErrors.email}</p>}
                     </div>
                     <div>
-                      <label className="block text-mgm-dark/60 mb-1.5 font-medium text-xs font-body">{'Enquiry Type'}</label>
-                      <select value={formState.department} onChange={(e) => setFormState({ ...formState, department: e.target.value })}
-                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm ${!formState.department ? 'text-mgm-dark/30' : 'text-mgm-dark'} border-mgm-dark/10 focus:border-mgm-gold focus:ring-mgm-gold/15`}>
+                      <label htmlFor="contact-department" className="block text-mgm-dark/70 mb-1.5 font-medium text-xs font-body">{'Enquiry Type'}</label>
+                      <select id="contact-department" value={formState.department} onChange={(e) => setFormState({ ...formState, department: e.target.value })}
+                        className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm ${!formState.department ? 'text-mgm-dark/70' : 'text-mgm-dark'} border-mgm-dark/50 focus:border-mgm-gold-text focus:ring-mgm-gold/15`}>
                         <option value="">Select department</option>
                         {ENQUIRY_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                       </select>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-mgm-dark/60 mb-1.5 font-medium text-xs font-body">{'Subject'}</label>
-                    <input type="text" value={formState.subject} onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
-                      className="w-full px-4 py-3 border border-mgm-dark/10 rounded-xl focus:outline-none focus:border-mgm-gold focus:ring-1 focus:ring-mgm-gold/15 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/25"
+                    <label htmlFor="contact-subject" className="block text-mgm-dark/70 mb-1.5 font-medium text-xs font-body">{'Subject'}</label>
+                    <input id="contact-subject" type="text" value={formState.subject} onChange={(e) => setFormState({ ...formState, subject: e.target.value })}
+                      className="w-full px-4 py-3 border border-mgm-dark/50 rounded-xl focus:outline-none focus:border-mgm-gold-text focus:ring-1 focus:ring-mgm-gold/15 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/65"
                       placeholder="Brief subject" />
                   </div>
                   <div>
-                    <label className="block text-mgm-dark/60 mb-1.5 font-medium text-xs font-body">{'Your Message'} *</label>
-                    <textarea rows="4" value={formState.message} onChange={(e) => setFormState({ ...formState, message: e.target.value })}
-                      className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/25 resize-none ${formErrors.message ? 'border-red-300 focus:border-red-400 focus:ring-red-400/20' : 'border-mgm-dark/10 focus:border-mgm-gold focus:ring-mgm-gold/15'}`}
+                    <label htmlFor="contact-message" className="block text-mgm-dark/70 mb-1.5 font-medium text-xs font-body">{'Your Message'} *</label>
+                    <textarea id="contact-message" rows="4" aria-invalid={!!formErrors.message} aria-describedby={formErrors.message ? 'contact-message-error' : undefined} value={formState.message} onChange={(e) => setFormState({ ...formState, message: e.target.value })}
+                      className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-1 transition-all duration-200 bg-white font-body text-sm text-mgm-dark placeholder:text-mgm-dark/65 resize-none ${formErrors.message ? 'border-red-600 focus:border-red-600 focus:ring-red-400/20' : 'border-mgm-dark/50 focus:border-mgm-gold-text focus:ring-mgm-gold/15'}`}
                       placeholder="How can we help you?" />
-                    {formErrors.message && <p className="text-red-500 text-[11px] font-body mt-1">{formErrors.message}</p>}
+                    {formErrors.message && <p id="contact-message-error" role="alert" className="text-red-600 text-[11px] font-body mt-1">{formErrors.message}</p>}
                   </div>
                   <button type="submit" className="btn-interactive w-full bg-mgm-dark text-white py-3.5 rounded-xl font-semibold hover:bg-mgm-dark/90 transition-all duration-200 font-body text-sm shadow-lg shadow-mgm-dark/20 mt-2">
                     {'Send Message'}
@@ -469,7 +469,7 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
                   content: (
                     <div className="space-y-1.5">
                       {['0161-5047087', '+91 97803 00161', '+91 99888 81003'].map((p) => (
-                        <a key={p} href={`tel:${p.replace(/\s/g, '')}`} className="block font-body text-sm text-mgm-dark hover:text-mgm-gold transition-colors">{p}</a>
+                        <a key={p} href={`tel:${p.replace(/\s/g, '')}`} className="block font-body text-sm text-mgm-dark hover:text-mgm-gold-text transition-colors">{p}</a>
                       ))}
                     </div>
                   ),
@@ -478,7 +478,7 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
                   title: 'Email',
                   icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z',
                   content: (
-                    <a href="mailto:customer.redressal@mgmfinanciers.com" className="font-body text-sm text-mgm-dark hover:text-mgm-gold transition-colors break-all">
+                    <a href="mailto:customer.redressal@mgmfinanciers.com" className="font-body text-sm text-mgm-dark hover:text-mgm-gold-text transition-colors break-all">
                       customer.redressal@mgmfinanciers.com
                     </a>
                   ),
@@ -487,7 +487,7 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
                   title: 'Main Office',
                   icon: 'M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0zM15 11a3 3 0 11-6 0 3 3 0 016 0z',
                   content: (
-                    <p className="font-body text-sm text-mgm-dark/60 leading-relaxed">
+                    <p className="font-body text-sm text-mgm-dark/70 leading-relaxed">
                       Building No. 2566A, Mukt Ashram Street,<br />
                       Jagat Nagar, Basti Jodhewal,<br />
                       Ludhiana, Punjab – 141007
@@ -500,12 +500,12 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
                   content: (
                     <div className="space-y-1 font-body text-sm">
                       <div className="flex justify-between">
-                        <span className="text-mgm-dark/60">Monday – Saturday</span>
+                        <span className="text-mgm-dark/70">Monday – Saturday</span>
                         <span className="text-mgm-dark">9:30 AM – 6:00 PM</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-mgm-dark/60">Sunday</span>
-                        <span className="text-mgm-gold font-medium">Closed</span>
+                        <span className="text-mgm-dark/70">Sunday</span>
+                        <span className="text-mgm-gold-text font-medium">Closed</span>
                       </div>
                     </div>
                   ),
@@ -555,7 +555,7 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
             </blockquote>
             <div className="flex items-center justify-center gap-3">
               <div className="w-8 h-px bg-mgm-gold/30" />
-              <span className="text-mgm-dark/40 font-body text-sm font-medium tracking-wide">MGM Financiers</span>
+              <span className="text-mgm-dark/70 font-body text-sm font-medium tracking-wide">MGM Financiers</span>
               <div className="w-8 h-px bg-mgm-gold/30" />
             </div>
           </div>
@@ -588,8 +588,8 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
                   <path strokeLinecap="round" strokeLinejoin="round" d={card.icon} />
                 </svg>
                 <h3 className="font-heading font-semibold text-mgm-dark text-sm mb-1 group-hover:text-white transition-colors duration-300">{card.title}</h3>
-                <p className="text-mgm-dark/40 font-body text-xs group-hover:text-white/50 transition-colors duration-300 mb-3">{card.desc}</p>
-                <span className="inline-flex items-center gap-1 text-mgm-gold font-body text-xs font-medium group-hover:text-mgm-gold transition-colors duration-300">
+                <p className="text-mgm-dark/70 font-body text-xs group-hover:text-white/50 transition-colors duration-300 mb-3">{card.desc}</p>
+                <span className="inline-flex items-center gap-1 text-mgm-gold-text font-body text-xs font-medium group-hover:text-mgm-gold transition-colors duration-300">
                   Learn more
                   <svg className="w-3 h-3 transform group-hover:translate-x-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -614,7 +614,7 @@ const [formState, setFormState] = useState({ name: '', phone: '', email: '', dep
             <h2 className="text-3xl sm:text-4xl font-bold text-white font-heading tracking-tight mb-4">
               Reach Out to Us
             </h2>
-            <p className="text-white/40 font-body text-sm mb-8 max-w-md mx-auto">
+            <p className="text-white/60 font-body text-sm mb-8 max-w-md mx-auto">
               Have questions? We're here to help
             </p>
             <div className="flex flex-wrap justify-center gap-3">

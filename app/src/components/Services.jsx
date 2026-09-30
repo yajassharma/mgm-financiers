@@ -110,13 +110,13 @@ const [headingRef, headingInView] = useInView({ threshold: 0.3 })
     <section id="services" className="py-24 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div ref={headingRef} className="text-center mb-16">
-          <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(headingInView, 0)}`}>
+          <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(headingInView, 0)}`}>
             What We Offer
           </span>
           <h2 className={`text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 mb-5 font-heading ${scrollAnim(headingInView, 100)}`}>
             {'Our Comprehensive Financial Services'}
           </h2>
-          <p className={`text-mgm-dark/50 max-w-lg mx-auto font-body text-sm leading-relaxed ${scrollAnim(headingInView, 200)}`}>
+          <p className={`text-mgm-dark/70 max-w-lg mx-auto font-body text-sm leading-relaxed ${scrollAnim(headingInView, 200)}`}>
             {'Discover our tailored financial solutions designed to meet your specific needs'}
           </p>
         </div>
@@ -135,7 +135,7 @@ const [headingRef, headingInView] = useInView({ threshold: 0.3 })
                 <h3 className="text-sm sm:text-lg font-semibold text-mgm-dark mb-1.5 sm:mb-2.5 font-heading group-hover:text-white transition-colors">
                   {service.title}
                 </h3>
-                <p className="text-mgm-dark/50 font-body text-[11px] leading-relaxed group-hover:text-white/60 transition-colors mb-3">
+                <p className="text-mgm-dark/70 font-body text-[11px] leading-relaxed group-hover:text-white/60 transition-colors mb-3">
                   {service.description}
                 </p>
                 {service.highlights && (
@@ -154,7 +154,7 @@ const [headingRef, headingInView] = useInView({ threshold: 0.3 })
         
         <div className={`text-center mt-12 ${scrollAnim(gridInView, 400)}`}>
           <Link to="/services" 
-            className="inline-flex items-center gap-2 text-mgm-dark font-semibold text-sm hover:text-mgm-gold transition-colors font-body group"
+            className="inline-flex items-center gap-2 text-mgm-dark font-semibold text-sm hover:text-mgm-gold-text transition-colors font-body group"
           >
             {'View All Services'}
             <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -17,13 +17,13 @@ function TeamHome() {
       <div className="absolute -top-32 -left-32 w-[400px] h-[400px] rounded-full bg-mgm-gold/[0.025] pointer-events-none" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div ref={headingRef} className="text-center mb-14">
-          <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(headingInView, 0)}`}>
+          <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(headingInView, 0)}`}>
             Our Leadership
           </span>
           <h2 className={`text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 mb-5 font-heading ${scrollAnim(headingInView, 80)}`}>
             The People Behind MGM
           </h2>
-          <p className={`text-mgm-dark/50 max-w-lg mx-auto font-body text-sm leading-relaxed mb-8 ${scrollAnim(headingInView, 160)}`}>
+          <p className={`text-mgm-dark/70 max-w-lg mx-auto font-body text-sm leading-relaxed mb-8 ${scrollAnim(headingInView, 160)}`}>
             28 years of trust, built by experienced professionals committed to transparency and customer success.
           </p>
         </div>
@@ -36,20 +36,20 @@ function TeamHome() {
                 <img src={member.image} alt={member.name} className="w-full h-full object-cover object-top" loading="lazy" />
               </div>
               <p className="font-heading font-semibold text-mgm-dark text-sm">{member.name}</p>
-              <p className="text-mgm-gold font-body text-[11px] tracking-wide uppercase mt-0.5">{member.role}</p>
+              <p className="text-mgm-gold-text font-body text-[11px] tracking-wide uppercase mt-0.5">{member.role}</p>
             </div>
           ))}
         </div>
 
         {/* Mobile: horizontal scroll */}
-        <div className="sm:hidden flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory scrollbar-none mb-8">
+        <div tabIndex={0} role="region" aria-label="Team members carousel" className="sm:hidden flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 snap-x snap-mandatory scrollbar-none mb-8">
           {featured.map((member) => (
             <div key={member.name} className="flex-shrink-0 w-[130px] bg-white p-3 rounded-2xl border border-mgm-dark/[0.04] text-center snap-start">
               <div className="w-14 h-14 mx-auto mb-2 rounded-full overflow-hidden bg-mgm-light border-2 border-mgm-dark/[0.04]">
                 <img src={member.image} alt={member.name} className="w-full h-full object-cover object-top" loading="lazy" />
               </div>
               <p className="font-heading font-semibold text-mgm-dark text-xs leading-tight">{member.name}</p>
-              <p className="text-mgm-gold font-body text-[9px] tracking-wide uppercase mt-0.5">{member.role}</p>
+              <p className="text-mgm-gold-text font-body text-[9px] tracking-wide uppercase mt-0.5">{member.role}</p>
             </div>
           ))}
         </div>

@@ -210,7 +210,7 @@ function SuccessAnimation() {
     <div className="flex flex-col items-center gap-6 py-8">
       <div className="relative">
         <div className="w-24 h-24 rounded-full bg-green-100 flex items-center justify-center animate-[scaleIn_0.5s_cubic-bezier(0.22,1,0.36,1)]">
-          <svg className="w-12 h-12 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="w-12 h-12 text-green-600" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M5 13l4 4L19 7" className="animate-[drawCheck_0.6s_0.3s_cubic-bezier(0.22,1,0.36,1)_both]" />
           </svg>
         </div>
@@ -241,7 +241,7 @@ function Timeline({ timeline, currentStatus, followUps }) {
   ].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
   if (allEntries.length === 0) {
-    return <p className="text-sm text-gray-400">No status updates yet.</p>;
+    return <p className="text-sm text-gray-500">No status updates yet.</p>;
   }
 
   return (
@@ -259,12 +259,12 @@ function Timeline({ timeline, currentStatus, followUps }) {
                 )}
               </div>
               <div className="pb-6">
-                <p className="text-sm font-semibold text-[#c9a227]">Customer Follow-up</p>
+                <p className="text-sm font-semibold text-mgm-gold-text">Customer Follow-up</p>
                 <div className="mt-1">
                   <p className="text-xs text-gray-500">
                     {new Date(entry.timestamp).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">{entry.name}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{entry.name}</p>
                   <p className="text-sm text-gray-600 mt-1 bg-[#f5f0e0] rounded-lg px-3 py-2">{entry.message}</p>
                 </div>
               </div>
@@ -286,7 +286,7 @@ function Timeline({ timeline, currentStatus, followUps }) {
               )}
             </div>
             <div className="pb-6">
-              <p className={`text-sm font-semibold ${isLatest ? 'text-[#c9a227]' : 'text-[#1a1a2e]'}`}>
+              <p className={`text-sm font-semibold ${isLatest ? 'text-mgm-gold-text' : 'text-[#1a1a2e]'}`}>
                 {statusLabels[entry.status] || entry.status?.replace(/_/g, ' ')}
               </p>
               <div className="mt-1">
@@ -366,7 +366,7 @@ function SubmitTab() {
       CLOSED: 'Closed',
     };
     return (
-      <div className="max-w-lg mx-auto text-center py-8">
+      <div role="status" className="max-w-lg mx-auto text-center py-8">
         <SuccessAnimation />
         <h3 className="text-2xl font-bold text-[#1a1a2e] mt-4">{'Grievance Submitted Successfully'}</h3>
         <p className="text-gray-500 mt-2">{'Your grievance has been registered. We will respond within 7 working days.'}</p>
@@ -394,94 +394,104 @@ function SubmitTab() {
           { label: 'Loan Account Number (if applicable)', field: 'loanAccountNumber', type: 'text', placeholder: 'Optional', required: false },
         ].map(({ label, field, type, placeholder, required }) => (
           <div key={field}>
-            <label className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">
-              {label} {required && <span className="text-red-400">*</span>}
+            <label htmlFor={`grievance-${field}`} className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">
+              {label} {required && <span className="text-red-600">*</span>}
             </label>
             <input
+              id={`grievance-${field}`}
               type={type} placeholder={placeholder} value={form[field]}
+              aria-invalid={!!errors[field]} aria-describedby={errors[field] ? `grievance-${field}-error` : undefined}
               onChange={(e) => update(field, e.target.value)}
-              className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-[#c9a227] transition-all ${
-                errors[field] ? 'border-red-300' : 'border-gray-200'
+              className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all ${
+                errors[field] ? 'border-red-600' : 'border-gray-500'
               }`}
             />
-            {errors[field] && <p className="text-xs text-red-500 mt-1">{errors[field]}</p>}
+            {errors[field] && <p id={`grievance-${field}-error`} role="alert" className="text-xs text-red-600 mt-1">{errors[field]}</p>}
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div>
-          <label className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">{'Loan Type'} <span className="text-red-400">*</span></label>
+          <label htmlFor="grievance-loanType" className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">{'Loan Type'} <span className="text-red-600">*</span></label>
           <select
+            id="grievance-loanType"
+            aria-invalid={!!errors.loanType} aria-describedby={errors.loanType ? 'grievance-loanType-error' : undefined}
             value={form.loanType} onChange={(e) => update('loanType', e.target.value)}
-            className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-[#c9a227] transition-all appearance-none ${
-              errors.loanType ? 'border-red-300' : 'border-gray-200'
-            } ${!form.loanType ? 'text-gray-400' : ''}`}
+            className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all appearance-none ${
+              errors.loanType ? 'border-red-600' : 'border-gray-500'
+            } ${!form.loanType ? 'text-gray-500' : ''}`}
           >
             <option value="">{'Select loan type'}</option>
             {LOAN_TYPES.map(loanType => <option key={loanType} value={loanType}>{loanType === 'Personal Loan' ? 'Personal Loan' : loanType === 'Business Loan' ? 'Business Loan' : loanType === 'Loan Against Property' ? 'Loan Against Property' : loanType === 'Vehicle Loan' ? 'Vehicle Loan' : loanType === 'Consumer Durable Loan' ? 'Consumer Durable Loan' : loanType === 'Gold Loan' ? 'Gold Loan' : loanType}</option>)}
           </select>
-          {errors.loanType && <p className="text-xs text-red-500 mt-1">{errors.loanType}</p>}
+          {errors.loanType && <p id="grievance-loanType-error" role="alert" className="text-xs text-red-600 mt-1">{errors.loanType}</p>}
         </div>
         <div>
-          <label className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">{'Grievance Category'} <span className="text-red-400">*</span></label>
+          <label htmlFor="grievance-category" className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">{'Grievance Category'} <span className="text-red-600">*</span></label>
           <select
+            id="grievance-category"
+            aria-invalid={!!errors.category} aria-describedby={errors.category ? 'grievance-category-error' : undefined}
             value={form.category} onChange={(e) => update('category', e.target.value)}
-            className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-[#c9a227] transition-all appearance-none ${
-              errors.category ? 'border-red-300' : 'border-gray-200'
-            } ${!form.category ? 'text-gray-400' : ''}`}
+            className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all appearance-none ${
+              errors.category ? 'border-red-600' : 'border-gray-500'
+            } ${!form.category ? 'text-gray-500' : ''}`}
           >
             <option value="">{'Select category'}</option>
             {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat === 'Loan Processing' ? 'Loan Processing' : cat === 'Interest Related' ? 'Interest Related' : cat === 'EMI Payment' ? 'EMI Payment' : cat === 'Loan Closure' ? 'Loan Closure' : cat === 'Foreclosure' ? 'Foreclosure' : cat === 'Customer Service' ? 'Customer Service' : cat === 'Technical Issue' ? 'Technical Issue' : cat === 'Document Related' ? 'Document Related' : cat === 'Others' ? 'Other' : cat}</option>)}
           </select>
-          {errors.category && <p className="text-xs text-red-500 mt-1">{errors.category}</p>}
+          {errors.category && <p id="grievance-category-error" role="alert" className="text-xs text-red-600 mt-1">{errors.category}</p>}
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">{'Subject'} <span className="text-red-400">*</span></label>
+        <label htmlFor="grievance-subject" className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">{'Subject'} <span className="text-red-600">*</span></label>
         <input
+          id="grievance-subject"
+          aria-invalid={!!errors.subject} aria-describedby={errors.subject ? 'grievance-subject-error' : undefined}
           type="text" placeholder={'Brief subject of your grievance'} value={form.subject}
           onChange={(e) => update('subject', e.target.value)}
-          className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-[#c9a227] transition-all ${
-            errors.subject ? 'border-red-300' : 'border-gray-200'
+          className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all ${
+            errors.subject ? 'border-red-600' : 'border-gray-500'
           }`}
         />
-        {errors.subject && <p className="text-xs text-red-500 mt-1">{errors.subject}</p>}
+        {errors.subject && <p id="grievance-subject-error" role="alert" className="text-xs text-red-600 mt-1">{errors.subject}</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">{'Description'} <span className="text-red-400">*</span></label>
+        <label htmlFor="grievance-description" className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">{'Description'} <span className="text-red-600">*</span></label>
         <textarea
+          id="grievance-description"
+          aria-invalid={!!errors.description} aria-describedby={errors.description ? 'grievance-description-error' : undefined}
           placeholder={'Describe your grievance in detail'}
           value={form.description} rows={5}
           onChange={(e) => update('description', e.target.value)}
-          className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-[#c9a227] transition-all resize-none ${
-            errors.description ? 'border-red-300' : 'border-gray-200'
+          className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all resize-none ${
+            errors.description ? 'border-red-600' : 'border-gray-500'
           }`}
         />
         <div className="flex justify-between mt-1">
-          {errors.description && <p className="text-xs text-red-500">{errors.description}</p>}
-          <p className="text-xs text-gray-400 ml-auto">{form.description.length}/2000</p>
+          {errors.description && <p id="grievance-description-error" role="alert" className="text-xs text-red-600">{errors.description}</p>}
+          <p className="text-xs text-gray-500 ml-auto">{form.description.length}/2000</p>
         </div>
       </div>
 
       <div className="space-y-3">
         <label className="flex items-start gap-3 cursor-pointer">
-          <input type="checkbox" checked={consent1} onChange={(e) => { setConsent1(e.target.checked); if (errors.consent1) setErrors(p => ({...p, consent1: undefined})); }}
-            className="mt-1 w-4 h-4 rounded border-gray-300 text-[#c9a227] focus:ring-[#c9a227]" />
-          <span className="text-sm text-gray-600">I confirm that the information provided above is true and accurate. <span className="text-red-400">*</span></span>
+          <input type="checkbox" checked={consent1} aria-invalid={!!errors.consent1} onChange={(e) => { setConsent1(e.target.checked); if (errors.consent1) setErrors(p => ({...p, consent1: undefined})); }}
+            className="mt-1 w-4 h-4 rounded border-gray-500 text-mgm-gold-text focus:ring-mgm-gold-text" />
+          <span className="text-sm text-gray-600">I confirm that the information provided above is true and accurate. <span className="text-red-600" aria-hidden="true">*</span></span>
         </label>
-        {errors.consent1 && <p className="text-xs text-red-500">{errors.consent1}</p>}
+        {errors.consent1 && <p role="alert" className="text-xs text-red-600">{errors.consent1}</p>}
         <label className="flex items-start gap-3 cursor-pointer">
-          <input type="checkbox" checked={consent2} onChange={(e) => { setConsent2(e.target.checked); if (errors.consent2) setErrors(p => ({...p, consent2: undefined})); }}
-            className="mt-1 w-4 h-4 rounded border-gray-300 text-[#c9a227] focus:ring-[#c9a227]" />
-          <span className="text-sm text-gray-600">I consent to MGM Financiers contacting me regarding this grievance. <span className="text-red-400">*</span></span>
+          <input type="checkbox" checked={consent2} aria-invalid={!!errors.consent2} onChange={(e) => { setConsent2(e.target.checked); if (errors.consent2) setErrors(p => ({...p, consent2: undefined})); }}
+            className="mt-1 w-4 h-4 rounded border-gray-500 text-mgm-gold-text focus:ring-mgm-gold-text" />
+          <span className="text-sm text-gray-600">I consent to MGM Financiers contacting me regarding this grievance. <span className="text-red-600" aria-hidden="true">*</span></span>
         </label>
-        {errors.consent2 && <p className="text-xs text-red-500">{errors.consent2}</p>}
+        {errors.consent2 && <p role="alert" className="text-xs text-red-600">{errors.consent2}</p>}
       </div>
 
-      {errors.submit && <p className="text-sm text-red-500 text-center">{errors.submit}</p>}
+      {errors.submit && <p role="alert" className="text-sm text-red-600 text-center">{errors.submit}</p>}
 
       <button
         type="submit" disabled={submitting}
@@ -599,10 +609,10 @@ function TrackTab() {
             </span>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-            <div><span className="text-gray-400">{'Category'}</span><p className="font-medium text-[#1a1a2e]">{selected.category}</p></div>
-            <div><span className="text-gray-400">{'Loan Account'}</span><p className="font-medium text-[#1a1a2e]">{selected.loanAccountNumber || 'N/A'}</p></div>
-            <div><span className="text-gray-400">{'Priority'}</span><p className={`font-medium ${PRIORITY_COLORS[selected.priority]?.split(' ')[1] || ''}`}>{selected.priority || 'MEDIUM'}</p></div>
-            <div><span className="text-gray-400">{'Filed On'}</span><p className="font-medium text-[#1a1a2e]">{new Date(selected.createdAt).toLocaleDateString('en-IN')}</p></div>
+            <div><span className="text-gray-500">{'Category'}</span><p className="font-medium text-[#1a1a2e]">{selected.category}</p></div>
+            <div><span className="text-gray-500">{'Loan Account'}</span><p className="font-medium text-[#1a1a2e]">{selected.loanAccountNumber || 'N/A'}</p></div>
+            <div><span className="text-gray-500">{'Priority'}</span><p className={`font-medium ${PRIORITY_COLORS[selected.priority]?.split(' ')[1] || ''}`}>{selected.priority || 'MEDIUM'}</p></div>
+            <div><span className="text-gray-500">{'Filed On'}</span><p className="font-medium text-[#1a1a2e]">{new Date(selected.createdAt).toLocaleDateString('en-IN')}</p></div>
           </div>
           <div className="mt-4 p-4 bg-[#f2f3f5] rounded-xl">
             <p className="text-sm text-gray-600 whitespace-pre-wrap">{selected.description}</p>
@@ -619,29 +629,34 @@ function TrackTab() {
             <div className="space-y-3">
               <input
                 type="text"
+                autoComplete="name"
+                aria-label="Your name"
                 placeholder="Your name"
                 value={followUpName}
                 onChange={(e) => setFollowUpName(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#c9a227] transition-colors"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-500 text-sm focus:outline-none focus:border-mgm-gold-text transition-colors"
                 defaultValue={selected.name}
               />
               <input
                 type="email"
+                autoComplete="email"
+                aria-label="Your email address"
                 placeholder="Your email"
                 value={followUpEmail}
                 onChange={(e) => setFollowUpEmail(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#c9a227] transition-colors"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-500 text-sm focus:outline-none focus:border-mgm-gold-text transition-colors"
                 defaultValue={selected.email}
               />
               <textarea
+                aria-label="Your message or additional information"
                 placeholder="Your message or additional information..."
                 value={followUpMessage}
                 onChange={(e) => setFollowUpMessage(e.target.value)}
                 rows={4}
-                className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#c9a227] transition-colors resize-none"
+                className="w-full px-4 py-2.5 rounded-xl border border-gray-500 text-sm focus:outline-none focus:border-mgm-gold-text transition-colors resize-none"
               />
               {followUpResult && (
-                <p className={`text-sm ${followUpResult.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                <p role="alert" className={`text-sm ${followUpResult.type === 'success' ? 'text-green-700' : 'text-red-600'}`}>
                   {followUpResult.message}
                 </p>
               )}
@@ -672,7 +687,7 @@ function TrackTab() {
           <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
             <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
             <p className="text-gray-500 font-medium">{'Enter your grievance ID to check status'}</p>
-            <p className="text-gray-400 text-sm mt-1">{'Enter grievance ID'}</p>
+            <p className="text-gray-500 text-sm mt-1">{'Enter grievance ID'}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -690,9 +705,9 @@ function TrackTab() {
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold text-[#1a1a2e] truncate group-hover:text-[#c9a227] transition-colors">{g.subject}</h4>
+                        <h4 className="font-semibold text-[#1a1a2e] truncate group-hover:text-mgm-gold-text transition-colors">{g.subject}</h4>
                       </div>
-                      <p className="text-xs text-gray-400">{g.grievanceId}</p>
+                      <p className="text-xs text-gray-500">{g.grievanceId}</p>
                     </div>
                     <span className={`px-2.5 py-1 rounded-full text-xs font-semibold flex-shrink-0 ${STATUS_COLORS[g.status] || 'bg-gray-100 text-gray-600'}`}>
                       {listStatusLabels[g.status] || g.status}
@@ -720,7 +735,7 @@ function TrackTab() {
           Back
         </button>
         <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-[#1a1a2e] flex items-center justify-center">
-          <svg className="w-8 h-8 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="w-8 h-8 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
           </svg>
         </div>
@@ -729,12 +744,15 @@ function TrackTab() {
         <div className="flex gap-3 justify-center mb-4">
           {otp.map((digit, idx) => (
             <input key={idx} ref={el => otpRefs.current[idx] = el} type="text" inputMode="numeric" maxLength={1}
+              aria-label={`OTP digit ${idx + 1} of 6`}
+              autoComplete={idx === 0 ? 'one-time-code' : 'off'}
+              aria-invalid={!!error} aria-describedby={error ? 'grievance-otp-error' : undefined}
               value={digit} onChange={(e) => handleOtpChange(idx, e.target.value)} onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-              className="w-12 h-14 text-center text-xl font-bold bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#c9a227] focus:ring-2 focus:ring-[#c9a227]/20 transition-all text-[#1a1a2e]"
+              className="w-12 h-14 text-center text-xl font-bold bg-white border-2 border-gray-500 rounded-xl focus:outline-none focus:border-mgm-gold-text focus:ring-2 focus:ring-[#c9a227]/20 transition-all text-[#1a1a2e]"
             />
           ))}
         </div>
-        {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
+        {error && <p id="grievance-otp-error" role="alert" className="text-sm text-red-600 mb-4">{error}</p>}
         <button onClick={verifyOtp} disabled={loading}
           className="w-full py-3.5 bg-[#c9a227] text-[#1a1a2e] rounded-full text-sm font-bold hover:bg-[#b8922a] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2">
           {loading ? <><LoadingSpinner size="sm" /> Verifying...</> : 'Verify & Continue'}
@@ -746,18 +764,20 @@ function TrackTab() {
   return (
     <div className="max-w-md mx-auto text-center">
       <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-[#1a1a2e] flex items-center justify-center">
-        <svg className="w-8 h-8 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="w-8 h-8 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
       </div>
       <h3 className="text-xl font-bold text-[#1a1a2e] mb-2">{'Track Your Grievance'}</h3>
       <p className="text-sm text-gray-500 mb-8">{'Enter your grievance ID to check status'}</p>
       <div className="space-y-4">
-        <input type="email" placeholder="your@email.com" value={email}
+        <input type="email" autoComplete="email" placeholder="your@email.com" value={email}
+          aria-label="Your email address"
+          aria-invalid={!!error} aria-describedby={error ? 'grievance-email-error' : undefined}
           onChange={(e) => { setEmail(e.target.value); setError(''); }}
           onKeyDown={(e) => e.key === 'Enter' && handleEmailSubmit()}
-          className="w-full px-4 py-3.5 bg-white border border-gray-200 rounded-xl text-sm text-[#1a1a2e] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-[#c9a227] transition-all text-center" />
-        {error && <p className="text-sm text-red-500">{error}</p>}
+          className="w-full px-4 py-3.5 bg-white border border-gray-500 rounded-xl text-sm text-[#1a1a2e] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all text-center" />
+        {error && <p id="grievance-email-error" role="alert" className="text-sm text-red-600">{error}</p>}
         <button onClick={handleEmailSubmit} disabled={loading}
           className="w-full py-3.5 bg-[#c9a227] text-[#1a1a2e] rounded-full text-sm font-bold hover:bg-[#b8922a] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2">
           {loading ? <><LoadingSpinner size="sm" /> {'Tracking...'}</> : 'Track Status'}
@@ -809,11 +829,11 @@ function EscalationHierarchy() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#c9a227]/10 rounded-full mb-5">
-            <svg className="w-4 h-4 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span className="text-[#c9a227] text-xs font-semibold tracking-wide">RBI Mandated</span>
+            <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span className="text-mgm-gold-text text-xs font-semibold tracking-wide">RBI Mandated</span>
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a2e] mb-4">Escalation Hierarchy</h2>
-          <p className="text-gray-500 max-w-2xl mx-auto">As per RBI guidelines, our grievance redressal follows a structured 4-level escalation process to ensure fair and timely resolution.</p>
+          <p className="text-gray-600 max-w-2xl mx-auto">As per RBI guidelines, our grievance redressal follows a structured 4-level escalation process to ensure fair and timely resolution.</p>
         </div>
 
         <div className="space-y-6">
@@ -822,33 +842,33 @@ function EscalationHierarchy() {
               <div className="flex flex-col md:flex-row md:items-start gap-5">
                 <div className="flex-shrink-0">
                   <div className="w-12 h-12 rounded-xl bg-[#1a1a2e] flex items-center justify-center">
-                    <span className="text-[#c9a227] font-bold text-lg font-heading">{l.level}</span>
+                    <span className="text-mgm-gold-text font-bold text-lg font-heading">{l.level}</span>
                   </div>
                 </div>
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3">
                     <h3 className="text-lg font-bold text-[#1a1a2e]">{l.title}</h3>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#c9a227]/10 rounded-full text-[#c9a227] text-xs font-semibold w-fit">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#c9a227]/10 rounded-full text-mgm-gold-text text-xs font-semibold w-fit">
                       <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                       {l.timeline}
                     </span>
                   </div>
-                  <p className="text-gray-500 text-sm leading-relaxed mb-4">{l.desc}</p>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-4">{l.desc}</p>
                   <div className="flex flex-wrap gap-4">
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                      <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                       <span className="text-sm font-semibold text-[#1a1a2e]">{l.contact}</span>
                     </div>
                     {l.phone && (
                       <div className="flex items-center gap-2">
-                        <svg className="w-4 h-4 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-                        <span className="text-sm font-semibold text-[#c9a227]">{l.phone}</span>
+                        <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+                        <span className="text-sm font-semibold text-mgm-gold-text">{l.phone}</span>
                       </div>
                     )}
                     {l.email && (
                       <div className="flex items-center gap-2">
-                        <svg className="w-4 h-4 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        <span className="text-sm font-semibold text-[#c9a227]">{l.email}</span>
+                        <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <span className="text-sm font-semibold text-mgm-gold-text break-all">{l.email}</span>
                       </div>
                     )}
                   </div>
@@ -867,7 +887,7 @@ export default function Grievance() {
   const [activeTab, setActiveTab] = useState('submit');
 
   return (
-    <main className="min-h-screen bg-[#f2f3f5]">
+    <main id="main-content" className="min-h-screen bg-[#f2f3f5]">
       <SEO
         title="Grievance Redressal | Submit & Track Complaints | MGM Financiers"
         description="Raise and track grievances with MGM Financiers' online grievance redressal portal. Quick resolution for all your concerns as per RBI guidelines."
@@ -883,8 +903,8 @@ export default function Grievance() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#c9a227]/10 rounded-full mb-6">
-                <svg className="w-4 h-4 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                <span className="text-[#c9a227] text-xs font-semibold tracking-wide">{'Grievance Redressal'}</span>
+                <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span className="text-mgm-gold-text text-xs font-semibold tracking-wide">{'Grievance Redressal'}</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-bold text-[#1a1a2e] leading-tight mb-6">{'Grievance Redressal'}</h1>
               <p className="text-lg text-gray-500 leading-relaxed max-w-xl">{'We value your feedback and are committed to resolving your concerns'}</p>
@@ -900,12 +920,33 @@ export default function Grievance() {
       <section className="py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           {/* Tab Navigation */}
-          <div className="flex bg-white rounded-2xl p-1.5 mb-10 border border-gray-100 shadow-sm max-w-md mx-auto">
+          <div role="tablist" aria-label="Grievance options"
+            onKeyDown={(e) => {
+              const tabs = Array.from(e.currentTarget.querySelectorAll('[role="tab"]'))
+              const i = tabs.indexOf(document.activeElement)
+              if (i < 0) return
+              let j = null
+              if (e.key === 'ArrowRight' || e.key === 'ArrowDown') j = (i + 1) % tabs.length
+              else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') j = (i - 1 + tabs.length) % tabs.length
+              else if (e.key === 'Home') j = 0
+              else if (e.key === 'End') j = tabs.length - 1
+              if (j !== null) {
+                e.preventDefault()
+                tabs[j].focus()
+                tabs[j].click()
+              }
+            }}
+            className="flex bg-white rounded-2xl p-1.5 mb-10 border border-gray-100 shadow-sm max-w-md mx-auto">
             {[
               { id: 'submit', label: 'Submit Grievance' },
               { id: 'track', label: 'Track Your Grievance' },
             ].map((tab) => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                role="tab"
+                id={`grievance-tab-${tab.id}`}
+                aria-selected={activeTab === tab.id}
+                aria-controls="grievance-tabpanel"
+                tabIndex={activeTab === tab.id ? 0 : -1}
                 className={`flex-1 py-3 px-4 rounded-xl text-sm font-semibold transition-all ${
                   activeTab === tab.id
                     ? 'bg-[#1a1a2e] text-white shadow-md'
@@ -917,7 +958,7 @@ export default function Grievance() {
           </div>
 
           {/* Tab Content */}
-          <div className="bg-white rounded-3xl p-6 md:p-10 border border-gray-100 shadow-sm">
+          <div id="grievance-tabpanel" role="tabpanel" aria-labelledby={`grievance-tab-${activeTab}`} className="bg-white rounded-3xl p-6 md:p-10 border border-gray-100 shadow-sm">
             {activeTab === 'submit' ? <SubmitTab /> : <TrackTab />}
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useId } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import SEO from './SEO'
 import useInView from '../hooks/useInView'
@@ -53,20 +53,23 @@ function loadCashfreeSDK() {
 }
 
 // ── Floating Label Input ───────────────────────────────────
-function FloatingInput({ label, value, onChange, type = 'text', icon, error, required, maxLength, pattern }) {
+function FloatingInput({ label, value, onChange, type = 'text', icon, error, required, maxLength, pattern, autoComplete }) {
   const [focused, setFocused] = useState(false)
   const active = focused || value.length > 0
+  const inputId = useId()
+  const errorId = `${inputId}-error`
 
   return (
     <div className="relative mb-5">
-      <div className={`relative flex items-center bg-white border rounded-xl transition-all duration-200 ${error ? 'border-red-400' : focused ? 'border-mgm-gold/40 ring-2 ring-mgm-gold/10' : 'border-mgm-dark/10 hover:border-mgm-dark/20'}`}>
-        {icon && <div className="pl-4 text-mgm-dark/30">{icon}</div>}
+      <div className={`relative flex items-center bg-white border rounded-xl transition-all duration-200 ${error ? 'border-red-600' : focused ? 'border-mgm-gold-text ring-2 ring-mgm-gold/10' : 'border-mgm-dark/50 hover:border-mgm-dark/60'}`}>
+        {icon && <div className="pl-4 text-mgm-dark/70" aria-hidden="true">{icon}</div>}
         <div className="relative flex-1">
-          <label className={`absolute left-${icon ? '3' : '4'} transition-all duration-200 pointer-events-none font-body ${active ? 'top-1.5 text-[10px] text-mgm-gold' : 'top-1/2 -translate-y-1/2 text-sm text-mgm-dark/30'}`}
+          <label htmlFor={inputId} className={`absolute left-${icon ? '3' : '4'} transition-all duration-200 pointer-events-none font-body ${active ? 'top-1.5 text-[10px] text-mgm-gold-text' : 'top-1/2 -translate-y-1/2 text-sm text-mgm-dark/70'}`}
             style={{ left: icon ? '3rem' : '1rem' }}>
-            {label}{required && <span className="text-mgm-gold ml-0.5">*</span>}
+            {label}{required && <span className="text-mgm-gold-text ml-0.5" aria-hidden="true">*</span>}
           </label>
           <input
+            id={inputId}
             type={type}
             value={value}
             onChange={(e) => onChange(e.target.value)}
@@ -74,11 +77,13 @@ function FloatingInput({ label, value, onChange, type = 'text', icon, error, req
             onBlur={() => setFocused(false)}
             maxLength={maxLength}
             pattern={pattern}
+            autoComplete={autoComplete}
+            aria-invalid={!!error} aria-describedby={error ? errorId : undefined}
             className={`w-full bg-transparent px-4 pt-${active ? '5' : '3.5'} pb-2 ${icon ? 'pl-3' : 'pl-4'} pr-4 font-body text-sm text-mgm-dark outline-none`}
           />
         </div>
       </div>
-      {error && <p className="text-red-400 text-xs mt-1.5 ml-1 font-body">{error}</p>}
+      {error && <p id={errorId} role="alert" className="text-red-600 text-xs mt-1.5 ml-1 font-body">{error}</p>}
     </div>
   )
 }
@@ -86,17 +91,19 @@ function FloatingInput({ label, value, onChange, type = 'text', icon, error, req
 function FloatingSelect({ label, value, onChange, options, icon }) {
   const [focused, setFocused] = useState(false)
   const active = focused || value.length > 0
+  const selectId = useId()
 
   return (
     <div className="relative mb-5">
-      <div className={`relative flex items-center bg-white border rounded-xl transition-all duration-200 ${focused ? 'border-mgm-gold/40 ring-2 ring-mgm-gold/10' : 'border-mgm-dark/10 hover:border-mgm-dark/20'}`}>
-        {icon && <div className="pl-4 text-mgm-dark/30">{icon}</div>}
+      <div className={`relative flex items-center bg-white border rounded-xl transition-all duration-200 ${focused ? 'border-mgm-gold-text ring-2 ring-mgm-gold/10' : 'border-mgm-dark/50 hover:border-mgm-dark/60'}`}>
+        {icon && <div className="pl-4 text-mgm-dark/70" aria-hidden="true">{icon}</div>}
         <div className="relative flex-1">
-          <label className={`absolute transition-all duration-200 pointer-events-none font-body ${active ? 'top-1.5 left-4 text-[10px] text-mgm-gold' : 'top-1/2 -translate-y-1/2 text-sm text-mgm-dark/30'}`}
+          <label htmlFor={selectId} className={`absolute transition-all duration-200 pointer-events-none font-body ${active ? 'top-1.5 left-4 text-[10px] text-mgm-gold-text' : 'top-1/2 -translate-y-1/2 text-sm text-mgm-dark/70'}`}
             style={{ left: icon ? '3rem' : '1rem' }}>
             {label}
           </label>
           <select
+            id={selectId}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onFocus={() => setFocused(true)}
@@ -105,7 +112,7 @@ function FloatingSelect({ label, value, onChange, options, icon }) {
           >
             {options.map(o => <option key={o} value={o}>{o}</option>)}
           </select>
-          <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mgm-dark/30 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <svg aria-hidden="true" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mgm-dark/70 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>
         </div>
@@ -125,12 +132,12 @@ function ProgressIndicator({ currentStep }) {
         return (
           <div key={i} className="flex items-center flex-1 last:flex-none">
             <div className="flex flex-col items-center">
-              <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-heading font-bold transition-all duration-300 ${done ? 'bg-mgm-gold text-mgm-dark' : active ? 'bg-mgm-dark text-white ring-4 ring-mgm-dark/10' : 'bg-mgm-dark/5 text-mgm-dark/30'}`}>
+              <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-heading font-bold transition-all duration-300 ${done ? 'bg-mgm-gold text-mgm-dark' : active ? 'bg-mgm-dark text-white ring-4 ring-mgm-dark/10' : 'bg-mgm-dark/5 text-mgm-dark/70'}`}>
                 {done ? (
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                 ) : i + 1}
               </div>
-              <span className={`text-[10px] mt-2 font-body font-semibold whitespace-nowrap hidden sm:block ${active ? 'text-mgm-dark' : done ? 'text-mgm-gold' : 'text-mgm-dark/30'}`}>{s}</span>
+              <span className={`text-[10px] mt-2 font-body font-semibold whitespace-nowrap hidden sm:block ${active ? 'text-mgm-dark' : done ? 'text-mgm-gold-text' : 'text-mgm-dark/70'}`}>{s}</span>
             </div>
             {i < steps.length - 1 && (
               <div className={`flex-1 h-0.5 mx-2 rounded-full transition-all duration-500 ${done ? 'bg-mgm-gold' : 'bg-mgm-dark/10'}`} />
@@ -466,7 +473,7 @@ const prefersReduced = usePrefersReducedMotion()
       />
       <Header />
 
-      <main>
+      <main id="main-content">
         {/* ═══ HERO ═══ */}
         <section className="pt-28 sm:pt-32 pb-16 sm:pb-24 bg-white relative overflow-hidden">
           <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-mgm-gold/[0.03] pointer-events-none" />
@@ -475,11 +482,11 @@ const prefersReduced = usePrefersReducedMotion()
           <div ref={heroRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
               <div className="w-full lg:w-1/2">
-                <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(heroInView, 0)}`}>Pay EMI</span>
+                <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(heroInView, 0)}`}>Pay EMI</span>
                 <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-mgm-dark mt-4 mb-6 font-heading leading-tight ${scrollAnim(heroInView, 80)}`}>
                   {'Pay Your EMI'}<br />Securely
                 </h1>
-                <p className={`text-mgm-dark/50 font-body text-sm sm:text-base leading-relaxed mb-8 max-w-lg ${scrollAnim(heroInView, 160)}`}>
+                <p className={`text-mgm-dark/70 font-body text-sm sm:text-base leading-relaxed mb-8 max-w-lg ${scrollAnim(heroInView, 160)}`}>
                   {'Quick and secure online EMI payment'}
                 </p>
 
@@ -514,7 +521,7 @@ const prefersReduced = usePrefersReducedMotion()
                       </div>
                       <div className="flex items-center gap-1.5 bg-mgm-gold/10 rounded-lg px-2.5 py-1">
                         <svg className="w-3 h-3 text-mgm-gold" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
-                        <span className="text-[9px] font-body font-semibold text-mgm-gold">SECURE</span>
+                        <span className="text-[9px] font-body font-semibold text-mgm-gold-text">SECURE</span>
                       </div>
                     </div>
                     <div className="bg-mgm-light/60 rounded-xl p-3 border border-mgm-dark/5 mb-4 flex items-center justify-center">
@@ -537,13 +544,13 @@ const prefersReduced = usePrefersReducedMotion()
                     </div>
                     <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-mgm-dark/40 font-body">Merchant</span>
+                        <span className="text-[10px] text-mgm-dark/70 font-body">Merchant</span>
                         <span className="text-[10px] font-heading font-bold text-mgm-dark">MGM Financiers</span>
                       </div>
                       <div className="h-px bg-mgm-dark/5" />
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-mgm-dark/40 font-body">Amount</span>
-                        <span className="text-sm font-heading font-bold text-mgm-gold">₹18,500</span>
+                        <span className="text-[10px] text-mgm-dark/70 font-body">Amount</span>
+                        <span className="text-sm font-heading font-bold text-mgm-gold-text">₹18,500</span>
                       </div>
                     </div>
                     <div className="mt-4 h-1.5 rounded-full bg-mgm-dark/5 overflow-hidden">
@@ -575,12 +582,13 @@ const prefersReduced = usePrefersReducedMotion()
             {step === 0 && (
               <div className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-6 sm:p-10 ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
                 <h2 className="text-xl sm:text-2xl font-bold text-mgm-dark font-heading mb-2">{'EMI Payment'}</h2>
-                <p className="text-mgm-dark/40 font-body text-sm mb-8">{'Pay your monthly EMI online'}</p>
+                <p className="text-mgm-dark/70 font-body text-sm mb-8">{'Pay your monthly EMI online'}</p>
 
                 <FloatingInput
                   label={'Borrower Name'}
                   value={name}
                   onChange={setName}
+                  autoComplete="name"
                   required
                   error={name.length > 0 && !validateName(name) ? 'Please enter your full name' : ''}
                   icon={<svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>}
@@ -588,6 +596,7 @@ const prefersReduced = usePrefersReducedMotion()
                 <FloatingInput
                   label={'Mobile Number'}
                   value={phone}
+                  autoComplete="tel"
                   onChange={(v) => setPhone(v.replace(/[^\d]/g, '').slice(0, 10))}
                   type="tel"
                   required
@@ -598,6 +607,7 @@ const prefersReduced = usePrefersReducedMotion()
                 <FloatingInput
                   label="Email Address"
                   value={email}
+                  autoComplete="email"
                   onChange={setEmail}
                   type="email"
                   error={email.length > 0 && !validateEmail(email) ? 'Enter a valid email address' : ''}
@@ -625,7 +635,7 @@ const prefersReduced = usePrefersReducedMotion()
               <div className={`flex flex-col lg:flex-row gap-6 ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
                 <div className="flex-1 bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-6 sm:p-10">
                   <h2 className="text-xl sm:text-2xl font-bold text-mgm-dark font-heading mb-2">{'EMI Payment'}</h2>
-                  <p className="text-mgm-dark/40 font-body text-sm mb-8">{'Pay your monthly EMI online'}</p>
+                  <p className="text-mgm-dark/70 font-body text-sm mb-8">{'Pay your monthly EMI online'}</p>
 
                   <FloatingSelect
                     label={'Payment Type'}
@@ -636,17 +646,19 @@ const prefersReduced = usePrefersReducedMotion()
                   />
 
                   <div className="relative mb-5">
-                    <div className="relative flex items-center bg-white border border-mgm-dark/10 rounded-xl hover:border-mgm-dark/20 transition-all">
-                      <div className="pl-4 text-mgm-dark/30">
+                    <div className="relative flex items-center bg-white border border-mgm-dark/50 rounded-xl hover:border-mgm-dark/20 transition-all">
+                      <div className="pl-4 text-mgm-dark/70" aria-hidden="true">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                       </div>
                       <div className="relative flex-1">
-                        <label className={`absolute left-3 transition-all duration-200 pointer-events-none font-body ${amount.length > 0 ? 'top-1.5 text-[10px] text-mgm-gold' : 'top-1/2 -translate-y-1/2 text-sm text-mgm-dark/30'}`}>
-                          Amount <span className="text-mgm-gold">*</span>
+                        <label htmlFor="payemi-amount" className={`absolute left-3 transition-all duration-200 pointer-events-none font-body ${amount.length > 0 ? 'top-1.5 text-[10px] text-mgm-gold-text' : 'top-1/2 -translate-y-1/2 text-sm text-mgm-dark/70'}`}>
+                          Amount <span className="text-mgm-gold-text" aria-hidden="true">*</span>
                         </label>
                         <input
+                          id="payemi-amount"
                           type="text"
                           inputMode="numeric"
+                          aria-invalid={!!parseInt(amountRaw) > 0 && parseInt(amountRaw) < 1} aria-describedby={parseInt(amountRaw) > 0 && parseInt(amountRaw) < 1 ? 'payemi-amount-error' : undefined}
                           value={amount}
                           onChange={(e) => handleAmountChange(e.target.value)}
                           className="w-full bg-transparent pl-3 pr-4 pt-5 pb-2 font-heading font-bold text-lg text-mgm-dark outline-none"
@@ -654,12 +666,12 @@ const prefersReduced = usePrefersReducedMotion()
                       </div>
                     </div>
                     {parseInt(amountRaw) > 0 && parseInt(amountRaw) < 1 && (
-                      <p className="text-red-400 text-xs mt-1.5 ml-1 font-body">Minimum amount is ₹1</p>
+                      <p id="payemi-amount-error" className="text-red-600 text-xs mt-1.5 ml-1 font-body">Minimum amount is ₹1</p>
                     )}
                   </div>
 
                   <div className="flex gap-3 mt-6">
-                    <button onClick={goBack} className="btn-interactive flex-1 border-2 border-mgm-dark/10 text-mgm-dark py-3.5 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold transition-all duration-200 font-body text-sm">
+                    <button onClick={goBack} className="btn-interactive flex-1 border-2 border-mgm-dark/50 text-mgm-dark py-3.5 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold-text transition-all duration-200 font-body text-sm">
                       Back
                     </button>
                     <button onClick={goNext} disabled={!step2Valid} className="btn-interactive flex-1 bg-mgm-dark text-white py-3.5 rounded-xl font-semibold hover:bg-mgm-dark/90 transition-all duration-200 font-body text-sm shadow-lg shadow-mgm-dark/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
@@ -672,16 +684,16 @@ const prefersReduced = usePrefersReducedMotion()
                 <div className="w-full lg:w-80 bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-6 sm:p-8 h-fit">
                   <h3 className="font-heading font-bold text-mgm-dark text-sm mb-6">Payment Summary</h3>
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center"><span className="text-mgm-dark/50 font-body text-sm">Payment Type</span><span className="font-heading font-semibold text-mgm-dark text-sm">{payType.replace(' Payment', '')}</span></div>
+                    <div className="flex justify-between items-center"><span className="text-mgm-dark/70 font-body text-sm">Payment Type</span><span className="font-heading font-semibold text-mgm-dark text-sm">{payType.replace(' Payment', '')}</span></div>
                     <div className="border-t border-mgm-dark/5" />
-                    <div className="flex justify-between items-center"><span className="text-mgm-dark/50 font-body text-sm">Amount</span><span className="font-heading font-bold text-mgm-dark text-lg">{parseInt(amountRaw) > 0 ? formatINRDisplay(parseInt(amountRaw)) : '₹0'}</span></div>
-                    <div className="flex justify-between items-center"><span className="text-mgm-dark/50 font-body text-sm">Convenience Charges</span><span className="font-heading font-semibold text-mgm-gold text-sm">Nil</span></div>
+                    <div className="flex justify-between items-center"><span className="text-mgm-dark/70 font-body text-sm">Amount</span><span className="font-heading font-bold text-mgm-dark text-lg">{parseInt(amountRaw) > 0 ? formatINRDisplay(parseInt(amountRaw)) : '₹0'}</span></div>
+                    <div className="flex justify-between items-center"><span className="text-mgm-dark/70 font-body text-sm">Convenience Charges</span><span className="font-heading font-semibold text-mgm-gold-text text-sm">Nil</span></div>
                     <div className="border-t border-mgm-dark/5" />
-                    <div className="flex justify-between items-center"><span className="text-mgm-dark/50 font-body text-sm">Total</span><span className="font-heading font-bold text-mgm-dark text-xl">{parseInt(amountRaw) > 0 ? formatINRDisplay(parseInt(amountRaw)) : '₹0'}</span></div>
+                    <div className="flex justify-between items-center"><span className="text-mgm-dark/70 font-body text-sm">Total</span><span className="font-heading font-bold text-mgm-dark text-xl">{parseInt(amountRaw) > 0 ? formatINRDisplay(parseInt(amountRaw)) : '₹0'}</span></div>
                   </div>
                   <div className="mt-6 bg-mgm-light/60 rounded-xl p-4 flex items-start gap-3">
                     <svg className="w-4 h-4 text-mgm-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" /></svg>
-                    <p className="text-mgm-dark/40 font-body text-xs leading-relaxed">No convenience charges for EMI payments</p>
+                    <p className="text-mgm-dark/70 font-body text-xs leading-relaxed">No convenience charges for EMI payments</p>
                   </div>
                 </div>
               </div>
@@ -716,25 +728,25 @@ const prefersReduced = usePrefersReducedMotion()
                       </div>
                     </div>
                     <p className="text-mgm-dark font-heading font-bold mt-4">Secure Payment Gateway</p>
-                    <p className="text-mgm-dark/30 font-body text-xs mt-1">256-bit SSL Encrypted</p>
+                    <p className="text-mgm-dark/70 font-body text-xs mt-1">256-bit SSL Encrypted</p>
                   </div>
 
                   {/* Details */}
                   <div className="flex-1 w-full">
                     <div className="text-center lg:text-left mb-6">
                       <h2 className="text-xl sm:text-2xl font-bold text-mgm-dark font-heading mb-2">{'Pay Now'}</h2>
-                      <p className="text-mgm-dark/40 font-body text-sm">You will be redirected to our secure payment partner</p>
+                      <p className="text-mgm-dark/70 font-body text-sm">You will be redirected to our secure payment partner</p>
                     </div>
 
                     <div className="bg-mgm-light/60 rounded-2xl p-5 border border-mgm-dark/5 space-y-3 mb-6">
-                      <div className="flex justify-between"><span className="text-mgm-dark/50 font-body text-sm">Amount</span><span className="font-heading font-bold text-mgm-dark">{formatINRDisplay(parseInt(amountRaw))}</span></div>
-                      <div className="flex justify-between"><span className="text-mgm-dark/50 font-body text-sm">Payment Type</span><span className="font-heading font-semibold text-mgm-dark text-sm">{payType}</span></div>
-                      <div className="flex justify-between"><span className="text-mgm-dark/50 font-body text-sm">Merchant</span><span className="font-heading font-semibold text-mgm-dark text-sm">MGM Financiers Pvt. Ltd.</span></div>
-                      <div className="flex justify-between"><span className="text-mgm-dark/50 font-body text-sm">Reference</span><span className="font-body text-mgm-dark/70 text-sm">{receiptData.ref}</span></div>
+                      <div className="flex justify-between"><span className="text-mgm-dark/70 font-body text-sm">Amount</span><span className="font-heading font-bold text-mgm-dark">{formatINRDisplay(parseInt(amountRaw))}</span></div>
+                      <div className="flex justify-between"><span className="text-mgm-dark/70 font-body text-sm">Payment Type</span><span className="font-heading font-semibold text-mgm-dark text-sm">{payType}</span></div>
+                      <div className="flex justify-between"><span className="text-mgm-dark/70 font-body text-sm">Merchant</span><span className="font-heading font-semibold text-mgm-dark text-sm">MGM Financiers Pvt. Ltd.</span></div>
+                      <div className="flex justify-between"><span className="text-mgm-dark/70 font-body text-sm">Reference</span><span className="font-body text-mgm-dark/70 text-sm">{receiptData.ref}</span></div>
                     </div>
 
                     {paymentError && (
-                      <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+                      <div role="alert" className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
                         <p className="text-red-600 font-body text-sm">{paymentError}</p>
                       </div>
                     )}
@@ -748,11 +760,11 @@ const prefersReduced = usePrefersReducedMotion()
                     </button>
 
                     <div className="flex items-center justify-center gap-2 mt-4">
-                      <svg className="w-3.5 h-3.5 text-mgm-dark/20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
-                      <span className="text-mgm-dark/30 font-body text-xs">Powered by Cashfree Payments</span>
+                      <svg className="w-3.5 h-3.5 text-mgm-dark/70" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
+                      <span className="text-mgm-dark/70 font-body text-xs">Powered by Cashfree Payments</span>
                     </div>
 
-                    <button onClick={goBack} className="mt-6 w-full text-center text-mgm-dark/40 hover:text-mgm-gold font-body text-sm transition-colors">
+                    <button onClick={goBack} className="mt-6 w-full text-center text-mgm-dark/70 hover:text-mgm-gold-text font-body text-sm transition-colors">
                       ← Go Back
                     </button>
                   </div>
@@ -762,43 +774,43 @@ const prefersReduced = usePrefersReducedMotion()
 
             {/* ═══ PAYMENT CALLING API ═══ */}
             {step === 2 && paymentStatus === 'calling' && (
-              <div className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-10 sm:p-16 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
+              <div role="status" className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-10 sm:p-16 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
                 <Spinner size={56} />
                 <h2 className="text-xl font-bold text-mgm-dark font-heading mt-6 mb-2">{'Processing your payment...'}</h2>
-                <p className="text-mgm-dark/40 font-body text-sm">Please wait while we set up your payment</p>
+                <p className="text-mgm-dark/70 font-body text-sm">Please wait while we set up your payment</p>
               </div>
             )}
 
             {/* ═══ PAYMENT LOADING SDK ═══ */}
             {step === 2 && paymentStatus === 'loading_sdk' && (
-              <div className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-10 sm:p-16 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
+              <div role="status" className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-10 sm:p-16 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
                 <Spinner size={56} />
                 <h2 className="text-xl font-bold text-mgm-dark font-heading mt-6 mb-2">{'Processing your payment...'}</h2>
-                <p className="text-mgm-dark/40 font-body text-sm">Please wait while we connect to Cashfree</p>
+                <p className="text-mgm-dark/70 font-body text-sm">Please wait while we connect to Cashfree</p>
               </div>
             )}
 
             {/* ═══ PAYMENT POLLING ═══ */}
             {step === 2 && paymentStatus === 'processing' && (
-              <div className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-10 sm:p-16 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
+              <div role="status" className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-10 sm:p-16 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
                 <Spinner size={56} />
                 <h2 className="text-xl font-bold text-mgm-dark font-heading mt-6 mb-2">{'Processing your payment...'}</h2>
-                <p className="text-mgm-dark/40 font-body text-sm mb-6">Please complete the payment on your device</p>
+                <p className="text-mgm-dark/70 font-body text-sm mb-6">Please complete the payment on your device</p>
                 <div className="bg-mgm-light/60 rounded-2xl p-5 border border-mgm-dark/5 max-w-sm mx-auto space-y-3">
-                  <div className="flex justify-between"><span className="text-mgm-dark/50 font-body text-sm">Amount</span><span className="font-heading font-bold text-mgm-dark">{formatINRDisplay(parseInt(amountRaw))}</span></div>
-                  <div className="flex justify-between"><span className="text-mgm-dark/50 font-body text-sm">Order ID</span><span className="font-body text-mgm-dark/70 text-sm">{orderId}</span></div>
-                  <div className="flex justify-between"><span className="text-mgm-dark/50 font-body text-sm">Status</span><span className="font-heading font-semibold text-amber-500 text-sm">Processing</span></div>
+                  <div className="flex justify-between"><span className="text-mgm-dark/70 font-body text-sm">Amount</span><span className="font-heading font-bold text-mgm-dark">{formatINRDisplay(parseInt(amountRaw))}</span></div>
+                  <div className="flex justify-between"><span className="text-mgm-dark/70 font-body text-sm">Order ID</span><span className="font-body text-mgm-dark/70 text-sm">{orderId}</span></div>
+                  <div className="flex justify-between"><span className="text-mgm-dark/70 font-body text-sm">Status</span><span className="font-heading font-semibold text-amber-500 text-sm">Processing</span></div>
                 </div>
-                <p className="text-mgm-dark/30 font-body text-xs mt-6">Automatically checking payment status every 3 seconds...</p>
+                <p className="text-mgm-dark/70 font-body text-xs mt-6">Automatically checking payment status every 3 seconds...</p>
               </div>
             )}
 
             {/* ═══ STEP 4: SUCCESS ═══ */}
             {step === 2 && paymentStatus === 'success' && (
-              <div className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-6 sm:p-10 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
+              <div role="status" className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-6 sm:p-10 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
                 <SuccessCheck size={80} />
                 <h2 className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading mt-6 mb-2">{'Payment Successful!'}</h2>
-                <p className="text-mgm-gold font-heading font-bold text-3xl sm:text-4xl mt-4 mb-8">{formatINRDisplay(parseInt(amountRaw))}</p>
+                <p className="text-mgm-gold-text font-heading font-bold text-3xl sm:text-4xl mt-4 mb-8">{formatINRDisplay(parseInt(amountRaw))}</p>
 
                 <div className="bg-mgm-light/60 rounded-2xl p-6 border border-mgm-dark/5 max-w-md mx-auto text-left space-y-3">
                   {[
@@ -812,14 +824,14 @@ const prefersReduced = usePrefersReducedMotion()
                     ['Paid To', 'MGM Financiers Pvt. Ltd.'],
                   ].map(([l, v], i) => (
                     <div key={i} className="flex justify-between items-center">
-                      <span className="text-mgm-dark/50 font-body text-sm">{l}</span>
-                      <span className={`font-heading font-semibold text-sm ${l === 'Status' ? 'text-mgm-gold' : 'text-mgm-dark'}`}>{v}</span>
+                      <span className="text-mgm-dark/70 font-body text-sm">{l}</span>
+                      <span className={`font-heading font-semibold text-sm ${l === 'Status' ? 'text-mgm-gold-text' : 'text-mgm-dark'}`}>{v}</span>
                     </div>
                   ))}
                 </div>
 
                 <div className="bg-mgm-gold/5 border border-mgm-gold/10 rounded-xl p-4 max-w-md mx-auto mt-6">
-                  <p className="text-mgm-dark/50 font-body text-xs leading-relaxed">Our Relationship Manager will verify and reconcile your payment shortly. If you have any queries, please contact us with the reference number above.</p>
+                  <p className="text-mgm-dark/70 font-body text-xs leading-relaxed">Our Relationship Manager will verify and reconcile your payment shortly. If you have any queries, please contact us with the reference number above.</p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 mt-8 max-w-md mx-auto">
@@ -827,7 +839,7 @@ const prefersReduced = usePrefersReducedMotion()
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
                     {'Download Receipt'}
                   </button>
-                  <button onClick={() => { setStep(0); setPaymentStatus('idle'); setAmount(''); setAmountRaw('0'); setName(''); setPhone(''); setEmail(''); setLoanAcc(''); setOrderId(''); setPaymentError(''); }} className="btn-interactive flex-1 border-2 border-mgm-dark/10 text-mgm-dark py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold transition-all duration-200 font-body text-sm">
+                  <button onClick={() => { setStep(0); setPaymentStatus('idle'); setAmount(''); setAmountRaw('0'); setName(''); setPhone(''); setEmail(''); setLoanAcc(''); setOrderId(''); setPaymentError(''); }} className="btn-interactive flex-1 border-2 border-mgm-dark/50 text-mgm-dark py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold-text transition-all duration-200 font-body text-sm">
                     Pay Another EMI
                   </button>
                 </div>
@@ -836,22 +848,22 @@ const prefersReduced = usePrefersReducedMotion()
 
             {/* ═══ FAILURE ═══ */}
             {step === 2 && paymentStatus === 'failed' && (
-              <div className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-6 sm:p-10 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
+              <div role="alert" className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-6 sm:p-10 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
                 <div className="w-20 h-20 mx-auto rounded-full bg-red-50 flex items-center justify-center mb-6">
-                  <svg className="w-10 h-10 text-red-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+                  <svg className="w-10 h-10 text-red-600" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
                 </div>
                 <h2 className="text-2xl font-bold text-mgm-dark font-heading mb-2">{'Payment Failed'}</h2>
-                <p className="text-mgm-dark/40 font-body text-sm mb-2">The payment could not be processed. No amount has been deducted.</p>
-                {paymentError && <p className="text-red-400 font-body text-xs mb-6">{paymentError}</p>}
+                <p className="text-mgm-dark/70 font-body text-sm mb-2">The payment could not be processed. No amount has been deducted.</p>
+                {paymentError && <p role="alert" className="text-red-600 font-body text-xs mb-6">{paymentError}</p>}
 
                 <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                   <button onClick={() => { setPaymentStatus('idle'); setPaymentError(''); }} className="btn-interactive flex-1 bg-mgm-dark text-white py-3 rounded-xl font-semibold hover:bg-mgm-dark/90 transition-all duration-200 font-body text-sm shadow-lg shadow-mgm-dark/20">
                     Retry Payment
                   </button>
-                  <a href="#contact" className="btn-interactive flex-1 border-2 border-mgm-dark/10 text-mgm-dark py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold transition-all duration-200 font-body text-sm text-center">
+                  <a href="#contact" className="btn-interactive flex-1 border-2 border-mgm-dark/50 text-mgm-dark py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold-text transition-all duration-200 font-body text-sm text-center">
                     Contact Support
                   </a>
-                  <button onClick={goBack} className="btn-interactive flex-1 border-2 border-mgm-dark/10 text-mgm-dark py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold transition-all duration-200 font-body text-sm">
+                  <button onClick={goBack} className="btn-interactive flex-1 border-2 border-mgm-dark/50 text-mgm-dark py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold-text transition-all duration-200 font-body text-sm">
                     Go Back
                   </button>
                 </div>
@@ -860,17 +872,17 @@ const prefersReduced = usePrefersReducedMotion()
 
             {/* ═══ EXPIRED ═══ */}
             {step === 2 && paymentStatus === 'expired' && (
-              <div className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-6 sm:p-10 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
+              <div role="status" className={`bg-white rounded-3xl shadow-2xl shadow-mgm-dark/5 border border-mgm-dark/5 p-6 sm:p-10 text-center ${prefersReduced ? '' : 'anim-scroll-fade is-visible'}`}>
                 <div className="w-20 h-20 mx-auto rounded-full bg-amber-50 flex items-center justify-center mb-6">
                   <svg className="w-10 h-10 text-amber-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                 </div>
                 <h2 className="text-2xl font-bold text-mgm-dark font-heading mb-2">{'Payment Pending'}</h2>
-                <p className="text-mgm-dark/40 font-body text-sm mb-8">The payment session has expired. Please try again.</p>
+                <p className="text-mgm-dark/70 font-body text-sm mb-8">The payment session has expired. Please try again.</p>
                 <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
                   <button onClick={() => { setPaymentStatus('idle'); setPaymentError(''); }} className="btn-interactive flex-1 bg-mgm-dark text-white py-3 rounded-xl font-semibold hover:bg-mgm-dark/90 transition-all duration-200 font-body text-sm shadow-lg shadow-mgm-dark/20">
                     {'Try Again'}
                   </button>
-                  <button onClick={goBack} className="btn-interactive flex-1 border-2 border-mgm-dark/10 text-mgm-dark py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold transition-all duration-200 font-body text-sm">
+                  <button onClick={goBack} className="btn-interactive flex-1 border-2 border-mgm-dark/50 text-mgm-dark py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold-text transition-all duration-200 font-body text-sm">
                     Go Back
                   </button>
                 </div>
@@ -884,7 +896,7 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-mgm-gold/[0.02] pointer-events-none" />
           <div className="max-w-[900px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div ref={timelineRef} className="text-center mb-14">
-              <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(timelineInView, 0)}`}>How It Works</span>
+              <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(timelineInView, 0)}`}>How It Works</span>
               <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-3 font-heading ${scrollAnim(timelineInView, 80)}`}>
                 Simple 4-Step Process
               </h2>
@@ -900,9 +912,9 @@ const prefersReduced = usePrefersReducedMotion()
                   <div className="w-14 h-14 mx-auto rounded-2xl bg-mgm-light border border-mgm-dark/5 flex items-center justify-center mb-5">
                     <svg className="w-6 h-6 text-mgm-gold" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d={item.icon} /></svg>
                   </div>
-                  <span className="text-[10px] font-body font-bold text-mgm-gold tracking-wider">{item.step}</span>
+                  <span className="text-[10px] font-body font-bold text-mgm-gold-text tracking-wider">{item.step}</span>
                   <h3 className="font-heading font-bold text-mgm-dark text-sm mt-1 mb-2">{item.title}</h3>
-                  <p className="text-mgm-dark/40 font-body text-xs leading-relaxed">{item.desc}</p>
+                  <p className="text-mgm-dark/70 font-body text-xs leading-relaxed">{item.desc}</p>
                   {i < 3 && (
                     <div className="hidden lg:block absolute top-7 left-[60%] w-[80%] h-px">
                       <div className="w-full h-full border-t border-dashed border-mgm-dark/10" />
@@ -929,18 +941,18 @@ const prefersReduced = usePrefersReducedMotion()
                       </div>
                       <div>
                         <h4 className="font-heading font-bold text-mgm-dark text-sm">256-bit SSL Encrypted</h4>
-                        <p className="text-mgm-dark/40 font-body text-xs">End-to-end protection</p>
+                        <p className="text-mgm-dark/70 font-body text-xs">End-to-end protection</p>
                       </div>
                     </div>
                     <div className="space-y-3">
                       {['PCI DSS Level 1 Compliant', 'Real-time fraud monitoring', 'Zero data storage on servers', 'Instant refund processing'].map((f, i) => (
                         <div key={i} className="flex items-center gap-3 bg-mgm-light/60 rounded-xl px-4 py-3">
                           <svg className="w-4 h-4 text-mgm-gold flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                          <span className="text-mgm-dark/60 font-body text-sm">{f}</span>
+                          <span className="text-mgm-dark/70 font-body text-sm">{f}</span>
                         </div>
                       ))}
                     </div>
-                    <div className="mt-6 flex items-center gap-2 text-mgm-dark/30">
+                    <div className="mt-6 flex items-center gap-2 text-mgm-dark/70">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
                       <span className="font-body text-xs">Powered by Cashfree Payments</span>
                     </div>
@@ -948,21 +960,21 @@ const prefersReduced = usePrefersReducedMotion()
                 </div>
               </div>
               <div className="w-full lg:w-1/2">
-                <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(split1InView, 80)}`}>Security</span>
+                <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(split1InView, 80)}`}>Security</span>
                 <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-4 mb-6 font-heading leading-tight ${scrollAnim(split1InView, 160)}`}>
                   Secure Payments.<br />Complete Transparency.
                 </h2>
-                <p className={`text-mgm-dark/50 mb-4 font-body text-sm leading-relaxed ${scrollAnim(split1InView, 240)}`}>
+                <p className={`text-mgm-dark/70 mb-4 font-body text-sm leading-relaxed ${scrollAnim(split1InView, 240)}`}>
                   Every payment is processed through Cashfree Payments, a PCI DSS Level 1 compliant payment gateway. Your financial data is encrypted end-to-end and never stored on our servers.
                 </p>
-                <p className={`text-mgm-dark/50 mb-6 font-body text-sm leading-relaxed ${scrollAnim(split1InView, 280)}`}>
+                <p className={`text-mgm-dark/70 mb-6 font-body text-sm leading-relaxed ${scrollAnim(split1InView, 280)}`}>
                   You receive instant acknowledgement for every transaction. Our relationship managers verify and reconcile each payment promptly, ensuring complete transparency throughout the process.
                 </p>
                 <div className={`flex items-center gap-3 ${scrollAnim(split1InView, 320)}`}>
                   <div className="w-10 h-10 rounded-xl bg-mgm-gold/10 flex items-center justify-center">
                     <svg className="w-5 h-5 text-mgm-gold" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </div>
-                  <span className="text-mgm-dark/60 font-body text-sm">RBI-registered NBFC · 28+ Years · 100% Transparent</span>
+                  <span className="text-mgm-dark/70 font-body text-sm">RBI-registered NBFC · 28+ Years · 100% Transparent</span>
                 </div>
               </div>
             </div>
@@ -986,7 +998,7 @@ const prefersReduced = usePrefersReducedMotion()
                       ].map((item, i) => (
                         <div key={i} className="bg-mgm-light/60 rounded-xl p-4 text-center border border-mgm-dark/5">
                           <svg className="w-6 h-6 text-mgm-gold mx-auto mb-2" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d={item.icon} /></svg>
-                          <span className="text-[10px] font-body font-semibold text-mgm-dark/60">{item.label}</span>
+                          <span className="text-[10px] font-body font-semibold text-mgm-dark/70">{item.label}</span>
                         </div>
                       ))}
                     </div>
@@ -999,7 +1011,7 @@ const prefersReduced = usePrefersReducedMotion()
                         {['No branch visit required', 'Instant payment processing', 'Download receipt instantly', 'Track payment history'].map((f, i) => (
                           <div key={i} className="flex items-center gap-2">
                             <svg className="w-3.5 h-3.5 text-mgm-gold flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                            <span className="text-mgm-dark/50 font-body text-xs">{f}</span>
+                            <span className="text-mgm-dark/70 font-body text-xs">{f}</span>
                           </div>
                         ))}
                       </div>
@@ -1008,14 +1020,14 @@ const prefersReduced = usePrefersReducedMotion()
                 </div>
               </div>
               <div className="w-full lg:w-1/2">
-                <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(split2InView, 80)}`}>Convenience</span>
+                <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(split2InView, 80)}`}>Convenience</span>
                 <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-4 mb-6 font-heading leading-tight ${scrollAnim(split2InView, 160)}`}>
                   Designed Around<br />Your Convenience
                 </h2>
-                <p className={`text-mgm-dark/50 mb-4 font-body text-sm leading-relaxed ${scrollAnim(split2InView, 240)}`}>
+                <p className={`text-mgm-dark/70 mb-4 font-body text-sm leading-relaxed ${scrollAnim(split2InView, 240)}`}>
                   Pay your EMI, make part-payments and prepayments securely online without visiting a branch. Our digital payment portal is available 24/7 for your convenience.
                 </p>
-                <p className={`text-mgm-dark/50 mb-6 font-body text-sm leading-relaxed ${scrollAnim(split2InView, 280)}`}>
+                <p className={`text-mgm-dark/70 mb-6 font-body text-sm leading-relaxed ${scrollAnim(split2InView, 280)}`}>
                   Choose from multiple payment options , scan a QR code, use UIM, or proceed through our secure payment gateway. Every transaction is instant and comes with a digital acknowledgement.
                 </p>
               </div>
@@ -1027,7 +1039,7 @@ const prefersReduced = usePrefersReducedMotion()
         <section className="py-16 sm:py-24 bg-white relative overflow-hidden">
           <div className="max-w-[700px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div ref={guidesRef} className="text-center mb-12">
-              <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(guidesInView, 0)}`}>Stay Safe</span>
+              <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(guidesInView, 0)}`}>Stay Safe</span>
               <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-3 font-heading ${scrollAnim(guidesInView, 80)}`}>
                 Safe Payment Guidelines
               </h2>
@@ -1047,7 +1059,7 @@ const prefersReduced = usePrefersReducedMotion()
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-heading font-bold text-mgm-dark text-sm">{item.title}</h3>
-                    <p className="text-mgm-dark/40 font-body text-xs leading-relaxed mt-0.5">{item.desc}</p>
+                    <p className="text-mgm-dark/70 font-body text-xs leading-relaxed mt-0.5">{item.desc}</p>
                   </div>
                 </div>
               ))}
@@ -1059,7 +1071,7 @@ const prefersReduced = usePrefersReducedMotion()
         <section className="py-16 sm:py-24 bg-white relative overflow-hidden">
           <div className="max-w-[1000px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div ref={assistRef}>
-              <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(assistInView, 0)}`}>Support</span>
+              <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(assistInView, 0)}`}>Support</span>
               <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-3 mb-10 font-heading ${scrollAnim(assistInView, 80)}`}>
                 Need Assistance?
               </h2>
@@ -1074,8 +1086,8 @@ const prefersReduced = usePrefersReducedMotion()
                       <svg className="w-6 h-6 text-mgm-gold" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d={item.icon} /></svg>
                     </div>
                     <h3 className="font-heading font-bold text-mgm-dark text-base mb-2">{item.title}</h3>
-                    <p className="text-mgm-dark/40 font-body text-sm mb-4">{item.detail}</p>
-                    <span className="text-mgm-gold font-body text-sm font-semibold cursor-pointer hover:underline">{item.action} →</span>
+                    <p className="text-mgm-dark/70 font-body text-sm mb-4">{item.detail}</p>
+                    <span className="text-mgm-gold-text font-body text-sm font-semibold cursor-pointer hover:underline">{item.action} →</span>
                   </div>
                 ))}
               </div>
@@ -1084,8 +1096,8 @@ const prefersReduced = usePrefersReducedMotion()
                   <svg className="w-5 h-5 text-mgm-gold mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   <div>
                     <h4 className="font-heading font-bold text-mgm-dark text-sm mb-1">Office Hours</h4>
-                    <p className="text-mgm-dark/40 font-body text-sm">Monday – Saturday: 9:00 AM – 6:00 PM | Sunday: Closed</p>
-                    <p className="text-mgm-dark/30 font-body text-xs mt-1">Emergency: Available 24/7 via email</p>
+                    <p className="text-mgm-dark/70 font-body text-sm">Monday – Saturday: 9:00 AM – 6:00 PM | Sunday: Closed</p>
+                    <p className="text-mgm-dark/70 font-body text-xs mt-1">Emergency: Available 24/7 via email</p>
                   </div>
                 </div>
               </div>
@@ -1097,21 +1109,24 @@ const prefersReduced = usePrefersReducedMotion()
         <section className="py-16 sm:py-24 bg-mgm-light/30 relative overflow-hidden">
           <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center mb-10">
-              <span className="text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body">Payment Status</span>
+              <span className="text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body">Payment Status</span>
               <h2 className="text-2xl sm:text-3xl font-bold text-mgm-dark mt-3 font-heading">
                 Track Your Payment
               </h2>
-              <p className="text-mgm-dark/40 font-body text-sm mt-3">Enter your registered phone number to check the status of your latest payment.</p>
+              <p className="text-mgm-dark/70 font-body text-sm mt-3">Enter your registered phone number to check the status of your latest payment.</p>
             </div>
             <div className="bg-white rounded-3xl shadow-xl shadow-mgm-dark/5 border border-mgm-dark/5 p-8 sm:p-10">
               <div className="flex gap-3">
                 <div className="flex-1 relative">
                   <input
                     type="tel"
+                    autoComplete="tel"
+                    aria-label="Registered phone number"
+                    aria-invalid={!!trackError} aria-describedby={trackError ? 'payemi-track-error' : undefined}
                     value={trackPhone}
                     onChange={(e) => { setTrackPhone(e.target.value.replace(/[^\d]/g, '').slice(0, 10)); setTrackResult(null); setTrackError(''); }}
                     placeholder="Enter 10-digit phone number"
-                    className="w-full bg-mgm-light/40 border border-mgm-dark/10 rounded-xl px-4 py-3 font-body text-sm text-mgm-dark outline-none focus:border-mgm-gold/40 focus:ring-2 focus:ring-mgm-gold/10 transition-all"
+                    className="w-full bg-mgm-light/40 border border-mgm-dark/50 rounded-xl px-4 py-3 font-body text-sm text-mgm-dark outline-none focus:border-mgm-gold/40 focus:ring-2 focus:ring-mgm-gold/10 transition-all"
                   />
                 </div>
                 <button
@@ -1128,32 +1143,32 @@ const prefersReduced = usePrefersReducedMotion()
                 </button>
               </div>
               {trackError && (
-                <p className="text-red-400 font-body text-xs mt-3">{trackError}</p>
+                <p id="payemi-track-error" role="alert" className="text-red-600 font-body text-xs mt-3">{trackError}</p>
               )}
               {trackResult && (
-                <div className="mt-6 bg-mgm-light/60 rounded-2xl p-5 border border-mgm-dark/5 space-y-3">
+                <div role="status" className="mt-6 bg-mgm-light/60 rounded-2xl p-5 border border-mgm-dark/5 space-y-3">
                   {trackResult.length > 0 ? trackResult.map((p, i) => (
                     <div key={i} className="bg-white rounded-xl p-4 border border-mgm-dark/5 mb-3 last:mb-0">
-                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/50 font-body text-sm">Name</span><span className="font-heading font-semibold text-mgm-dark text-sm">{p.customerName}</span></div>
-                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/50 font-body text-sm">Order ID</span><span className="font-body text-mgm-dark/70 text-sm">{p.orderId}</span></div>
-                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/50 font-body text-sm">Amount</span><span className="font-heading font-bold text-mgm-dark">{formatINRDisplay(parseInt(String(p.amount)))}</span></div>
-                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/50 font-body text-sm">Type</span><span className="font-heading font-semibold text-mgm-dark text-sm">{p.paymentType}</span></div>
-                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/50 font-body text-sm">Status</span>
+                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/70 font-body text-sm">Name</span><span className="font-heading font-semibold text-mgm-dark text-sm">{p.customerName}</span></div>
+                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/70 font-body text-sm">Order ID</span><span className="font-body text-mgm-dark/70 text-sm">{p.orderId}</span></div>
+                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/70 font-body text-sm">Amount</span><span className="font-heading font-bold text-mgm-dark">{formatINRDisplay(parseInt(String(p.amount)))}</span></div>
+                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/70 font-body text-sm">Type</span><span className="font-heading font-semibold text-mgm-dark text-sm">{p.paymentType}</span></div>
+                      <div className="flex justify-between mb-2"><span className="text-mgm-dark/70 font-body text-sm">Status</span>
                         <span className={`font-heading font-semibold text-sm ${
-                          p.status === 'SUCCESS' || p.status === 'COMPLETED' ? 'text-green-600' :
-                          p.status === 'FAILED' || p.status === 'EXPIRED' ? 'text-red-500' :
-                          p.status === 'PROCESSING' ? 'text-amber-500' :
-                          p.status === 'REFUNDED' ? 'text-purple-500' : 'text-mgm-dark'
+                          p.status === 'SUCCESS' || p.status === 'COMPLETED' ? 'text-green-700' :
+                          p.status === 'FAILED' || p.status === 'EXPIRED' ? 'text-red-600' :
+                          p.status === 'PROCESSING' ? 'text-amber-700' :
+                          p.status === 'REFUNDED' ? 'text-purple-600' : 'text-mgm-dark'
                         }`}>{p.status}</span>
                       </div>
                       {p.paidAt && (
-                        <div className="flex justify-between mb-2"><span className="text-mgm-dark/50 font-body text-sm">Paid At</span><span className="font-body text-mgm-dark/70 text-sm">{new Date(p.paidAt).toLocaleString('en-IN')}</span></div>
+                        <div className="flex justify-between mb-2"><span className="text-mgm-dark/70 font-body text-sm">Paid At</span><span className="font-body text-mgm-dark/70 text-sm">{new Date(p.paidAt).toLocaleString('en-IN')}</span></div>
                       )}
-                      <div className="flex justify-between"><span className="text-mgm-dark/50 font-body text-sm">Date</span><span className="font-body text-mgm-dark/70 text-sm">{new Date(p.createdAt).toLocaleString('en-IN')}</span></div>
+                      <div className="flex justify-between"><span className="text-mgm-dark/70 font-body text-sm">Date</span><span className="font-body text-mgm-dark/70 text-sm">{new Date(p.createdAt).toLocaleString('en-IN')}</span></div>
                     </div>
                   )) : (
                     <div className="text-center py-4">
-                      <p className="text-mgm-dark/40 font-body text-sm">No payment records found</p>
+                      <p className="text-mgm-dark/70 font-body text-sm">No payment records found</p>
                     </div>
                   )}
                   </div>

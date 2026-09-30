@@ -4,7 +4,7 @@ function Section({ title, children }) {
   return (
     <div className="mb-10">
       <h2 className="text-xl font-bold text-mgm-dark font-heading tracking-tight mb-4">{title}</h2>
-      <div className="text-mgm-dark/50 font-body text-[14.5px] leading-[1.85] space-y-4">
+      <div className="text-mgm-dark/70 font-body text-[14.5px] leading-[1.85] space-y-4">
         {children}
       </div>
     </div>
@@ -81,9 +81,9 @@ return (
         <p>Redressal Mechanism: Any complaints, abuse or concerns with regards to content and or comment or breach of these terms shall be immediately informed to the designated Grievance Officer as mentioned below via in writing or through email signed with the electronic signature.</p>
         <div className="mt-4 p-5 bg-mgm-light/40 rounded-xl border border-mgm-dark/[0.04]">
           <p className="font-heading font-bold text-mgm-dark text-sm mb-1">Mr. Ratul Mohindra (Grievance Officer)</p>
-          <p className="text-mgm-dark/45 font-body text-sm">Website: www.mgmfinanciers.com</p>
-          <p className="text-mgm-dark/45 font-body text-sm">Email: ratul@mgmfinanciers.com</p>
-          <p className="text-mgm-dark/45 font-body text-sm">Phone: 0161-5047087 / 9988881003</p>
+          <p className="text-mgm-dark/70 font-body text-sm">Website: www.mgmfinanciers.com</p>
+          <p className="text-mgm-dark/70 font-body text-sm">Email: ratul@mgmfinanciers.com</p>
+          <p className="text-mgm-dark/70 font-body text-sm">Phone: 0161-5047087 / 9988881003</p>
         </div>
       </Section>
     </LegalPage>

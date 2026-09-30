@@ -197,6 +197,7 @@ const [lang, setLang] = useState('en')
       className="fixed inset-0 z-[100] flex items-center justify-center p-4"
       role="dialog"
       aria-modal="true"
+      lang={lang}
       aria-labelledby="advisory-heading"
     >
       <div
@@ -220,7 +221,7 @@ const [lang, setLang] = useState('en')
             <button
               ref={closeRef}
               onClick={handleClose}
-              className="w-10 h-10 rounded-full flex items-center justify-center text-mgm-dark/30 hover:text-mgm-dark hover:bg-mgm-dark/[0.04] transition-all duration-200"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-mgm-dark/70 hover:text-mgm-dark hover:bg-mgm-dark/[0.04] transition-all duration-200"
               aria-label="Close"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -230,22 +231,22 @@ const [lang, setLang] = useState('en')
           </div>
 
           <div className="flex items-center gap-3 mb-4">
-            <span className="inline-block text-mgm-gold font-semibold text-[10px] tracking-[0.25em] uppercase font-body bg-mgm-gold/[0.07] px-3 py-1.5 rounded-full">
+            <span className="inline-block text-mgm-gold-text font-semibold text-[10px] tracking-[0.25em] uppercase font-body bg-mgm-gold/[0.07] px-3 py-1.5 rounded-full">
               {'Customer Advisory'}
             </span>
             {/* Language toggle */}
             <button
               onClick={() => setLang(lang === 'en' ? 'hi' : 'en')}
-              className="inline-flex items-center gap-1.5 text-mgm-dark/40 font-body text-[11px] font-medium hover:text-mgm-dark/70 transition-colors px-2.5 py-1 rounded-full border border-mgm-dark/[0.06] hover:border-mgm-dark/10"
+              className="inline-flex items-center gap-1.5 text-mgm-dark/70 font-body text-[11px] font-medium hover:text-mgm-dark/70 transition-colors px-2.5 py-1 rounded-full border border-mgm-dark/50 hover:border-mgm-dark/60"
             >
               {lang === 'en' ? 'हिन्दी' : 'English'}
             </button>
           </div>
 
-          <h1 id="advisory-heading" className="text-2xl sm:text-[1.7rem] font-bold text-mgm-dark font-heading tracking-tight mb-2.5">
+          <h2 id="advisory-heading" className="text-2xl sm:text-[1.7rem] font-bold text-mgm-dark font-heading tracking-tight mb-2.5">
             {lang === 'en' ? 'Important Information for All Customers' : 'सभी ग्राहकों के लिए महत्वपूर्ण जानकारी'}
-          </h1>
-          <p className="text-mgm-dark/40 font-body text-[13.5px] leading-relaxed max-w-2xl">
+          </h2>
+          <p className="text-mgm-dark/70 font-body text-[13.5px] leading-relaxed max-w-2xl">
             {lang === 'en'
               ? 'At MGM Financiers, transparency and customer protection are at the core of everything we do. Please read the following important information before interacting with our representatives or making any payment.'
               : 'MGM Financiers में, पारदर्शिता और ग्राहक सुरक्षा हमारे हर कार्य का केंद्र है। कृपया हमारे प्रतिनिधियों से बातचीत करने या कोई भुगतान करने से पहले निम्नलिखित महत्वपूर्ण जानकारी पढ़ें।'}
@@ -253,7 +254,7 @@ const [lang, setLang] = useState('en')
         </div>
 
         {/* ── SCROLLABLE CONTENT ── */}
-        <div className="flex-1 overflow-y-auto px-6 sm:px-10 py-6 sm:py-8 min-h-0 advisory-scrollbar">
+        <div tabIndex={0} role="region" aria-label="Advisory details" className="flex-1 overflow-y-auto px-6 sm:px-10 py-6 sm:py-8 min-h-0 advisory-scrollbar">
           <div className="space-y-0">
             {ADVISORIES.map((item, i) => (
               <div
@@ -266,7 +267,7 @@ const [lang, setLang] = useState('en')
               >
                 <div className="py-5">
                   <div className="flex items-start gap-4">
-                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-mgm-dark/[0.04] flex items-center justify-center text-mgm-dark/30 font-heading font-bold text-xs mt-0.5">
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-mgm-dark/[0.04] flex items-center justify-center text-mgm-dark/70 font-heading font-bold text-xs mt-0.5">
                       {i + 1}
                     </span>
                     <div className="flex-1 min-w-0">
@@ -277,7 +278,7 @@ const [lang, setLang] = useState('en')
                         {langT(item).points.map((pt, j) => (
                           <li key={j} className="flex items-start gap-2.5">
                             <span className="flex-shrink-0 w-1 h-1 rounded-full bg-mgm-gold/40 mt-[7px]" />
-                            <span className="text-mgm-dark/45 font-body text-[13px] leading-relaxed">{pt}</span>
+                            <span className="text-mgm-dark/70 font-body text-[13px] leading-relaxed">{pt}</span>
                           </li>
                         ))}
                       </ul>
@@ -301,7 +302,7 @@ const [lang, setLang] = useState('en')
             <h3 className="font-heading font-bold text-mgm-dark text-sm mb-2">
               {lang === 'en' ? 'Stay Alert. Stay Protected.' : 'सतर्क रहें। सुरक्षित रहें।'}
             </h3>
-            <p className="text-mgm-dark/50 font-body text-[13px] leading-relaxed">
+            <p className="text-mgm-dark/70 font-body text-[13px] leading-relaxed">
               {lang === 'en'
                 ? 'If you receive any suspicious call, message or payment request claiming to represent MGM Financiers, discontinue the conversation immediately and contact us through our official channels listed on this website.'
                 : 'यदि आपको MGM Financiers का प्रतिनिधि होने का दावा करने वाली कोई संदिग्ध कॉल, संदेश या भुगतान अनुरोध प्राप्त होता है, तो तुरंत बातचीत बंद करें और इस वेबसाइट पर सूचीबद्ध हमारे आधिकारिक चैनलों के माध्यम से हमसे संपर्क करें।'}
@@ -311,13 +312,13 @@ const [lang, setLang] = useState('en')
 
         {/* ── FOOTER (fixed) ── */}
         <div className="flex-shrink-0 border-t border-mgm-dark/[0.04] px-6 sm:px-10 py-5 sm:py-6 bg-white">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 text-mgm-dark/40 font-body text-xs">
-            <span>Customer Care: <strong className="text-mgm-dark/60 font-semibold">0161 5047087</strong></span>
-            <span className="hidden sm:inline text-mgm-dark/15">|</span>
-            <span><strong className="text-mgm-dark/60 font-semibold">customer.redressal@mgmfinanciers.com</strong></span>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4 text-mgm-dark/70 font-body text-xs">
+            <span>Customer Care: <strong className="text-mgm-dark/70 font-semibold">0161 5047087</strong></span>
+            <span className="hidden sm:inline text-mgm-dark/70" aria-hidden="true">|</span>
+            <span><strong className="text-mgm-dark/70 font-semibold">customer.redressal@mgmfinanciers.com</strong></span>
           </div>
 
-          <p className="text-mgm-dark/25 font-body text-[11px] leading-relaxed mb-5">
+          <p className="text-mgm-dark/70 font-body text-[11px] leading-relaxed mb-5">
             {lang === 'en'
               ? 'This advisory is issued in the interest of customer safety and responsible financial practices.'
               : 'यह सलाह ग्राहक सुरक्षा और जिम्मेदार वित्तीय प्रथाओं के हित में जारी की गई है।'}
@@ -332,7 +333,7 @@ const [lang, setLang] = useState('en')
                   onChange={(e) => setDontShowAgain(e.target.checked)}
                   className="peer sr-only"
                 />
-                <div className="w-[18px] h-[18px] rounded border border-mgm-dark/15 bg-white peer-checked:bg-mgm-gold peer-checked:border-mgm-gold transition-colors duration-200 flex items-center justify-center">
+                <div className="w-[18px] h-[18px] rounded border border-mgm-dark/50 bg-white peer-checked:bg-mgm-gold-text peer-checked:border-mgm-gold-text transition-colors duration-200 flex items-center justify-center peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-mgm-dark">
                   {dontShowAgain && (
                     <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
@@ -340,7 +341,7 @@ const [lang, setLang] = useState('en')
                   )}
                 </div>
               </div>
-              <span className="text-mgm-dark/40 font-body text-xs group-hover:text-mgm-dark/60 transition-colors">
+              <span className="text-mgm-dark/70 font-body text-xs group-hover:text-mgm-dark/70 transition-colors">
                 {lang === 'en' ? "Don't show this message again" : 'इस संदेश को फिर से न दिखाएँ'}
               </span>
             </label>
@@ -348,7 +349,7 @@ const [lang, setLang] = useState('en')
             <div className="flex flex-col sm:flex-row gap-3 sm:ml-auto w-full sm:w-auto">
               <button
                 onClick={handleContactSupport}
-                className="btn-interactive px-6 py-3 sm:py-2.5 rounded-full border border-mgm-dark/10 text-mgm-dark/60 font-body font-semibold text-sm hover:border-mgm-dark/20 hover:text-mgm-dark transition-all duration-200 text-center w-full sm:w-auto"
+                className="btn-interactive px-6 py-3 sm:py-2.5 rounded-full border border-mgm-dark/10 text-mgm-dark/70 font-body font-semibold text-sm hover:border-mgm-dark/20 hover:text-mgm-dark transition-all duration-200 text-center w-full sm:w-auto"
               >
                 {lang === 'en' ? 'Contact Support' : 'सहायता से संपर्क करें'}
               </button>

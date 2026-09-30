@@ -85,13 +85,13 @@ const LandingPage = () => {
         <div className="flex justify-center mt-3 space-x-4">
           <a
             href="#"
-            className="text-[10px] text-gray-400 underline decoration-gray-300"
+            className="text-[10px] text-gray-500 underline decoration-gray-300"
           >
             Privacy Policy
           </a>
           <a
             href="#"
-            className="text-[10px] text-gray-400 underline decoration-gray-300"
+            className="text-[10px] text-gray-500 underline decoration-gray-300"
           >
             Terms
           </a>

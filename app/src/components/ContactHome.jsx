@@ -13,13 +13,13 @@ function ContactHome() {
     <section id="contact" className="py-24 bg-white relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={headingRef} className="text-center">
-          <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(headingInView, 0)}`}>
+          <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(headingInView, 0)}`}>
             Get In Touch
           </span>
           <h2 className={`text-3xl sm:text-4xl font-bold text-mgm-dark mt-4 mb-5 font-heading ${scrollAnim(headingInView, 80)}`}>
             Contact Us Today
           </h2>
-          <p className={`text-mgm-dark/50 max-w-lg mx-auto font-body text-sm leading-relaxed mb-8 ${scrollAnim(headingInView, 160)}`}>
+          <p className={`text-mgm-dark/70 max-w-lg mx-auto font-body text-sm leading-relaxed mb-8 ${scrollAnim(headingInView, 160)}`}>
             Ready to take the next step? Get in touch with us today for a free consultation.
           </p>
           <div className={`flex flex-wrap justify-center gap-3 ${scrollAnim(headingInView, 240)}`}>

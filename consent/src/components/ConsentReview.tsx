@@ -48,8 +48,13 @@ const ConsentReview: React.FC = () => {
         <h3 className="text-xs font-bold text-gray-900 mb-2">
           Declaration & Consent
         </h3>
-        <div className="bg-gray-50 border border-gray-200 rounded-lg p-3 max-h-56 overflow-y-auto mb-4">
-          <p className="text-[11px] text-gray-700 leading-relaxed space-y-3">
+        <div
+          className="bg-gray-50 border border-gray-200 rounded-lg p-3 max-h-56 overflow-y-auto mb-4"
+          tabIndex={0}
+          role="region"
+          aria-label="Consent declaration"
+        >
+          <div className="text-[11px] text-gray-700 leading-relaxed space-y-3">
             I hereby provide my explicit and informed consent to{" "}
             <strong>{CONSENT_DETAILS.nbfcName}</strong> to access my credit
             information from <strong>{CONSENT_DETAILS.bureauName}</strong> for
@@ -68,7 +73,7 @@ const ConsentReview: React.FC = () => {
             <br />
             By clicking "I Agree & Give Consent", I confirm that I am the
             authorized user of this mobile number.
-          </p>
+          </div>
         </div>
 
         <label className="flex items-start cursor-pointer group mb-4">
@@ -77,7 +82,7 @@ const ConsentReview: React.FC = () => {
               type="checkbox"
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition-all"
+              className="w-4 h-4 rounded border-gray-500 text-blue-600 focus:ring-blue-500 transition-all"
             />
           </div>
           <div className="ml-2.5 text-xs">
@@ -103,7 +108,7 @@ const ConsentReview: React.FC = () => {
 
         <button
           onClick={() => navigate(`/${consentId}/otp`)}
-          className="w-full text-xs font-semibold text-gray-400 hover:text-gray-700 py-1"
+          className="w-full text-xs font-semibold text-gray-500 hover:text-gray-700 py-1"
         >
           Cancel Request
         </button>

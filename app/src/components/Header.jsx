@@ -17,6 +17,9 @@ function Header() {
   const grievanceRef = useRef(null)
   const servicesRef = useRef(null)
   const governanceRef = useRef(null)
+  const hamburgerRef = useRef(null)
+  const closeBtnRef = useRef(null)
+  const drawerRef = useRef(null)
   const prefersReduced = usePrefersReducedMotion()
 
   useEffect(() => {
@@ -28,13 +31,17 @@ function Header() {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden'
+      closeBtnRef.current?.focus()
     } else {
       document.body.style.overflow = ''
     }
     return () => { document.body.style.overflow = '' }
   }, [isOpen])
 
-  const closeMenu = useCallback(() => setIsOpen(false), [])
+  const closeMenu = useCallback(() => {
+    setIsOpen(false)
+    hamburgerRef.current?.focus()
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -53,14 +60,47 @@ function Header() {
   }, [])
 
   useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') setIsOpen(false)
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        if (isOpen) {
+          setIsOpen(false)
+          hamburgerRef.current?.focus()
+        } else if (servicesOpen) {
+          setServicesOpen(false)
+          servicesRef.current?.querySelector('button')?.focus()
+        } else if (governanceOpen) {
+          setGovernanceOpen(false)
+          governanceRef.current?.querySelector('button')?.focus()
+        } else if (grievanceOpen) {
+          setGrievanceOpen(false)
+          grievanceRef.current?.querySelector('button')?.focus()
+        }
+        return
+      }
+      if (e.key === 'Tab' && isOpen && drawerRef.current) {
+        const drawer = drawerRef.current
+        const focusables = drawer.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+        if (!focusables.length) return
+        const first = focusables[0]
+        const last = focusables[focusables.length - 1]
+        const active = document.activeElement
+        if (!drawer.contains(active)) {
+          e.preventDefault()
+          first.focus()
+        } else if (e.shiftKey && active === first) {
+          e.preventDefault()
+          last.focus()
+        } else if (!e.shiftKey && active === last) {
+          e.preventDefault()
+          first.focus()
+        }
+      }
     }
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape)
-      return () => document.removeEventListener('keydown', handleEscape)
-    }
-  }, [isOpen])
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, servicesOpen, governanceOpen, grievanceOpen])
 
   const navLinks = [
     { name: 'About Us', to: '/about' },
@@ -77,8 +117,8 @@ function Header() {
           !prefersReduced ? 'anim-nav-enter' : ''
         } ${
           scrolled
-            ? 'bg-mgm-dark/10 backdrop-blur-2xl shadow-2xl shadow-black/20 border-white/10'
-            : 'bg-mgm-dark/10 backdrop-blur-xl border-white/5'
+            ? 'bg-white/85 backdrop-blur-2xl shadow-2xl shadow-black/20 border-black/5'
+            : 'bg-white/85 backdrop-blur-xl border-black/5'
         }`}>
           <div className="px-5 lg:px-8">
             <div className="flex justify-between items-center h-14 lg:h-16">
@@ -88,20 +128,23 @@ function Header() {
                 </Link>
               </div>
 
-              <nav className="hidden xl:flex items-center gap-0.5">
+              <nav className="hidden xl:flex items-center gap-0.5" aria-label="Main navigation">
                 {/* Services Mega Menu */}
                 <div className="relative" ref={servicesRef} onMouseLeave={() => setServicesOpen(false)}>
                   <button
                     onClick={() => setServicesOpen(!servicesOpen)}
                     onMouseEnter={() => setServicesOpen(true)}
+                    aria-expanded={servicesOpen}
+                    aria-controls="services-mega-menu"
                     className="nav-link-underline relative px-3.5 py-2 text-[13px] font-medium text-black/60 hover:text-black rounded-full hover:bg-white/10 transition-all duration-200 font-body flex items-center gap-1"
                   >
                     {'Services'}
-                    <svg className={`w-3 h-3 transition-transform duration-200 ${servicesOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+                    <svg aria-hidden="true" className={`w-3 h-3 transition-transform duration-200 ${servicesOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                   </button>
                   <div
+                    id="services-mega-menu"
                     className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-[600px] p-5 bg-white/95 backdrop-blur-xl rounded-2xl border border-gray-100 shadow-xl shadow-black/10 transition-all duration-200 origin-top ${
-                      servicesOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+                      servicesOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none invisible'
                     }`}
                   >
                     <div className="grid grid-cols-2 gap-1 mb-4">
@@ -116,18 +159,18 @@ function Header() {
                         <Link key={s.id} to={`/services/${s.id}`} onClick={() => setServicesOpen(false)}
                           className="flex items-center gap-3 p-3 rounded-xl text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors group">
                           <div className="w-9 h-9 rounded-xl bg-[#f2f3f5] flex items-center justify-center flex-shrink-0 group-hover:bg-[#c9a227]/10 transition-colors">
-                            <svg className="w-4 h-4 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={s.icon}/></svg>
+                            <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={s.icon}/></svg>
                           </div>
                           <div>
                             <div className="text-sm font-medium font-body">{s.name}</div>
-                            <div className="text-xs text-gray-400 font-body">{s.desc}</div>
+                            <div className="text-xs text-gray-600 font-body">{s.desc}</div>
                           </div>
                         </Link>
                       ))}
                     </div>
                     <div className="border-t border-gray-100 pt-3">
                       <Link to="/services" onClick={() => setServicesOpen(false)}
-                        className="flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-[#c9a227] hover:text-[#b8911f] transition-colors font-body rounded-xl hover:bg-[#c9a227]/5">
+                        className="flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-mgm-gold-text hover:text-[#7a5f00] transition-colors font-body rounded-xl hover:bg-[#c9a227]/5">
                         {'View All Services'}
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                       </Link>
@@ -147,14 +190,17 @@ function Header() {
                   <button
                     onClick={() => setGovernanceOpen(!governanceOpen)}
                     onMouseEnter={() => setGovernanceOpen(true)}
+                    aria-expanded={governanceOpen}
+                    aria-controls="governance-menu"
                     className="nav-link-underline relative px-3.5 py-2 text-[13px] font-medium text-black/60 hover:text-black rounded-full hover:bg-white/10 transition-all duration-200 font-body flex items-center gap-1"
                   >
                     {'Governance'}
-                    <svg className={`w-3 h-3 transition-transform duration-200 ${governanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+                    <svg aria-hidden="true" className={`w-3 h-3 transition-transform duration-200 ${governanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                   </button>
                   <div
+                    id="governance-menu"
                     className={`absolute top-full left-1/2 -translate-x-1/2 mt-1 w-64 py-2 bg-white/95 backdrop-blur-xl rounded-2xl border border-gray-100 shadow-xl shadow-black/10 transition-all duration-200 origin-top ${
-                      governanceOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+                      governanceOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none invisible'
                     }`}
                   >
                     {/* Page links */}
@@ -205,24 +251,27 @@ function Header() {
                   <button
                     onClick={() => setGrievanceOpen(!grievanceOpen)}
                     onMouseEnter={() => setGrievanceOpen(true)}
+                    aria-expanded={grievanceOpen}
+                    aria-controls="grievance-menu"
                     className="nav-link-underline relative px-3.5 py-2 text-[13px] font-medium text-black/60 hover:text-black rounded-full hover:bg-white/10 transition-all duration-200 font-body flex items-center gap-1"
                   >
                     {'Grievance'}
-                    <svg className={`w-3 h-3 transition-transform duration-200 ${grievanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+                    <svg aria-hidden="true" className={`w-3 h-3 transition-transform duration-200 ${grievanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                   </button>
                   <div
+                    id="grievance-menu"
                     className={`absolute top-full left-0 mt-1 w-56 py-2 bg-white/95 backdrop-blur-xl rounded-2xl border border-gray-100 shadow-xl shadow-black/10 transition-all duration-200 origin-top-left ${
-                      grievanceOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+                      grievanceOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none invisible'
                     }`}
                   >
                     <Link to="/grievance" onClick={() => setGrievanceOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors">
-                      <svg className="w-4 h-4 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                      <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                       {'Submit Grievance'}
                     </Link>
                     <Link to="/grievance" onClick={() => { setGrievanceOpen(false); setTimeout(() => { window.dispatchEvent(new CustomEvent('grievance-track')) }, 100) }}
                       className="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors">
-                      <svg className="w-4 h-4 text-[#c9a227]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                      <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                       {'Track Your Grievance'}
                     </Link>
                   </div>
@@ -248,9 +297,12 @@ function Header() {
               </div>
 
               <button
+                ref={hamburgerRef}
                 className="xl:hidden p-2.5 rounded-full transition-colors relative z-[60] bg-white/90 backdrop-blur-md shadow-lg shadow-black/10 border border-black/5"
                 onClick={() => setIsOpen(!isOpen)}
                 aria-label={isOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isOpen}
+                aria-controls="mobile-menu"
               >
                 <svg className="w-5 h-5 text-mgm-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   {isOpen ? (
@@ -269,16 +321,21 @@ function Header() {
 
       {/* Mobile Navigation Overlay */}
       <div
-        className={`xl:hidden fixed inset-0 z-[55] transition-all duration-300 ease-out ${
-          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        id="mobile-menu"
+        className={`xl:hidden fixed inset-0 z-[55] transition-[opacity] duration-300 ease-out ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none invisible'
         }`}
         onClick={closeMenu}
       >
         {/* Backdrop */}
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" aria-hidden="true" />
 
         {/* Drawer */}
         <div
+          ref={drawerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation menu"
           className={`absolute inset-0 flex flex-col transition-transform duration-300 ease-out ${
             isOpen ? 'translate-y-0' : '-translate-y-full'
           }`}
@@ -288,6 +345,7 @@ function Header() {
           {/* Close button */}
           <div className="flex justify-end p-5">
             <button
+              ref={closeBtnRef}
               onClick={closeMenu}
               className="p-2.5 -m-2.5 rounded-full bg-white/80 hover:bg-white transition-colors shadow-sm border border-black/5"
               aria-label="Close menu"
@@ -299,27 +357,29 @@ function Header() {
           </div>
 
           {/* Scrollable nav content */}
-          <nav className="flex-1 overflow-y-auto px-8 pb-8 pt-4 overscroll-contain">
+          <nav className="flex-1 overflow-y-auto px-8 pb-8 pt-4 overscroll-contain" aria-label="Mobile navigation">
             <div className="flex flex-col gap-0">
               {/* Mobile Services */}
               <div>
                 <button
                   onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
+                  aria-expanded={mobileServicesOpen}
+                  aria-controls="mobile-services-menu"
                   className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors flex items-center gap-2 w-full"
                 >
                   {'Services'}
-                  <svg className={`w-5 h-5 transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+                  <svg aria-hidden="true" className={`w-5 h-5 transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                 </button>
-                <div className={`overflow-hidden transition-all duration-300 ${mobileServicesOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div id="mobile-services-menu" className={`overflow-hidden transition-all duration-300 ${mobileServicesOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 invisible'}`}>
                   <Link to="/services" onClick={closeMenu}
-                    className="pl-6 py-3 text-lg font-body text-mgm-gold hover:text-mgm-dark transition-colors block font-medium">
+                    className="pl-6 py-3 text-lg font-body text-mgm-gold-text hover:text-mgm-dark transition-colors block font-medium">
                     {'View All Services'}
                   </Link>
                   {['personal-loan', 'vehicle-loan', 'gold-loan', 'loan-against-property', 'construction-loan', 'consumer-durable-loan'].map((id) => {
                     const names = { 'personal-loan': 'Personal Loan', 'vehicle-loan': 'Vehicle Loan', 'gold-loan': 'Gold Loan', 'loan-against-property': 'Loan Against Property', 'construction-loan': 'Construction Loan', 'consumer-durable-loan': 'Consumer Durable Loan' }
                     return (
                       <Link key={id} to={`/services/${id}`} onClick={closeMenu}
-                        className="pl-6 py-3 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
+                        className="pl-6 py-3 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                         {names[id]}
                       </Link>
                     )
@@ -345,26 +405,28 @@ function Header() {
               <div>
                 <button
                   onClick={() => setMobileGovernanceOpen(!mobileGovernanceOpen)}
+                  aria-expanded={mobileGovernanceOpen}
+                  aria-controls="mobile-governance-menu"
                   className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors flex items-center gap-2 w-full"
                 >
                   {'Governance'}
-                  <svg className={`w-5 h-5 transition-transform duration-200 ${mobileGovernanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+                  <svg aria-hidden="true" className={`w-5 h-5 transition-transform duration-200 ${mobileGovernanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                 </button>
-                <div className={`overflow-hidden transition-all duration-300 ${mobileGovernanceOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div id="mobile-governance-menu" className={`overflow-hidden transition-all duration-300 ${mobileGovernanceOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 invisible'}`}>
                   <Link to="/terms-conditions" onClick={closeMenu}
-                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
+                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Terms & Conditions'}
                   </Link>
                   <Link to="/privacy-policy" onClick={closeMenu}
-                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
+                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Privacy Policy'}
                   </Link>
                   <Link to="/rbi-guidelines" onClick={closeMenu}
-                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
+                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'RBI Guidelines'}
                   </Link>
                   <Link to="/grievance" onClick={closeMenu}
-                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
+                    className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Grievance Redressal'}
                   </Link>
                   <div className="border-t border-mgm-dark/10 mx-6 my-1" />
@@ -381,12 +443,12 @@ function Header() {
                   ].map((item) => item.href ? (
                     <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer"
                       onClick={closeMenu}
-                      className="pl-6 py-2.5 text-lg font-body text-mgm-dark/40 hover:text-mgm-dark transition-colors block">
+                      className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                       {item.label}
                     </a>
                   ) : (
                     <button key={item.label} onClick={() => { closeMenu(); setPdfTitle(item.label) }}
-                      className="pl-6 py-2.5 text-lg font-body text-mgm-dark/40 hover:text-mgm-dark transition-colors block w-full text-left">
+                      className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block w-full text-left">
                       {item.label}
                     </button>
                   ))}
@@ -396,18 +458,20 @@ function Header() {
               <div>
                 <button
                   onClick={() => setMobileGrievanceOpen(!mobileGrievanceOpen)}
+                  aria-expanded={mobileGrievanceOpen}
+                  aria-controls="mobile-grievance-menu"
                   className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors flex items-center gap-2 w-full"
                 >
                   {'Grievance'}
-                  <svg className={`w-5 h-5 transition-transform duration-200 ${mobileGrievanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
+                  <svg aria-hidden="true" className={`w-5 h-5 transition-transform duration-200 ${mobileGrievanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                 </button>
-                <div className={`overflow-hidden transition-all duration-300 ${mobileGrievanceOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div id="mobile-grievance-menu" className={`overflow-hidden transition-all duration-300 ${mobileGrievanceOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0 invisible'}`}>
                   <Link to="/grievance" onClick={closeMenu}
-                    className="pl-6 py-3 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
+                    className="pl-6 py-3 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Submit Grievance'}
                   </Link>
                   <Link to="/grievance" onClick={closeMenu}
-                    className="pl-6 py-3 text-lg font-body text-mgm-dark/60 hover:text-mgm-dark transition-colors block">
+                    className="pl-6 py-3 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Track Your Grievance'}
                   </Link>
                 </div>

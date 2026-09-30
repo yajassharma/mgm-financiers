@@ -19,6 +19,7 @@ import AboutPage from './components/AboutPage'
 import VisionMission from './components/VisionMission'
 import PrivacyPage from './components/Privacy'
 import TermsPage from './components/Terms'
+import AccessibilityPage from './components/Accessibility'
 import CustomerAdvisory from './components/CustomerAdvisory'
 import WhatsAppButton from './components/WhatsAppButton'
 import ApplyNow from './components/ApplyNow'
@@ -48,7 +49,7 @@ function HomePage({ showAdvisory, setShowAdvisory, showApply, setShowApply }) {
         canonical="/"
       />
       <Header />
-      <main>
+      <main id="main-content">
         <Hero />
         <Services />
         <About />
@@ -92,7 +93,7 @@ function ServiceRoute({ serviceId, showApply, setShowApply }) {
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-4xl font-heading font-bold text-mgm-dark mb-4">Service Not Found</h1>
-            <a href="/services" className="text-mgm-gold hover:underline">View All Services</a>
+            <a href="/services" className="text-mgm-gold-text hover:underline">View All Services</a>
           </div>
         </div>
         <Footer />
@@ -130,6 +131,7 @@ function App() {
   return (
     <>
       <ScrollToTop />
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       <Routes>
         <Route path="/" element={
           <HomePage
@@ -167,42 +169,63 @@ function App() {
         <Route path="/contact" element={
           <PageLayout showApply={showApply} setShowApply={setShowApply}>
             <Header />
-            <ContactPage />
+            <main id="main-content">
+              <ContactPage />
+            </main>
             <Footer />
           </PageLayout>
         } />
         <Route path="/team" element={
           <PageLayout showApply={showApply} setShowApply={setShowApply}>
             <Header />
-            <TeamPage />
+            <main id="main-content">
+              <TeamPage />
+            </main>
             <Footer />
           </PageLayout>
         } />
         <Route path="/about" element={
           <PageLayout showApply={showApply} setShowApply={setShowApply}>
             <Header />
-            <AboutPage />
+            <main id="main-content">
+              <AboutPage />
+            </main>
             <Footer />
           </PageLayout>
         } />
         <Route path="/vision-mission" element={
           <PageLayout showApply={showApply} setShowApply={setShowApply}>
             <Header />
-            <VisionMission />
+            <main id="main-content">
+              <VisionMission />
+            </main>
             <Footer />
           </PageLayout>
         } />
         <Route path="/privacy-policy" element={
           <PageLayout showApply={showApply} setShowApply={setShowApply}>
             <Header />
-            <PrivacyPage />
+            <main id="main-content">
+              <PrivacyPage />
+            </main>
             <Footer />
           </PageLayout>
         } />
         <Route path="/terms-conditions" element={
           <PageLayout showApply={showApply} setShowApply={setShowApply}>
             <Header />
-            <TermsPage />
+            <main id="main-content">
+              <TermsPage />
+            </main>
+            <Footer />
+          </PageLayout>
+        } />
+        <Route path="/accessibility" element={
+          <PageLayout showApply={showApply} setShowApply={setShowApply}>
+            <Header />
+            <main id="main-content">
+              <AccessibilityPage />
+            </main>
             <Footer />
           </PageLayout>
         } />

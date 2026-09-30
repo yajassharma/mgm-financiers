@@ -113,7 +113,7 @@ function DoughnutChart({ principal, interest, prefersReduced }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-xs text-mgm-dark/40 font-body">Total</span>
+        <span className="text-xs text-mgm-dark/70 font-body">Total</span>
         <span className="text-lg sm:text-xl font-bold text-mgm-dark font-heading">{formatINR(total)}</span>
       </div>
     </div>
@@ -139,21 +139,22 @@ function Slider({ label, value, onChange, min, max, step, format, suffix, prefix
   return (
     <div className="mb-6 last:mb-0">
       <div className="flex items-baseline justify-between mb-3">
-        <span className="text-xs font-semibold text-mgm-dark/60 font-body uppercase tracking-wider">{label}</span>
+        <span className="text-xs font-semibold text-mgm-dark/70 font-body uppercase tracking-wider">{label}</span>
         {editing ? (
           <input
             type="number"
+            aria-label={`${label} — editable value`}
             value={inputVal}
             onChange={(e) => setInputVal(e.target.value)}
             onBlur={handleEnd}
             onKeyDown={(e) => e.key === 'Enter' && handleEnd()}
-            className="text-right font-bold text-mgm-dark font-heading text-base sm:text-lg bg-mgm-light/60 rounded-lg px-2 py-0.5 w-32 outline-none focus:ring-2 focus:ring-mgm-gold/30"
+            className="text-right font-bold text-mgm-dark font-heading text-base sm:text-lg bg-mgm-light/60 border border-mgm-dark/50 rounded-lg px-2 py-0.5 w-32 outline-none focus:ring-2 focus:ring-mgm-gold/30"
             autoFocus
           />
         ) : (
           <button
             onClick={handleStart}
-            className="font-bold text-mgm-dark font-heading text-base sm:text-lg hover:text-mgm-gold transition-colors cursor-text"
+            className="font-bold text-mgm-dark font-heading text-base sm:text-lg hover:text-mgm-gold-text transition-colors cursor-text"
           >
             {prefix || ''}{format ? format(value) : value}{suffix || ''}
           </button>
@@ -177,13 +178,13 @@ function Slider({ label, value, onChange, min, max, step, format, suffix, prefix
           aria-label={label}
         />
         <div
-          className="absolute w-5 h-5 bg-mgm-gold rounded-full shadow-lg shadow-mgm-gold/30 pointer-events-none z-20 transition-transform hover:scale-125"
+          className="absolute w-5 h-5 bg-mgm-gold rounded-full shadow-lg shadow-mgm-gold/30 ring-2 ring-mgm-dark/60 pointer-events-none z-20 transition-transform hover:scale-125"
           style={{ left: `calc(${pct}% - 10px)` }}
         />
       </div>
       <div className="flex justify-between mt-1.5">
-        <span className="text-[10px] text-mgm-dark/30 font-body">{prefix || ''}{format ? format(min) : min}{suffix || ''}</span>
-        <span className="text-[10px] text-mgm-dark/30 font-body">{prefix || ''}{format ? format(max) : max}{suffix || ''}</span>
+        <span className="text-[10px] text-mgm-dark/70 font-body">{prefix || ''}{format ? format(min) : min}{suffix || ''}</span>
+        <span className="text-[10px] text-mgm-dark/70 font-body">{prefix || ''}{format ? format(max) : max}{suffix || ''}</span>
       </div>
     </div>
   )
@@ -234,10 +235,10 @@ function RepaymentTable({ schedule }) {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-mgm-dark/10">
-              <th className="text-left py-3 px-4 font-heading font-semibold text-mgm-dark/60 text-xs uppercase tracking-wider">Month</th>
-              <th className="text-right py-3 px-4 font-heading font-semibold text-mgm-dark/60 text-xs uppercase tracking-wider">Principal</th>
-              <th className="text-right py-3 px-4 font-heading font-semibold text-mgm-dark/60 text-xs uppercase tracking-wider">Interest</th>
-              <th className="text-right py-3 px-4 font-heading font-semibold text-mgm-dark/60 text-xs uppercase tracking-wider">Balance</th>
+              <th className="text-left py-3 px-4 font-heading font-semibold text-mgm-dark/70 text-xs uppercase tracking-wider">Month</th>
+              <th className="text-right py-3 px-4 font-heading font-semibold text-mgm-dark/70 text-xs uppercase tracking-wider">Principal</th>
+              <th className="text-right py-3 px-4 font-heading font-semibold text-mgm-dark/70 text-xs uppercase tracking-wider">Interest</th>
+              <th className="text-right py-3 px-4 font-heading font-semibold text-mgm-dark/70 text-xs uppercase tracking-wider">Balance</th>
             </tr>
           </thead>
           <tbody>
@@ -258,15 +259,15 @@ function RepaymentTable({ schedule }) {
           <button
             onClick={() => setPage(p => Math.max(0, p - 1))}
             disabled={page === 0}
-            className="btn-interactive text-xs font-body font-semibold text-mgm-dark/50 hover:text-mgm-gold disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="btn-interactive text-xs font-body font-semibold text-mgm-dark/70 hover:text-mgm-gold-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             ← Previous
           </button>
-          <span className="text-xs text-mgm-dark/40 font-body">Page {page + 1} of {totalPages}</span>
+          <span className="text-xs text-mgm-dark/70 font-body">Page {page + 1} of {totalPages}</span>
           <button
             onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
             disabled={page >= totalPages - 1}
-            className="btn-interactive text-xs font-body font-semibold text-mgm-dark/50 hover:text-mgm-gold disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            className="btn-interactive text-xs font-body font-semibold text-mgm-dark/70 hover:text-mgm-gold-text disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             Next →
           </button>
@@ -274,11 +275,11 @@ function RepaymentTable({ schedule }) {
       )}
 
       <div className="flex gap-3 mt-5 px-4 sm:px-0">
-        <button onClick={downloadPDF} className="btn-interactive flex items-center gap-2 text-xs font-body font-semibold text-mgm-dark/50 hover:text-mgm-gold transition-colors">
+        <button onClick={downloadPDF} className="btn-interactive flex items-center gap-2 text-xs font-body font-semibold text-mgm-dark/70 hover:text-mgm-gold-text transition-colors">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m.75 12l3 3m0 0l3-3m-3 3v-6m-1.5-9H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>
           Download PDF
         </button>
-        <button onClick={downloadExcel} className="btn-interactive flex items-center gap-2 text-xs font-body font-semibold text-mgm-dark/50 hover:text-mgm-gold transition-colors">
+        <button onClick={downloadExcel} className="btn-interactive flex items-center gap-2 text-xs font-body font-semibold text-mgm-dark/70 hover:text-mgm-gold-text transition-colors">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
           Download Excel
         </button>
@@ -325,20 +326,22 @@ function TipsAccordion() {
             onClick={() => setOpen(open === i ? null : i)}
             className="btn-interactive w-full flex items-center justify-between p-5 sm:p-6 text-left group"
             aria-expanded={open === i}
+            aria-controls={`emi-tip-${i}`}
           >
-            <span className="font-heading font-semibold text-mgm-dark text-sm sm:text-base pr-4 group-hover:text-mgm-gold transition-colors">{tip.q}</span>
+            <span className="font-heading font-semibold text-mgm-dark text-sm sm:text-base pr-4 group-hover:text-mgm-gold-text transition-colors">{tip.q}</span>
             <svg
-              className={`w-5 h-5 text-mgm-dark/30 flex-shrink-0 transition-transform duration-300 ${open === i ? 'rotate-180' : ''}`}
+              className={`w-5 h-5 text-mgm-dark/70 flex-shrink-0 transition-transform duration-300 ${open === i ? 'rotate-180' : ''}`}
               fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
             </svg>
           </button>
           <div
+            id={`emi-tip-${i}`}
             className="overflow-hidden transition-all duration-300"
             style={{ maxHeight: open === i ? '400px' : '0px' }}
           >
-            <p className="px-5 sm:px-6 pb-5 sm:pb-6 text-mgm-dark/50 font-body text-sm leading-relaxed">{tip.a}</p>
+            <p className="px-5 sm:px-6 pb-5 sm:pb-6 text-mgm-dark/70 font-body text-sm leading-relaxed">{tip.a}</p>
           </div>
         </div>
       ))}
@@ -447,7 +450,7 @@ const prefersReduced = usePrefersReducedMotion()
       />
       <Header />
 
-      <main>
+      <main id="main-content">
         {/* ═══ HERO ═══ */}
         <section className="pt-28 sm:pt-32 pb-16 sm:pb-24 bg-white relative overflow-hidden">
           <div className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-mgm-gold/[0.03] pointer-events-none" />
@@ -456,11 +459,11 @@ const prefersReduced = usePrefersReducedMotion()
           <div ref={heroRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
               <div className="w-full lg:w-1/2">
-                <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(heroInView, 0)}`}>{'EMI Calculator'}</span>
+                <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(heroInView, 0)}`}>{'EMI Calculator'}</span>
                 <h1 className={`text-3xl sm:text-4xl lg:text-5xl font-bold text-mgm-dark mt-4 mb-6 font-heading leading-tight ${scrollAnim(heroInView, 80)}`}>
                   Calculate Your EMI<br />with Confidence
                 </h1>
-                <p className={`text-mgm-dark/50 font-body text-sm sm:text-base leading-relaxed mb-8 max-w-lg ${scrollAnim(heroInView, 160)}`}>
+                <p className={`text-mgm-dark/70 font-body text-sm sm:text-base leading-relaxed mb-8 max-w-lg ${scrollAnim(heroInView, 160)}`}>
                   {'Calculate your monthly EMI instantly'}
                 </p>
                 <div className={`flex flex-col sm:flex-row gap-3 ${scrollAnim(heroInView, 240)}`}>
@@ -468,7 +471,7 @@ const prefersReduced = usePrefersReducedMotion()
                     {'Calculate EMI'}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                   </a>
-                  <button onClick={() => window.dispatchEvent(new Event('open-apply'))} className="btn-interactive inline-flex items-center justify-center gap-2 border-2 border-mgm-dark/10 text-mgm-dark px-7 py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold transition-all duration-200 font-body text-sm">
+                  <button onClick={() => window.dispatchEvent(new Event('open-apply'))} className="btn-interactive inline-flex items-center justify-center gap-2 border-2 border-mgm-dark/50 text-mgm-dark px-7 py-3 rounded-xl font-semibold hover:border-mgm-gold/30 hover:text-mgm-gold-text transition-all duration-200 font-body text-sm">
                     Apply for Loan
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                   </button>
@@ -525,16 +528,17 @@ const prefersReduced = usePrefersReducedMotion()
 
                   {/* Loan Type */}
                   <div className={`mb-8 ${scrollAnim(calcInView, 40)}`}>
-                    <label className="block text-xs font-semibold text-mgm-dark/60 font-body uppercase tracking-wider mb-3">Loan Type</label>
+                    <label htmlFor="emi-loan-type" className="block text-xs font-semibold text-mgm-dark/70 font-body uppercase tracking-wider mb-3">Loan Type</label>
                     <div className="relative">
                       <select
+                        id="emi-loan-type"
                         value={loanType}
                         onChange={(e) => handleTypeChange(e.target.value)}
-                        className="w-full appearance-none bg-mgm-light/60 border border-mgm-dark/5 rounded-xl px-5 py-3.5 text-sm font-body text-mgm-dark focus:outline-none focus:ring-2 focus:ring-mgm-gold/30 cursor-pointer"
+                        className="w-full appearance-none bg-mgm-light/60 border border-mgm-dark/50 rounded-xl px-5 py-3.5 text-sm font-body text-mgm-dark focus:outline-none focus:ring-2 focus:ring-mgm-gold/30 cursor-pointer"
                       >
                         {loanTypes.map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
-                      <svg className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mgm-dark/30 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                      <svg aria-hidden="true" className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mgm-dark/70 pointer-events-none" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                       </svg>
                     </div>
@@ -582,7 +586,7 @@ const prefersReduced = usePrefersReducedMotion()
                       { label: 'Loan Ends', value: getLoanEndDate(tenure) },
                     ].map((item, i) => (
                       <div key={i} className={`rounded-xl p-3.5 ${item.accent ? 'bg-mgm-gold/10 border border-mgm-gold/20' : 'bg-mgm-light/60 border border-mgm-dark/[0.03]'}`}>
-                        <div className="text-[10px] text-mgm-dark/40 font-body uppercase tracking-wider mb-1">{item.label}</div>
+                        <div className="text-[10px] text-mgm-dark/70 font-body uppercase tracking-wider mb-1">{item.label}</div>
                         <div className={`font-heading font-bold text-sm ${item.accent ? 'text-mgm-dark' : 'text-mgm-dark/80'}`}>{item.value}</div>
                       </div>
                     ))}
@@ -591,7 +595,7 @@ const prefersReduced = usePrefersReducedMotion()
 
                 {/* RIGHT: Visualization */}
                 <div className="w-full lg:w-[45%] bg-mgm-light/30 p-6 sm:p-10 lg:p-12 flex flex-col items-center justify-center border-t lg:border-t-0 lg:border-l border-mgm-dark/5">
-                  <h3 className={`text-sm font-semibold text-mgm-dark/50 font-body uppercase tracking-wider mb-8 ${scrollAnim(calcInView, 80)}`}>{'EMI Breakdown'}</h3>
+                  <h3 className={`text-sm font-semibold text-mgm-dark/70 font-body uppercase tracking-wider mb-8 ${scrollAnim(calcInView, 80)}`}>{'EMI Breakdown'}</h3>
 
                   <DoughnutChart principal={amount} interest={totalInterest} prefersReduced={prefersReduced} />
 
@@ -599,28 +603,28 @@ const prefersReduced = usePrefersReducedMotion()
                     <div className="text-center">
                       <div className="flex items-center justify-center gap-1.5 mb-2">
                         <div className="w-2.5 h-2.5 rounded-full bg-mgm-dark" />
-                        <span className="text-[10px] text-mgm-dark/40 font-body">{'Principal Amount'}</span>
+                        <span className="text-[10px] text-mgm-dark/70 font-body">{'Principal Amount'}</span>
                       </div>
                       <div className="font-heading font-bold text-mgm-dark text-sm">{formatINR(animTotal > 0 ? amount : 0)}</div>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center gap-1.5 mb-2">
                         <div className="w-2.5 h-2.5 rounded-full bg-mgm-gold" />
-                        <span className="text-[10px] text-mgm-dark/40 font-body">{'Interest Amount'}</span>
+                        <span className="text-[10px] text-mgm-dark/70 font-body">{'Interest Amount'}</span>
                       </div>
-                      <div className="font-heading font-bold text-mgm-gold text-sm">{formatINR(animInterest)}</div>
+                      <div className="font-heading font-bold text-mgm-gold-text text-sm">{formatINR(animInterest)}</div>
                     </div>
                     <div className="text-center">
                       <div className="flex items-center justify-center gap-1.5 mb-2">
                         <div className="w-2.5 h-2.5 rounded-full bg-mgm-dark/20" />
-                        <span className="text-[10px] text-mgm-dark/40 font-body">{'Total Payment'}</span>
+                        <span className="text-[10px] text-mgm-dark/70 font-body">{'Total Payment'}</span>
                       </div>
                       <div className="font-heading font-bold text-mgm-dark text-sm">{formatINR(animTotal)}</div>
                     </div>
                   </div>
 
                   <div className={`mt-8 text-center ${scrollAnim(calcInView, 200)}`}>
-                    <div className="text-[10px] text-mgm-dark/30 font-body mb-1">Effective Monthly Rate</div>
+                    <div className="text-[10px] text-mgm-dark/70 font-body mb-1">Effective Monthly Rate</div>
                     <div className="font-heading font-bold text-mgm-dark text-lg">{(rate / 12).toFixed(2)}%</div>
                   </div>
                 </div>
@@ -640,7 +644,7 @@ const prefersReduced = usePrefersReducedMotion()
               </div>
               <div>
                 <h4 className="text-sm font-semibold text-mgm-dark font-heading mb-1">Disclaimer</h4>
-                <p className="text-mgm-dark/50 font-body text-xs leading-relaxed">
+                <p className="text-mgm-dark/70 font-body text-xs leading-relaxed">
                   The EMI calculations shown above are rough estimates based on mathematical formulas and are for informational purposes only. They do not include any processing fees, prepayment charges, or other applicable fees. Actual EMI may vary based on your profile, credit assessment, and final loan terms. Please contact our advisors for exact figures.
                 </p>
               </div>
@@ -652,7 +656,7 @@ const prefersReduced = usePrefersReducedMotion()
         <section className="py-16 sm:py-24 bg-white relative overflow-hidden">
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div ref={scheduleRef}>
-              <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(scheduleInView, 0)}`}>{'Amortization Schedule'}</span>
+              <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(scheduleInView, 0)}`}>{'Amortization Schedule'}</span>
               <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-3 mb-10 font-heading ${scrollAnim(scheduleInView, 80)}`}>
                 Month-by-Month Breakdown
               </h2>
@@ -668,7 +672,7 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="absolute -bottom-32 -right-32 w-[400px] h-[400px] rounded-full bg-mgm-gold/[0.03] pointer-events-none" />
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div ref={insightsRef}>
-              <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(insightsInView, 0)}`}>Key Insights</span>
+              <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(insightsInView, 0)}`}>Key Insights</span>
               <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-3 mb-8 font-heading ${scrollAnim(insightsInView, 80)}`}>
                 Smart Observations
               </h2>
@@ -680,7 +684,7 @@ const prefersReduced = usePrefersReducedMotion()
                         <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" />
                       </svg>
                     </div>
-                    <p className="text-mgm-dark/60 font-body text-sm leading-relaxed">{insight}</p>
+                    <p className="text-mgm-dark/70 font-body text-sm leading-relaxed">{insight}</p>
                   </div>
                 ))}
               </div>
@@ -693,7 +697,7 @@ const prefersReduced = usePrefersReducedMotion()
           <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-mgm-dark/[0.015] pointer-events-none" />
           <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div ref={whyRef} className="text-center mb-12">
-              <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(whyRef, 0)}`}>Why MGM</span>
+              <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(whyRef, 0)}`}>Why MGM</span>
               <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-3 font-heading ${scrollAnim(whyRef, 80)}`}>
                 Why Customers Trust Us
               </h2>
@@ -711,7 +715,7 @@ const prefersReduced = usePrefersReducedMotion()
                     </svg>
                   </div>
                   <h3 className="font-heading font-bold text-mgm-dark text-base mb-3">{item.title}</h3>
-                  <p className="text-mgm-dark/50 font-body text-sm leading-relaxed">{item.desc}</p>
+                  <p className="text-mgm-dark/70 font-body text-sm leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -722,7 +726,7 @@ const prefersReduced = usePrefersReducedMotion()
         <section className="py-16 sm:py-24 bg-mgm-light/50 relative overflow-hidden">
           <div className="max-w-[800px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div ref={tipsRef} className="text-center mb-10">
-              <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(tipsRef, 0)}`}>Learn</span>
+              <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(tipsRef, 0)}`}>Learn</span>
               <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-3 font-heading ${scrollAnim(tipsRef, 80)}`}>
                 EMI Tips & Insights
               </h2>
@@ -743,14 +747,14 @@ const prefersReduced = usePrefersReducedMotion()
                 </div>
               </div>
               <div className="w-full lg:w-1/2">
-                <span className={`text-mgm-gold font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(imgInView, 80)}`}>Responsible Borrowing</span>
+                <span className={`text-mgm-gold-text font-semibold text-xs tracking-widest uppercase font-body ${scrollAnim(imgInView, 80)}`}>Responsible Borrowing</span>
                 <h2 className={`text-2xl sm:text-3xl font-bold text-mgm-dark mt-4 mb-6 font-heading leading-tight ${scrollAnim(imgInView, 160)}`}>
                   Borrow Smart,<br />Repay Smarter
                 </h2>
-                <p className={`text-mgm-dark/50 mb-4 font-body text-sm leading-relaxed ${scrollAnim(imgInView, 240)}`}>
+                <p className={`text-mgm-dark/70 mb-4 font-body text-sm leading-relaxed ${scrollAnim(imgInView, 240)}`}>
                   At MGM Financiers, we believe in responsible lending. Before taking a loan, understand your repayment capacity and choose terms that align with your financial goals.
                 </p>
-                <p className={`text-mgm-dark/50 mb-6 font-body text-sm leading-relaxed ${scrollAnim(imgInView, 280)}`}>
+                <p className={`text-mgm-dark/70 mb-6 font-body text-sm leading-relaxed ${scrollAnim(imgInView, 280)}`}>
                   Our advisors take the time to walk you through every option, explain the costs clearly, and help you make an informed decision. We don't just process loans , we build financial relationships.
                 </p>
                 <div className={`flex items-center gap-3 ${scrollAnim(imgInView, 320)}`}>
@@ -759,7 +763,7 @@ const prefersReduced = usePrefersReducedMotion()
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <span className="text-mgm-dark/60 font-body text-sm">RBI-registered NBFC · 28+ Years · 100% Transparent</span>
+                  <span className="text-mgm-dark/70 font-body text-sm">RBI-registered NBFC · 28+ Years · 100% Transparent</span>
                 </div>
               </div>
             </div>

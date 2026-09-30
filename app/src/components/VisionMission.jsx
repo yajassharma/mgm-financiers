@@ -35,11 +35,11 @@ const prefersReduced = usePrefersReducedMotion()
           {/* Full-width image on top for mobile, side for desktop */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16 items-center">
             <div className="lg:col-span-3 order-2 lg:order-1">
-              <span className={`inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5 ${a(heroInView, 0)}`}>Our Purpose</span>
+              <span className={`inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5 ${a(heroInView, 0)}`}>Our Purpose</span>
               <h1 className={`text-4xl sm:text-5xl lg:text-[3.6rem] font-bold text-mgm-dark font-heading leading-[1.06] tracking-tight mb-7 ${a(heroInView, 80)}`}>
                 Building Financial Confidence,<br />One Relationship at a Time.
               </h1>
-              <p className={`text-mgm-dark/45 font-body text-[15px] leading-relaxed max-w-xl mb-10 ${a(heroInView, 160)}`}>
+              <p className={`text-mgm-dark/70 font-body text-[15px] leading-relaxed max-w-xl mb-10 ${a(heroInView, 160)}`}>
                 Every loan we approve represents more than financial assistance. It represents trust placed in us by individuals, families and businesses who aspire to move forward with confidence. Our purpose is to make that journey transparent, responsible and meaningful.
               </p>
               <div className={`flex flex-wrap gap-3 ${a(heroInView, 240)}`}>
@@ -76,7 +76,7 @@ const prefersReduced = usePrefersReducedMotion()
             ].map((s) => (
               <div key={s.label}>
                 <div className="text-2xl sm:text-3xl font-bold text-mgm-dark font-heading tracking-tight">{s.value}</div>
-                <div className="text-mgm-dark/35 font-body text-xs mt-1">{s.label}</div>
+                <div className="text-mgm-dark/70 font-body text-xs mt-1">{s.label}</div>
               </div>
             ))}
           </div>
@@ -87,7 +87,7 @@ const prefersReduced = usePrefersReducedMotion()
       <section id="philosophy" ref={whyRef} className="py-16 sm:py-28 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className={`mb-10 ${a(whyInView, 0)}`}>
-            <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">Why We Exist</span>
+            <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">Why We Exist</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight">Beyond Lending.</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-16 items-start">
@@ -102,7 +102,7 @@ const prefersReduced = usePrefersReducedMotion()
               </div>
             </div>
             <div className={`${a(whyInView, 160)}`}>
-              <div className="space-y-4 text-mgm-dark/45 font-body text-[15px] leading-relaxed">
+              <div className="space-y-4 text-mgm-dark/70 font-body text-[15px] leading-relaxed">
                 <p>MGM Financiers was not founded to simply process loans. It was founded on the belief that financial assistance, when delivered with integrity, can transform lives.</p>
                 <p>We exist because families need a partner they can trust when purchasing their first home. Because entrepreneurs need honest guidance when expanding their businesses.</p>
                 <p>Every decision we make is guided by a single question: does this serve our customer's long-term wellbeing? This philosophy has defined us for twenty-eight years.</p>
@@ -126,13 +126,13 @@ const prefersReduced = usePrefersReducedMotion()
         <div className="max-w-5xl mx-auto text-center relative">
           <div className={a(visionRef, 0)}>
             <div className="w-14 h-px bg-mgm-gold/30 mx-auto mb-8" />
-            <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5">{'Our Vision'}</span>
+            <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-5">{'Our Vision'}</span>
           </div>
           <blockquote className={`text-[1.5rem] sm:text-3xl lg:text-[2.4rem] font-heading font-medium text-mgm-dark leading-snug tracking-tight mb-12 ${a(visionRef, 100)}`}>
             &ldquo;{'To be the most trusted and preferred financial partner for individuals and businesses across India, empowering them to achieve their financial dreams through innovative, accessible, and responsible lending solutions.'}&rdquo;
           </blockquote>
           <div className={`w-10 h-px bg-mgm-gold/25 mx-auto mb-12 ${a(visionRef, 200)}`} />
-          <p className={`text-mgm-dark/40 font-body text-[15px] leading-relaxed max-w-2xl mx-auto ${a(visionRef, 300)}`}>
+          <p className={`text-mgm-dark/70 font-body text-[15px] leading-relaxed max-w-2xl mx-auto ${a(visionRef, 300)}`}>
             MGM Financiers envisions a future where every individual and family has access to fair, transparent financial solutions. We aim to build sustainable opportunities that empower responsible borrowing, strengthen communities and create lasting financial wellbeing across generations.
           </p>
         </div>
@@ -142,7 +142,7 @@ const prefersReduced = usePrefersReducedMotion()
       <section ref={missionRef} className="py-16 sm:py-28 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className={`mb-14 ${a(missionRef, 0)}`}>
-            <span className="inline-block text-mgm-gold font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">{'Our Mission'}</span>
+            <span className="inline-block text-mgm-gold-text font-semibold text-[11px] tracking-[0.2em] uppercase font-body mb-3">{'Our Mission'}</span>
             <h2 className="text-3xl sm:text-4xl font-bold text-mgm-dark font-heading tracking-tight">What Drives Us Forward</h2>
           </div>
 
@@ -171,10 +171,10 @@ const prefersReduced = usePrefersReducedMotion()
             {MISSION_BLOCKS.map((block, i) => (
               <div key={block.num} className={`${a(missionRef, 180 + i * 80)}`}>
                 <div className="flex items-start gap-5 py-7">
-                  <span className="flex-shrink-0 text-mgm-gold/25 font-heading font-bold text-2xl leading-none mt-0.5">{block.num}</span>
+                  <span className="flex-shrink-0 text-mgm-gold-text font-heading font-bold text-2xl leading-none mt-0.5">{block.num}</span>
                   <div>
                     <h3 className="font-heading font-bold text-mgm-dark text-[15px] mb-2">{block.title}</h3>
-                    <p className="text-mgm-dark/40 font-body text-[13.5px] leading-relaxed">{block.desc}</p>
+                    <p className="text-mgm-dark/70 font-body text-[13.5px] leading-relaxed">{block.desc}</p>
                   </div>
                 </div>
                 {i < MISSION_BLOCKS.length - 1 && !(i === 1) && <div className="h-px bg-mgm-dark/[0.04]" />}
@@ -202,12 +202,12 @@ const prefersReduced = usePrefersReducedMotion()
             </blockquote>
             <div className="flex items-center justify-center gap-3 mb-12">
               <div className="w-8 h-px bg-mgm-gold/30" />
-              <span className="text-white/40 font-body text-sm font-medium tracking-wide">MGM Financiers</span>
+              <span className="text-white/60 font-body text-sm font-medium tracking-wide">MGM Financiers</span>
               <div className="w-8 h-px bg-mgm-gold/30" />
             </div>
           </div>
           <div className={`w-16 h-px bg-mgm-gold/20 mx-auto mb-12 ${a(commitRef, 100)}`} />
-          <p className={`text-white/35 font-body text-[15px] leading-relaxed max-w-xl mx-auto mb-14 ${a(commitRef, 160)}`}>
+          <p className={`text-white/60 font-body text-[15px] leading-relaxed max-w-xl mx-auto mb-14 ${a(commitRef, 160)}`}>
             For more than 28 years, our purpose has remained unchanged &mdash; to help people move forward with confidence through ethical lending and meaningful financial relationships.
           </p>
           <div className={`flex flex-wrap justify-center gap-3 ${a(commitRef, 240)}`}>
