@@ -1,10 +1,12 @@
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import useInView from '../hooks/useInView'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion'
 
 function Footer() {
 const [footerRef, footerInView] = useInView({ threshold: 0.1 })
   const prefersReduced = usePrefersReducedMotion()
+  const location = useLocation()
+  const isCur = (to) => (location.pathname.replace(/\/$/, '') === to.replace(/\/$/, '') ? 'page' : undefined)
 
   const scrollAnim = (inView, delay = 0) =>
     prefersReduced ? '' : `anim-scroll-fade ${inView ? 'is-visible' : ''} anim-delay-${delay}`
@@ -18,10 +20,10 @@ const [footerRef, footerInView] = useInView({ threshold: 0.1 })
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <nav className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10" aria-label="Footer navigation">
           {/* Brand */}
           <div className={`lg:col-span-1 ${scrollAnim(footerInView, 0)}`}>
-            <Link to="/" className="inline-block mb-5 logo-hover">
+            <Link to="/" aria-current={isCur('/')} className="inline-block mb-5 logo-hover">
               <img 
                 src="/mgm logo.png" 
                 alt="MGM Financiers" 
@@ -60,7 +62,7 @@ const [footerRef, footerInView] = useInView({ threshold: 0.1 })
                 { label: 'Contact Us', to: '/contact' },
               ].map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="text-white/60 hover:text-mgm-gold transition-colors font-body text-xs">
+                  <Link to={item.to} aria-current={isCur(item.to)} className="text-white/60 hover:text-mgm-gold transition-colors font-body text-xs">
                     {item.label}
                   </Link>
                 </li>
@@ -81,7 +83,7 @@ const [footerRef, footerInView] = useInView({ threshold: 0.1 })
                 { label: 'Consumer Durable Loan', to: '/services/consumer-durable-loan' },
               ].map((item) => (
                 <li key={item.to}>
-                  <Link to={item.to} className="text-white/60 hover:text-mgm-gold transition-colors font-body text-xs">
+                  <Link to={item.to} aria-current={isCur(item.to)} className="text-white/60 hover:text-mgm-gold transition-colors font-body text-xs">
                     {item.label}
                   </Link>
                 </li>
@@ -113,7 +115,7 @@ const [footerRef, footerInView] = useInView({ threshold: 0.1 })
               </li>
             </ul>
           </div>
-        </div>
+        </nav>
         
         <div className={`border-t border-white/5 mt-10 pt-8 flex flex-col md:flex-row justify-between items-center ${scrollAnim(footerInView, 320)}`}>
           <p className="text-white/50 text-xs font-body">
@@ -136,7 +138,7 @@ const [footerRef, footerInView] = useInView({ threshold: 0.1 })
                 {item.label}
               </a>
             ) : (
-              <Link key={item.to} to={item.to} className="text-white/50 hover:text-mgm-gold text-xs transition-colors font-body">
+              <Link key={item.to} to={item.to} aria-current={isCur(item.to)} className="text-white/50 hover:text-mgm-gold text-xs transition-colors font-body">
                 {item.label}
               </Link>
             ))}

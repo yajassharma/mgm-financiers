@@ -109,6 +109,8 @@ function Header() {
     { name: 'Our Team', to: '/team' },
   ]
 
+  const isCur = (to) => (location.pathname.replace(/\/$/, '') === to.replace(/\/$/, '') ? 'page' : undefined)
+
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-50 p-3 sm:p-4">
@@ -123,7 +125,7 @@ function Header() {
           <div className="px-5 lg:px-8">
             <div className="flex justify-between items-center h-14 lg:h-16">
               <div className="flex-shrink-0">
-                <Link to="/" className="logo-hover inline-block">
+                <Link to="/" aria-current={isCur('/')} className="logo-hover inline-block">
                   <img src="/mgm logo.png" alt="MGM Financiers" className="h-10 w-auto" />
                 </Link>
               </div>
@@ -156,7 +158,7 @@ function Header() {
                         { id: 'construction-loan', name: 'Construction Loan', desc: 'Finance your construction', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
                         { id: 'consumer-durable-loan', name: 'Consumer Durable Loan', desc: 'EMI on electronics & more', icon: 'M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
                       ].map((s) => (
-                        <Link key={s.id} to={`/services/${s.id}`} onClick={() => setServicesOpen(false)}
+                        <Link key={s.id} to={`/services/${s.id}`} aria-current={isCur(`/services/${s.id}`)} onClick={() => setServicesOpen(false)}
                           className="flex items-center gap-3 p-3 rounded-xl text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors group">
                           <div className="w-9 h-9 rounded-xl bg-[#f2f3f5] flex items-center justify-center flex-shrink-0 group-hover:bg-[#c9a227]/10 transition-colors">
                             <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={s.icon}/></svg>
@@ -169,7 +171,7 @@ function Header() {
                       ))}
                     </div>
                     <div className="border-t border-gray-100 pt-3">
-                      <Link to="/services" onClick={() => setServicesOpen(false)}
+                      <Link to="/services" aria-current={isCur('/services')} onClick={() => setServicesOpen(false)}
                         className="flex items-center justify-center gap-2 py-2.5 text-sm font-medium text-mgm-gold-text hover:text-[#7a5f00] transition-colors font-body rounded-xl hover:bg-[#c9a227]/5">
                         {'View All Services'}
                         <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -179,7 +181,7 @@ function Header() {
                 </div>
                 {/* Regular Nav Links */}
                 {navLinks.map((link) => (
-                  <Link key={link.name} to={link.to}
+                  <Link key={link.name} to={link.to} aria-current={isCur(link.to)}
                     onClick={() => { if (location.pathname === link.to) window.scrollTo({ top: 0, behavior: 'instant' }) }}
                     className="nav-link-underline relative px-3.5 py-2 text-[13px] font-medium text-black/60 hover:text-black rounded-full hover:bg-white/10 transition-all duration-200 font-body">
                     {link.name}
@@ -204,19 +206,19 @@ function Header() {
                     }`}
                   >
                     {/* Page links */}
-                    <Link to="/terms-conditions" onClick={() => setGovernanceOpen(false)}
+                    <Link to="/terms-conditions" aria-current={isCur('/terms-conditions')} onClick={() => setGovernanceOpen(false)}
                       className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors font-body">
                       {'Terms & Conditions'}
                     </Link>
-                    <Link to="/privacy-policy" onClick={() => setGovernanceOpen(false)}
+                    <Link to="/privacy-policy" aria-current={isCur('/privacy-policy')} onClick={() => setGovernanceOpen(false)}
                       className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors font-body">
                       {'Privacy Policy'}
                     </Link>
-                    <Link to="/rbi-guidelines" onClick={() => setGovernanceOpen(false)}
+                    <Link to="/rbi-guidelines" aria-current={isCur('/rbi-guidelines')} onClick={() => setGovernanceOpen(false)}
                       className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors font-body">
                       {'RBI Guidelines'}
                     </Link>
-                    <Link to="/grievance" onClick={() => setGovernanceOpen(false)}
+                    <Link to="/grievance" aria-current={isCur('/grievance')} onClick={() => setGovernanceOpen(false)}
                       className="block px-4 py-2.5 text-sm text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors font-body">
                       {'Grievance Redressal'}
                     </Link>
@@ -264,12 +266,12 @@ function Header() {
                       grievanceOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none invisible'
                     }`}
                   >
-                    <Link to="/grievance" onClick={() => setGrievanceOpen(false)}
+                    <Link to="/grievance" aria-current={isCur('/grievance')} onClick={() => setGrievanceOpen(false)}
                       className="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors">
                       <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                       {'Submit Grievance'}
                     </Link>
-                    <Link to="/grievance" onClick={() => { setGrievanceOpen(false); setTimeout(() => { window.dispatchEvent(new CustomEvent('grievance-track')) }, 100) }}
+                    <Link to="/grievance" aria-current={isCur('/grievance')} onClick={() => { setGrievanceOpen(false); setTimeout(() => { window.dispatchEvent(new CustomEvent('grievance-track')) }, 100) }}
                       className="flex items-center gap-3 px-4 py-3 text-sm text-gray-600 hover:bg-[#f2f3f5] hover:text-[#1a1a2e] transition-colors">
                       <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                       {'Track Your Grievance'}
@@ -277,6 +279,7 @@ function Header() {
                   </div>
                 </div>
                 <Link to="/contact"
+                  aria-current={isCur('/contact')}
                   onClick={() => { if (location.pathname === '/contact') window.scrollTo({ top: 0, behavior: 'instant' }) }}
                   className="nav-link-underline relative px-3.5 py-2 text-[13px] font-medium text-black/60 hover:text-black rounded-full hover:bg-white/10 transition-all duration-200 font-body">
                   {'Contact Us'}
@@ -285,6 +288,7 @@ function Header() {
 
               <div className="hidden xl:flex items-center gap-2.5">
                 <Link to="/pay-emi"
+                  aria-current={isCur('/pay-emi')}
                   onClick={() => { if (location.pathname === '/pay-emi') window.scrollTo({ top: 0, behavior: 'instant' }) }}
                   className="btn-interactive px-5 py-2 text-[13px] font-medium text-black/80 border border-black/15 rounded-full hover:bg-black/10 hover:text-black transition-all duration-200 font-body">
                   {'Pay EMI'}
@@ -371,14 +375,14 @@ function Header() {
                   <svg aria-hidden="true" className={`w-5 h-5 transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                 </button>
                 <div id="mobile-services-menu" className={`overflow-hidden transition-all duration-300 ${mobileServicesOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 invisible'}`}>
-                  <Link to="/services" onClick={closeMenu}
+                  <Link to="/services" aria-current={isCur('/services')} onClick={closeMenu}
                     className="pl-6 py-3 text-lg font-body text-mgm-gold-text hover:text-mgm-dark transition-colors block font-medium">
                     {'View All Services'}
                   </Link>
                   {['personal-loan', 'vehicle-loan', 'gold-loan', 'loan-against-property', 'construction-loan', 'consumer-durable-loan'].map((id) => {
                     const names = { 'personal-loan': 'Personal Loan', 'vehicle-loan': 'Vehicle Loan', 'gold-loan': 'Gold Loan', 'loan-against-property': 'Loan Against Property', 'construction-loan': 'Construction Loan', 'consumer-durable-loan': 'Consumer Durable Loan' }
                     return (
-                      <Link key={id} to={`/services/${id}`} onClick={closeMenu}
+                      <Link key={id} to={`/services/${id}`} aria-current={isCur(`/services/${id}`)} onClick={closeMenu}
                         className="pl-6 py-3 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                         {names[id]}
                       </Link>
@@ -390,6 +394,7 @@ function Header() {
                 <Link
                   key={link.name}
                   to={link.to}
+                  aria-current={isCur(link.to)}
                   onClick={() => { closeMenu(); if (location.pathname === link.to) window.scrollTo({ top: 0, behavior: 'instant' }) }}
                   className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors"
                   style={{ transitionDelay: isOpen ? `${i * 50}ms` : '0ms' }}
@@ -397,7 +402,7 @@ function Header() {
                   {link.name}
                 </Link>
               ))}
-              <Link to="/contact" onClick={closeMenu}
+              <Link to="/contact" aria-current={isCur('/contact')} onClick={closeMenu}
                 className="py-4 text-2xl font-heading font-semibold text-mgm-dark hover:text-mgm-dark border-b border-mgm-dark/10 transition-colors">
                 {'Contact Us'}
               </Link>
@@ -413,19 +418,19 @@ function Header() {
                   <svg aria-hidden="true" className={`w-5 h-5 transition-transform duration-200 ${mobileGovernanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                 </button>
                 <div id="mobile-governance-menu" className={`overflow-hidden transition-all duration-300 ${mobileGovernanceOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 invisible'}`}>
-                  <Link to="/terms-conditions" onClick={closeMenu}
+                  <Link to="/terms-conditions" aria-current={isCur('/terms-conditions')} onClick={closeMenu}
                     className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Terms & Conditions'}
                   </Link>
-                  <Link to="/privacy-policy" onClick={closeMenu}
+                  <Link to="/privacy-policy" aria-current={isCur('/privacy-policy')} onClick={closeMenu}
                     className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Privacy Policy'}
                   </Link>
-                  <Link to="/rbi-guidelines" onClick={closeMenu}
+                  <Link to="/rbi-guidelines" aria-current={isCur('/rbi-guidelines')} onClick={closeMenu}
                     className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'RBI Guidelines'}
                   </Link>
-                  <Link to="/grievance" onClick={closeMenu}
+                  <Link to="/grievance" aria-current={isCur('/grievance')} onClick={closeMenu}
                     className="pl-6 py-2.5 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Grievance Redressal'}
                   </Link>
@@ -466,11 +471,11 @@ function Header() {
                   <svg aria-hidden="true" className={`w-5 h-5 transition-transform duration-200 ${mobileGrievanceOpen ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6,9 12,15 18,9"/></svg>
                 </button>
                 <div id="mobile-grievance-menu" className={`overflow-hidden transition-all duration-300 ${mobileGrievanceOpen ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0 invisible'}`}>
-                  <Link to="/grievance" onClick={closeMenu}
+                  <Link to="/grievance" aria-current={isCur('/grievance')} onClick={closeMenu}
                     className="pl-6 py-3 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Submit Grievance'}
                   </Link>
-                  <Link to="/grievance" onClick={closeMenu}
+                  <Link to="/grievance" aria-current={isCur('/grievance')} onClick={closeMenu}
                     className="pl-6 py-3 text-lg font-body text-mgm-dark/70 hover:text-mgm-dark transition-colors block">
                     {'Track Your Grievance'}
                   </Link>
@@ -482,6 +487,7 @@ function Header() {
           {/* Bottom buttons */}
           <div className="px-8 pb-10 pt-6 border-t border-mgm-dark/10 flex flex-col gap-3" style={{ paddingBottom: 'max(2.5rem, env(safe-area-inset-bottom))' }}>
             <Link to="/pay-emi"
+              aria-current={isCur('/pay-emi')}
               onClick={closeMenu}
               className="btn-interactive py-4 text-center text-sm font-medium text-mgm-dark border border-mgm-dark/15 rounded-2xl font-body hover:bg-mgm-dark/5 transition-all"
             >
