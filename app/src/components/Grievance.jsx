@@ -848,7 +848,7 @@ function EscalationHierarchy() {
                 <div className="flex-1">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3">
                     <h3 className="text-lg font-bold text-[#1a1a2e]">{l.title}</h3>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#c9a227]/10 rounded-full text-mgm-gold-text text-xs font-semibold w-fit">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#c9a227]/10 rounded-full text-[#7a5f00] text-xs font-semibold w-fit">
                       <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                       {l.timeline}
                     </span>
@@ -862,13 +862,13 @@ function EscalationHierarchy() {
                     {l.phone && (
                       <div className="flex items-center gap-2">
                         <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-                        <span className="text-sm font-semibold text-mgm-gold-text">{l.phone}</span>
+                        <span className="text-sm font-semibold text-[#7a5f00]">{l.phone}</span>
                       </div>
                     )}
                     {l.email && (
                       <div className="flex items-center gap-2">
                         <svg className="w-4 h-4 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                        <span className="text-sm font-semibold text-mgm-gold-text break-all">{l.email}</span>
+                        <span className="text-sm font-semibold text-[#7a5f00] break-all">{l.email}</span>
                       </div>
                     )}
                   </div>

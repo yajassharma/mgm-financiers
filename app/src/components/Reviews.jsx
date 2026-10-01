@@ -62,7 +62,7 @@ function ReviewCard({ review }) {
       {/* Author */}
       <div className="flex items-center gap-3">
         <div className="w-9 h-9 rounded-full bg-mgm-dark flex items-center justify-center flex-shrink-0">
-          <span className="text-mgm-gold-text font-heading font-bold text-xs">
+          <span className="text-mgm-gold font-heading font-bold text-xs">
             {review.name.split(' ').map(n => n[0]).join('')}
           </span>
         </div>
