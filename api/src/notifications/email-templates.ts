@@ -236,3 +236,21 @@ export function leadNewEmail(data: {
     footer()
   );
 }
+
+export function trackingOtpEmail(data: {
+  otp: string;
+  context: string;
+}): string {
+  return wrap(
+    header('Your One-Time Code') +
+    `<tr><td style="padding:24px 32px;">
+      <p style="margin:0 0 16px;font-size:14px;color:${BRAND.text};">Use the code below to ${data.context}. It is valid for 10 minutes.</p>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:${BRAND.bg};border-radius:8px;border:1px solid ${BRAND.border};">
+        <tr><td style="padding:20px;text-align:center;">
+          <span style="font-size:32px;font-weight:800;letter-spacing:10px;color:${BRAND.dark};">${data.otp}</span>
+        </td></tr>
+      </table>
+      <p style="margin:16px 0 0;font-size:12px;color:${BRAND.muted};line-height:1.5;">If you did not request this code, you can safely ignore this email. Do not share this code with anyone, including MGM Financiers staff.</p>
+    </td></tr>`
+  );
+}

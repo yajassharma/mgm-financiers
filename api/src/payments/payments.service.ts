@@ -8,6 +8,7 @@ import { escapeRegex } from "../common/helpers/regex.helper";
 import { ConfigService } from "@nestjs/config";
 import { Cron, CronExpression } from "@nestjs/schedule";
 import { EmailNotificationService } from "../notifications/email-notification.service";
+import { OtpService } from "src/auth/otp/otp.service";
 import * as crypto from "crypto";
 
 @Injectable()
@@ -18,6 +19,7 @@ export class PaymentsService {
     @InjectModel(Payment.name) readonly model: Model<PaymentDocument>,
     private readonly config: ConfigService,
     private readonly emailNotifications: EmailNotificationService,
+    private readonly otpService: OtpService,
   ) {}
 
   private getCashfreeConfig() {
@@ -207,13 +209,87 @@ export class PaymentsService {
     });
   }
 
-  async trackByPhone(phone: string) {
-    const payments = await this.model.find({ customerPhone: phone }).sort({ createdAt: -1 }).limit(10);
-    if (!payments.length) {
-      return makeResponse({ statusCode: 404, title: "Not Found", message: "No payments found for this phone number.", status: "error" });
+  private static readonly TRACK_GENERIC = 'If a payment exists for this phone number, a 6-digit code has been sent to the email on file.';
+
+  async sendTrackOtp(phone: string) {
+    const digits = (phone || '').toString().replace(/\D/g, '');
+    if (!/^[6-9]\d{9}$/.test(digits)) {
+      return makeResponse({
+        statusCode: 400, title: 'Invalid Phone',
+        message: 'Enter a valid 10-digit Indian mobile number.',
+        status: 'error',
+      });
     }
+
+    const latest = await this.model.findOne({ customerPhone: digits }).sort({ createdAt: -1 });
+
+    // Always the same response — never reveal whether the phone number exists
+    const generic = () =>
+      makeResponse({
+        statusCode: 200, title: 'OTP Sent',
+        message: PaymentsService.TRACK_GENERIC,
+        status: 'success',
+      });
+
+    const email = latest?.customerEmail?.trim().toLowerCase();
+    if (!latest || !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return generic();
+    }
+
+    const result = await this.otpService.createEmailOtp({ email, purpose: 'track-payment', ref: digits });
+    if (!result.ok) {
+      if (result.reason === 'invalid_email') return generic();
+      return makeResponse({
+        statusCode: 429, title: 'Please Wait',
+        message: 'Too many OTP requests. Please wait a minute and try again.',
+        status: 'error',
+      });
+    }
+
+    await this.emailNotifications
+      .sendTrackingOtpEmail(email, result.otp, 'view your payment status on the MGM Financiers website')
+      .catch((err) => this.logger.error(`Track OTP email failed: ${err.message}`));
+
+    return generic();
+  }
+
+  async verifyTrackOtp(body: { phone: string; otp: string }) {
+    const digits = (body?.phone || '').toString().replace(/\D/g, '');
+    if (!/^[6-9]\d{9}$/.test(digits)) {
+      return makeResponse({
+        statusCode: 400, title: 'Invalid Phone',
+        message: 'Enter a valid 10-digit Indian mobile number.',
+        status: 'error',
+      });
+    }
+
+    const latest = await this.model.findOne({ customerPhone: digits }).sort({ createdAt: -1 });
+    const email = latest?.customerEmail?.trim().toLowerCase();
+
+    // No payment records → no OTP could have been issued → generic failure
+    if (!latest || !email) {
+      return makeResponse({
+        statusCode: 404, title: 'Not Found',
+        message: 'No payments found for this phone number.',
+        status: 'error',
+      });
+    }
+
+    const result = await this.otpService.checkEmailOtp({ email, otp: body?.otp || '', purpose: 'track-payment', ref: digits });
+    if (!result.ok) {
+      return makeResponse({
+        statusCode: 400, title: 'Invalid OTP',
+        message: 'OTP is invalid, expired, or was already used too many times.',
+        status: 'error',
+      });
+    }
+
+    const payments = await this.model.find({ customerPhone: digits }).sort({ createdAt: -1 }).limit(10);
     return makeResponse({
-      statusCode: 200, title: "Payments Found", message: "Payments retrieved successfully.", status: "success", data: payments,
+      statusCode: 200, title: 'Payments Found',
+      message: 'OTP verified successfully.',
+      status: 'success',
+      data: payments,
     });
   }
 

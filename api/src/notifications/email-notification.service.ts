@@ -10,6 +10,7 @@ import {
   grievanceUpdateEmail,
   grievanceFollowUpEmail,
   leadNewEmail,
+  trackingOtpEmail,
 } from './email-templates';
 
 @Injectable()
@@ -212,6 +213,31 @@ export class EmailNotificationService implements OnModuleInit {
   }
 
   // ─── Lead notification ─────────────────────────────────────────────
+  // ─── One-time codes for customer-facing tracking/follow-up flows ───────────
+  async sendTrackingOtpEmail(email: string, otp: string, context: string): Promise<boolean> {
+    if (!this.enabled) {
+      this.logger.warn(`RESEND not enabled — DEV tracking OTP for ${email}: ${otp}`);
+      return true; // dev mode: pretend the email went out
+    }
+    try {
+      const html = trackingOtpEmail({ otp, context });
+      const res = await this.resend.emails.send({
+        from: this.fromEmail,
+        to: email,
+        subject: `${otp} is your MGM Financiers one-time code`,
+        html,
+      });
+      if (res.error) {
+        this.logger.error(`Tracking OTP email failed for ${email}: ${res.error.message}`);
+        return false;
+      }
+      return true;
+    } catch (err: any) {
+      this.logger.error(`Tracking OTP email failed for ${email}: ${err.message}`);
+      return false;
+    }
+  }
+
   async sendLeadNew(data: {
     leadId: string;
     name: string;

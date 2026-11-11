@@ -94,12 +94,14 @@ async function bootstrap() {
   });
 
   // Tracking endpoints (read-only but email-triggering)
-  app.use('/grievances/track-by-email', trackingLimiter);
+  app.use('/grievances/track', trackingLimiter);
   app.use('/payments/track', trackingLimiter);
 
-  // SMS OTP endpoints (cost money per send)
+  // SMS/email OTP endpoints (cost money per send or leak existence)
   app.use('/grievances/send-otp', smsLimiter);
   app.use('/grievances/verify-otp', smsLimiter);
+  app.use('/grievances/track/send-otp', smsLimiter);
+  app.use('/payments/track/send-otp', smsLimiter);
 
   // Auth endpoints rate limiting
   app.use('/auth/admin/login', authLimiter);

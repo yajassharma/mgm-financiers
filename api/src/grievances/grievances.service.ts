@@ -26,6 +26,106 @@ export class GrievancesService {
     return this.otpService.checkGrievanceOtp(phone, otp);
   }
 
+  private static readonly TRACK_GENERIC = 'If matching grievances exist, a 6-digit code has been sent to your email.';
+
+  async sendTrackOtp(email: string) {
+    const normalized = (email || '').toString().trim().toLowerCase();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized)) {
+      return makeResponse({
+        statusCode: 400, title: 'Error',
+        message: 'Enter a valid email address.',
+        status: 'error',
+      });
+    }
+
+    const existing = await this.model.findOne({ email: normalized }).sort({ _id: -1 });
+
+    // Always the same response — never reveal whether the email exists
+    const generic = () =>
+      makeResponse({
+        statusCode: 200, title: 'OTP Sent',
+        message: GrievancesService.TRACK_GENERIC,
+        status: 'success',
+      });
+
+    if (!existing) return generic();
+
+    const result = await this.otpService.createEmailOtp({ email: normalized, purpose: 'track', ref: normalized });
+    if (!result.ok) {
+      if (result.reason === 'invalid_email') {
+        return makeResponse({
+          statusCode: 400, title: 'Error',
+          message: 'Enter a valid email address.',
+          status: 'error',
+        });
+      }
+      return makeResponse({
+        statusCode: 429, title: 'Please Wait',
+        message: 'Too many OTP requests. Please wait a minute and try again.',
+        status: 'error',
+      });
+    }
+
+    await this.emailNotifications
+      .sendTrackingOtpEmail(normalized, result.otp, 'view your grievance status on the MGM Financiers website')
+      .catch((err) => this.logger.error(`Track OTP email failed for ${normalized}: ${err.message}`));
+
+    return generic();
+  }
+
+  private async checkTrackOtp(email: string, otp: string) {
+    const normalized = (email || '').toString().trim().toLowerCase();
+    return this.otpService.checkEmailOtp({ email: normalized, otp, purpose: 'track', ref: normalized });
+  }
+
+  async verifyTrackOtp(body: { email: string; otp: string }) {
+    const normalized = (body?.email || '').toString().trim().toLowerCase();
+    const result = await this.checkTrackOtp(normalized, body?.otp || '');
+    if (!result.ok) {
+      return makeResponse({
+        statusCode: 400, title: 'Invalid OTP',
+        message: 'OTP is invalid, expired, or was already used too many times.',
+        status: 'error',
+      });
+    }
+
+    const grievances = await this.model.find({ email: normalized }).sort({ _id: -1 });
+    return makeResponse({
+      statusCode: 200, title: 'Grievances Found',
+      message: 'OTP verified successfully.',
+      status: 'success',
+      data: grievances,
+    });
+  }
+
+  async fetchTrackOtp(grievanceId: string, body: { email: string; otp: string }) {
+    const normalized = (body?.email || '').toString().trim().toLowerCase();
+    const result = await this.checkTrackOtp(normalized, body?.otp || '');
+    if (!result.ok) {
+      return makeResponse({
+        statusCode: 400, title: 'Invalid OTP',
+        message: 'OTP is invalid or expired.',
+        status: 'error',
+      });
+    }
+
+    const grievance = await this.model.findOne({ grievanceId, email: normalized });
+    if (!grievance) {
+      return makeResponse({
+        statusCode: 404, title: 'Not Found',
+        message: 'No grievance found for this ID and email.',
+        status: 'error',
+      });
+    }
+
+    return makeResponse({
+      statusCode: 200, title: 'Grievance Found',
+      message: 'OTP verified successfully.',
+      status: 'success',
+      data: grievance,
+    });
+  }
+
   async createGrievance(body: any) {
     const { name, customerName, email, mobile, phone, category, subject, description, loanType, loanAccountNumber, address, phoneOtp } = body;
     if (!email || !subject || !description) {
@@ -89,20 +189,32 @@ export class GrievancesService {
     });
   }
 
-  async trackByEmail(body: { email: string }) {
-    const grievances = await this.model.find({ email: body.email }).sort({ _id: -1 });
-    return makeResponse({
-      statusCode: 200, title: 'Grievances Found',
-      message: 'Grievances retrieved successfully.', status: 'success', data: grievances,
-    });
-  }
-
-  async trackById(grievanceId: string) {
-    const grievance = await this.model.findOne({ grievanceId });
-    if (!grievance) {
-      return makeResponse({ statusCode: 404, title: 'Not Found', message: 'Grievance not found.', status: 'error' });
+  async removeFollowUp(id: string, timestamp: string) {
+    // Follow-up subdocuments have no _id; tickets timestamps are unique per follow-up
+    const when = new Date(timestamp);
+    if (Number.isNaN(when.getTime())) {
+      return makeResponse({
+        statusCode: 400, title: 'Bad Request',
+        message: 'Invalid follow-up timestamp.', status: 'error',
+      });
     }
-    return makeResponse({ statusCode: 200, title: 'Grievance Found', message: 'Success', status: 'success', data: grievance });
+
+    const result = await this.model.updateOne(
+      { _id: id },
+      { $pull: { followUps: { timestamp: when } } },
+    );
+
+    if (!result.matchedCount) {
+      return makeResponse({
+        statusCode: 404, title: 'Not Found',
+        message: 'Grievance not found.', status: 'error',
+      });
+    }
+
+    return makeResponse({
+      statusCode: 200, title: 'Follow-up Removed',
+      message: 'Follow-up removed from the grievance.', status: 'success',
+    });
   }
 
   async findAll(search?: string, status?: string, page = 1, limit = 10) {
@@ -157,15 +269,41 @@ export class GrievancesService {
     return makeResponse({ statusCode: 200, title: 'Updated', message: 'Status updated successfully.', status: 'success', data: grievance });
   }
 
-  async addFollowUp(grievanceId: string, body: { name: string; email: string; message: string }) {
-    const grievance = await this.model.findOne({ grievanceId });
+  async addFollowUp(grievanceId: string, body: { name: string; email: string; message: string; otp?: string }) {
+    // .lean() — read-only snapshot of possibly-legacy document; do NOT full-save later
+    const grievance = await this.model.findOne({ grievanceId }).lean();
     if (!grievance) {
       return makeResponse({ statusCode: 404, title: 'Not Found', message: 'Grievance not found.', status: 'error' });
     }
 
-    const { name, email, message } = body;
+    const { name, email, message, otp } = body;
     if (!message || !message.trim()) {
       return makeResponse({ statusCode: 400, title: 'Bad Request', message: 'Message is required.', status: 'error' });
+    }
+
+    // Follow-ups must come from the grievance owner, verified by email OTP
+    const normalized = (email || '').toString().trim().toLowerCase();
+    if (!normalized || grievance.email.toLowerCase() !== normalized) {
+      return makeResponse({
+        statusCode: 403, title: 'Forbidden',
+        message: 'The email does not match the one used to file this grievance.',
+        status: 'error',
+      });
+    }
+    if (!otp) {
+      return makeResponse({
+        statusCode: 400, title: 'OTP Required',
+        message: 'Please verify your email with the OTP sent before adding a follow-up.',
+        status: 'error',
+      });
+    }
+    const otpCheck = await this.otpService.checkEmailOtp({ email: normalized, otp, purpose: 'track', ref: normalized });
+    if (!otpCheck.ok) {
+      return makeResponse({
+        statusCode: 400, title: 'Invalid OTP',
+        message: 'OTP is invalid or expired. Please verify your email again.',
+        status: 'error',
+      });
     }
 
     // Per-grievance cap: 5 follow-ups per 24h
@@ -189,26 +327,35 @@ export class GrievancesService {
     }
 
     const now = new Date();
-
-    grievance.followUps.push({
+    const followUpDoc = {
       timestamp: now,
       message: message.trim(),
-      name: name || grievance.name,
-      email: email || grievance.email,
-    });
-    await grievance.save();
+      name: name || (grievance as any).name || 'Anonymous',
+      email: email || (grievance as any).email || 'unknown',
+    };
+
+    // Atomic push — avoids revalidating the entire (possibly legacy) document
+    const updated = await this.model.findOneAndUpdate(
+      { grievanceId },
+      { $push: { followUps: followUpDoc } },
+      { new: true, lean: true },
+    );
+
+    if (!updated) {
+      return makeResponse({ statusCode: 404, title: 'Not Found', message: 'Grievance not found.', status: 'error' });
+    }
 
     // Send email notification (fire-and-forget)
     this.emailNotifications.sendGrievanceFollowUp({
-      grievanceId: grievance.grievanceId,
-      name: name || grievance.name,
-      email: email || grievance.email,
-      message: message.trim(),
-      currentStatus: grievance.status,
+      grievanceId: updated.grievanceId,
+      name: followUpDoc.name,
+      email: followUpDoc.email,
+      message: followUpDoc.message,
+      currentStatus: updated.status || 'RECEIVED',
       createdAt: now,
-    }).catch(err => this.logger.error(`Grievance follow-up notification failed for ${grievance.grievanceId}: ${err.message}`));
+    }).catch(err => this.logger.error(`Grievance follow-up notification failed for ${updated.grievanceId}: ${err.message}`));
 
-    return makeResponse({ statusCode: 200, title: 'Follow-up Added', message: 'Your follow-up has been submitted.', status: 'success', data: grievance });
+    return makeResponse({ statusCode: 200, title: 'Follow-up Added', message: 'Your follow-up has been submitted.', status: 'success', data: updated });
   }
 
   async getStats() {

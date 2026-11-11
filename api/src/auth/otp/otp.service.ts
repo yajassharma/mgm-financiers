@@ -138,6 +138,112 @@ export class OtpService {
     return otp;
   }
 
+  // ─── Email OTP (tracking / follow-up flows) ─────────────────────────
+  private isValidEmail(email: string) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  async createEmailOtp({ email, purpose, ref }: { email: string; purpose: string; ref: string }) {
+    const normalized = (email || '').toString().trim().toLowerCase();
+    if (!this.isValidEmail(normalized)) {
+      return { ok: false as const, reason: 'invalid_email' as const };
+    }
+
+    // Per-ref cooldown: 1 OTP per 60 seconds
+    const lastOtp = await this.model
+      .findOne({ email: normalized, purpose, consentId: ref })
+      .sort({ createdAt: -1 });
+    if (lastOtp && Date.now() - new Date((lastOtp as any).createdAt).getTime() < 60 * 1000) {
+      return { ok: false as const, reason: 'cooldown' as const };
+    }
+
+    // Per-ref 5 OTPs per 24h
+    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const refCount = await this.model.countDocuments({ email: normalized, purpose, consentId: ref, createdAt: { $gte: dayAgo } });
+    if (refCount >= 5) {
+      return { ok: false as const, reason: 'daily_cap' as const };
+    }
+
+    // Per-email 10 OTPs per 24h across all purposes
+    const emailCount = await this.model.countDocuments({ email: normalized, createdAt: { $gte: dayAgo } });
+    if (emailCount >= 10) {
+      return { ok: false as const, reason: 'daily_cap' as const };
+    }
+
+    const otp = this.generateOtp();
+    await this.model.create({
+      phoneNumber: '',
+      email: normalized,
+      consentId: ref,
+      purpose,
+      link: '',
+      otp,
+      expiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    });
+
+    return { ok: true as const, otp };
+  }
+
+  private async findLatestEmailOtp({ email, purpose, ref }: { email: string; purpose: string; ref: string }) {
+    const normalized = (email || '').toString().trim().toLowerCase();
+    return this.model
+      .findOne({ email: normalized, purpose, consentId: ref, isUsed: false })
+      .sort({ createdAt: -1 });
+  }
+
+  // Read-only check — does NOT consume the OTP. Used for read-gated access (tracking).
+  async checkEmailOtp({ email, otp, purpose, ref }: { email: string; otp: string; purpose: string; ref: string }) {
+    const normalized = (email || '').toString().trim().toLowerCase();
+    const body = (otp || '').toString().trim();
+    if (!this.isValidEmail(normalized) || !/^\d{6}$/.test(body)) {
+      return { ok: false as const };
+    }
+
+    const doc = await this.findLatestEmailOtp({ email: normalized, purpose, ref });
+    if (!doc) return { ok: false as const };
+    if ((doc as any).expiresAt < new Date()) return { ok: false as const };
+    if ((doc as any).attempts >= this.MAX_OTP_ATTEMPTS) return { ok: false as const };
+
+    if (doc.otp !== body) {
+      (doc as any).attempts = ((doc as any).attempts || 0) + 1;
+      await doc.save();
+      return { ok: false as const };
+    }
+
+    return { ok: true as const };
+  }
+
+  // Atomic consume — marks the OTP used. Used for mutation access (submitting follow-ups).
+  async consumeEmailOtp({ email, otp, purpose, ref }: { email: string; otp: string; purpose: string; ref: string }) {
+    const normalized = (email || '').toString().trim().toLowerCase();
+    const body = (otp || '').toString().trim();
+
+    const doc = await this.model.findOneAndUpdate(
+      {
+        email: normalized,
+        purpose,
+        consentId: ref,
+        otp: body,
+        isUsed: false,
+        expiresAt: { $gt: new Date() },
+        attempts: { $lt: this.MAX_OTP_ATTEMPTS },
+      },
+      { $set: { isUsed: true } },
+      { sort: { createdAt: -1 }, new: true },
+    );
+
+    if (!doc) {
+      const latest = await this.findLatestEmailOtp({ email: normalized, purpose, ref });
+      if (latest) {
+        (latest as any).attempts = ((latest as any).attempts || 0) + 1;
+        await latest.save();
+      }
+      return { ok: false as const };
+    }
+
+    return { ok: true as const };
+  }
+
   async sendGrievanceOtp(phone: string) {
     const trimmed = (phone || '').toString().trim();
     if (!/^[6-9]\d{9}$/.test(trimmed)) {

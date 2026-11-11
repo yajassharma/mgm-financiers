@@ -27,8 +27,11 @@ export class PaymentsController {
     return this.service.handleWebhook(body, rawBody, signature);
   }
 
-  @Get('track/:phone')
-  trackByPhone(@Param('phone') phone: string) { return this.service.trackByPhone(phone); }
+  @Post('track/send-otp')
+  sendTrackOtp(@Body() body: { phone: string }) { return this.service.sendTrackOtp(body?.phone); }
+
+  @Post('track/verify')
+  verifyTrackOtp(@Body() body: { phone: string; otp: string }) { return this.service.verifyTrackOtp(body); }
 
   @Get()
   @UseGuards(AdminJwtGuard, RolesGuard)

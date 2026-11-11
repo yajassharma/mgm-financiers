@@ -639,9 +639,10 @@ function SubmitTab() {
 }
 
 function TrackTab() {
-;
   const [step, setStep] = useState('email');
   const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSending, setOtpSending] = useState(false);
   const [grievances, setGrievances] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -660,17 +661,18 @@ function TrackTab() {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch(`${API}/grievances/track-by-email`, {
+      const res = await fetch(`${API}/grievances/track/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
       });
       const data = await res.json();
-      if (data.status === 'success') {
-        setGrievances(data.data || []);
-        setStep('list');
+      if (data.status === 'success' || data.statusCode === 200) {
+        setOtp('');
+        setStep('otp');
+        setError('');
       } else {
-        setError(data.message || 'Failed to fetch grievances');
+        setError(data.message || 'Could not send OTP. Please try again.');
       }
     } catch (err) {
       setError('Network error. Please try again.');
@@ -678,17 +680,39 @@ function TrackTab() {
     setLoading(false);
   };
 
-  const viewGrievance = async (grievanceId) => {
+  const handleOtpSubmit = async () => {
+    if (!/^\d{6}$/.test(otp.trim())) {
+      setError('Enter the 6-digit OTP sent to your email');
+      return;
+    }
     setLoading(true);
+    setError('');
     try {
-      const res = await fetch(`${API}/grievances/track/${grievanceId}`);
+      const res = await fetch(`${API}/grievances/track/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim().toLowerCase(), otp: otp.trim() }),
+      });
       const data = await res.json();
       if (data.status === 'success') {
-        setSelected(data.data);
-        setStep('detail');
+        setGrievances(data.data || []);
+        setStep('list');
+      } else {
+        setError(data.message || 'Invalid or expired OTP');
       }
-    } catch (err) {}
+    } catch (err) {
+      setError('Network error. Please try again.');
+    }
     setLoading(false);
+  };
+
+  const viewGrievance = (grievanceId) => {
+    const match = grievances.find((g) => g.grievanceId === grievanceId);
+    if (match) {
+      setSelected(match);
+      setStep('detail');
+      setError('');
+    }
   };
 
   const submitFollowUp = async () => {
@@ -701,8 +725,9 @@ function TrackTab() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: followUpName || selected.name,
-          email: followUpEmail || selected.email,
+          email: email.trim().toLowerCase(),
           message: followUpMessage.trim(),
+          otp: otp.trim(),
         }),
       });
       const data = await res.json();
@@ -809,20 +834,58 @@ function TrackTab() {
     );
   }
 
+  if (step === 'otp') {
+    return (
+      <div className="max-w-md mx-auto text-center">
+        <button onClick={() => { setStep('email'); setOtp(''); setError(''); }} className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#1a1a2e] mb-6 transition-colors mx-auto">
+          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+          Back
+        </button>
+        <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-[#1a1a2e] flex items-center justify-center">
+          <svg className="w-8 h-8 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
+          </svg>
+        </div>
+        <h3 className="text-xl font-bold text-[#1a1a2e] mb-2">Verify Your Email</h3>
+        <p className="text-sm text-gray-500 mb-6">If a grievance exists for <span className="font-semibold text-[#1a1a2e]">{email}</span>, we sent a 6-digit code to it. Enter it to view your grievances.</p>
+        <input
+          type="text"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          placeholder="Enter 6-digit OTP"
+          maxLength={6}
+          value={otp}
+          onChange={(e) => { setOtp(e.target.value.replace(/[^\d]/g, '').slice(0, 6)); setError(''); }}
+          onKeyDown={(e) => e.key === 'Enter' && handleOtpSubmit()}
+          aria-label="One-time password"
+          className="w-full px-4 py-4 bg-white border border-gray-500 rounded-xl text-xl font-bold text-[#1a1a2e] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all tracking-[0.5em] text-center mb-4"
+        />
+        {error && <p role="alert" className="text-sm text-red-600 mb-4">{error}</p>}
+        <button onClick={handleOtpSubmit} disabled={loading || otp.trim().length !== 6}
+          className="w-full py-3.5 bg-[#c9a227] text-[#1a1a2e] rounded-full text-sm font-bold hover:bg-[#b8922a] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+          {loading ? <><LoadingSpinner size="sm" /> Verifying...</> : 'Verify & Continue'}
+        </button>
+        <button onClick={handleEmailSubmit} disabled={loading} className="mt-3 text-sm text-gray-500 hover:text-[#1a1a2e] font-medium transition-colors">
+          Didn't get it? Resend code
+        </button>
+      </div>
+    );
+  }
+
   if (step === 'list') {
     return (
       <div className="max-w-2xl mx-auto">
-        <button onClick={() => { setStep('email'); setEmail(''); setGrievances([]); }} className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#1a1a2e] mb-6 transition-colors">
+        <button onClick={() => { setStep('email'); setEmail(''); setOtp(''); setGrievances([]); setError(''); }} className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#1a1a2e] mb-6 transition-colors">
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
           Use a different email
         </button>
-        <h3 className="text-xl font-bold text-[#1a1a2e] mb-1">{'Track Your Grievance'}</h3>
-        <p className="text-sm text-gray-500 mb-6">{'Enter your grievance ID to check status'}</p>
+        <h3 className="text-xl font-bold text-[#1a1a2e] mb-1">{'Your Grievances'}</h3>
+        <p className="text-sm text-gray-500 mb-6">{'Showing all grievances for ' + email}</p>
         {grievances.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
             <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg>
-            <p className="text-gray-500 font-medium">{'Enter your grievance ID to check status'}</p>
-            <p className="text-gray-500 text-sm mt-1">{'Enter grievance ID'}</p>
+            <p className="text-gray-500 font-medium">{'No grievances found for this email'}</p>
+            <p className="text-gray-500 text-sm mt-1">{'Try a different email address'}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -870,7 +933,7 @@ function TrackTab() {
         </svg>
       </div>
       <h3 className="text-xl font-bold text-[#1a1a2e] mb-2">{'Track Your Grievance'}</h3>
-      <p className="text-sm text-gray-500 mb-8">{'Enter your grievance ID to check status'}</p>
+      <p className="text-sm text-gray-500 mb-8">{'Enter the email you used to file the grievance. We will send a one-time code to verify it.'}</p>
       <div className="space-y-4">
         <input type="email" autoComplete="email" placeholder="your@email.com" value={email}
           aria-label="Your email address"
@@ -879,9 +942,9 @@ function TrackTab() {
           onKeyDown={(e) => e.key === 'Enter' && handleEmailSubmit()}
           className="w-full px-4 py-3.5 bg-white border border-gray-500 rounded-xl text-sm text-[#1a1a2e] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all text-center" />
         {error && <p id="grievance-email-error" role="alert" className="text-sm text-red-600">{error}</p>}
-        <button onClick={handleEmailSubmit} disabled={loading}
+        <button onClick={handleEmailSubmit} disabled={loading || !email.trim()}
           className="w-full py-3.5 bg-[#c9a227] text-[#1a1a2e] rounded-full text-sm font-bold hover:bg-[#b8922a] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-          {loading ? <><LoadingSpinner size="sm" /> {'Tracking...'}</> : 'Track Status'}
+          {loading ? <><LoadingSpinner size="sm" /> Sending...</> : 'Send Code'}
         </button>
       </div>
     </div>

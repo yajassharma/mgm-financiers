@@ -8,7 +8,8 @@ export class Otp {
   @Prop({ trim: true, default: '' }) link!: string;
   @Prop({ required: true }) otp!: string;
   @Prop({ required: true }) consentId!: string;
-  @Prop({ required: true }) phoneNumber!: string;
+  @Prop({ trim: true, default: '' }) phoneNumber!: string;
+  @Prop({ trim: true, default: '' }) email!: string;
   @Prop({ required: true }) expiresAt!: Date;
   @Prop({ default: false }) isUsed!: boolean;
   @Prop({ default: 0 }) attempts!: number;

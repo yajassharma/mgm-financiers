@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGrievancesQuery } from "../../hooks/grievance/query/useGrievances.query";
 import { useUpdateGrievanceStatusMutation } from "../../hooks/grievance/mutation/useUpdateGrievanceStatus.mutation";
+import { useDeleteGrievanceFollowUpMutation } from "../../hooks/grievance/mutation/useDeleteGrievanceFollowUp.mutation";
 import Card from "../../components/ui/Card";
 import Badge from "../../components/ui/Badge";
 import Button from "../../components/ui/Button";
@@ -30,6 +31,7 @@ export default function GrievanceDetail() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading, refetch } = useGrievancesQuery({ page: 1, limit: 100, search: "", status: "all" });
   const { mutateAsync: updateStatus, isPending } = useUpdateGrievanceStatusMutation();
+  const { mutateAsync: deleteFollowUp, isPending: isDeleting } = useDeleteGrievanceFollowUpMutation();
 
   const grievance = data?.data?.items?.find((g: any) => g._id === id);
 
@@ -68,6 +70,11 @@ export default function GrievanceDetail() {
     setNewStatus("");
     setCustomerUpdate("");
     setInternalNotes("");
+    refetch();
+  };
+
+  const handleDeleteFollowUp = async (timestamp: string) => {
+    await deleteFollowUp({ id: grievance._id, timestamp });
     refetch();
   };
 
@@ -179,6 +186,43 @@ export default function GrievanceDetail() {
               ))}
             </div>
           </Card>
+
+          {/* Customer Follow-ups */}
+          {(grievance.followUps?.length ?? 0) > 0 && (
+            <Card>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xs uppercase tracking-wider font-semibold text-mgm-muted">
+                  Customer Follow-ups
+                </h3>
+                <span className="text-[11px] font-semibold text-mgm-muted bg-mgm-light rounded-full px-2 py-0.5">
+                  {grievance.followUps.length}
+                </span>
+              </div>
+              <div className="space-y-3">
+                {grievance.followUps.map((f: any, i: number) => (
+                  <div key={f._id ?? i} className="border border-mgm-border rounded-xl p-4 bg-amber-50/30">
+                    <p className="text-sm text-mgm-navy leading-relaxed whitespace-pre-wrap">{f.message}</p>
+                    <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold text-mgm-navy truncate">{f.name}</p>
+                        <p className="text-[11px] text-mgm-muted truncate">{f.email} · {new Date(f.timestamp).toLocaleString("en-IN", {
+                          day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit",
+                        })}</p>
+                      </div>
+                      <button
+                        onClick={() => f.timestamp && handleDeleteFollowUp(f.timestamp)}
+                        disabled={isDeleting || !f.timestamp}
+                        title="Remove this follow-up (use for spam/pen-test junk)"
+                        className="text-[11px] font-semibold text-red-600 hover:text-red-700 border border-red-200 hover:border-red-300 rounded-lg px-2.5 py-1.5 transition-colors disabled:opacity-50"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
         </div>
 
         {/* Sidebar */}

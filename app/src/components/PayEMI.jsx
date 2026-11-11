@@ -254,6 +254,8 @@ const prefersReduced = usePrefersReducedMotion()
 
   // Track payment
   const [trackPhone, setTrackPhone] = useState('')
+  const [trackStep, setTrackStep] = useState('phone') // 'phone' | 'otp'
+  const [trackOtp, setTrackOtp] = useState('')
   const [trackResult, setTrackResult] = useState(null)
   const [trackLoading, setTrackLoading] = useState(false)
   const [trackError, setTrackError] = useState('')
@@ -450,19 +452,53 @@ const prefersReduced = usePrefersReducedMotion()
     setTrackError('')
     setTrackLoading(true)
     setTrackResult(null)
+    // Only sends the OTP when a payment with this phone exists — response is generic either way
     try {
-      const response = await fetch(`${API_BASE}/payments/track/${digits}`)
+      const response = await fetch(`${API_BASE}/payments/track/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: digits }),
+      })
       const result = await response.json()
-      if (result.status === 'success' && result.data) {
-        setTrackResult(result.data)
+      if (result.status === 'success' || result.statusCode === 200) {
+        setTrackOtp('')
+        setTrackStep('otp')
+        setTrackError('')
       } else {
-        setTrackError(result.message || 'No payment found for this number')
+        setTrackError(result.message || 'Could not send OTP. Please try again.')
       }
     } catch (err) {
       setTrackError('Network error. Please try again.')
     }
     setTrackLoading(false)
   }, [trackPhone])
+
+  const handleVerifyTrackOtp = useCallback(async () => {
+    const digits = trackPhone.replace(/\D/g, '')
+    if (!/^\d{6}$/.test(trackOtp.trim())) {
+      setTrackError('Enter the 6-digit OTP sent to the email on your payment record')
+      return
+    }
+    setTrackError('')
+    setTrackLoading(true)
+    try {
+      const response = await fetch(`${API_BASE}/payments/track/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: digits, otp: trackOtp.trim() }),
+      })
+      const result = await response.json()
+      if (result.status === 'success' && result.data) {
+        setTrackResult(result.data)
+        setTrackStep('phone')
+      } else {
+        setTrackError(result.message || 'Invalid or expired OTP')
+      }
+    } catch (err) {
+      setTrackError('Network error. Please try again.')
+    }
+    setTrackLoading(false)
+  }, [trackPhone, trackOtp])
 
   return (
     <div className="min-h-screen bg-white">
@@ -1113,35 +1149,68 @@ const prefersReduced = usePrefersReducedMotion()
               <h2 className="text-2xl sm:text-3xl font-bold text-mgm-dark mt-3 font-heading">
                 Track Your Payment
               </h2>
-              <p className="text-mgm-dark/70 font-body text-sm mt-3">Enter your registered phone number to check the status of your latest payment.</p>
+              <p className="text-mgm-dark/70 font-body text-sm mt-3">Enter your registered phone number. We will send a one-time code to the email on your payment record to verify it.</p>
             </div>
             <div className="bg-white rounded-3xl shadow-xl shadow-mgm-dark/5 border border-mgm-dark/5 p-8 sm:p-10">
-              <div className="flex gap-3">
-                <div className="flex-1 relative">
-                  <input
-                    type="tel"
-                    autoComplete="tel"
-                    aria-label="Registered phone number"
-                    aria-invalid={!!trackError} aria-describedby={trackError ? 'payemi-track-error' : undefined}
-                    value={trackPhone}
-                    onChange={(e) => { setTrackPhone(e.target.value.replace(/[^\d]/g, '').slice(0, 10)); setTrackResult(null); setTrackError(''); }}
-                    placeholder="Enter 10-digit phone number"
-                    className="w-full bg-mgm-light/40 border border-mgm-dark/50 rounded-xl px-4 py-3 font-body text-sm text-mgm-dark outline-none focus:border-mgm-gold/40 focus:ring-2 focus:ring-mgm-gold/10 transition-all"
-                  />
+              {trackStep === 'phone' ? (
+                <div className="flex gap-3">
+                  <div className="flex-1 relative">
+                    <input
+                      type="tel"
+                      autoComplete="tel"
+                      aria-label="Registered phone number"
+                      aria-invalid={!!trackError} aria-describedby={trackError ? 'payemi-track-error' : undefined}
+                      value={trackPhone}
+                      onChange={(e) => { setTrackPhone(e.target.value.replace(/[^\d]/g, '').slice(0, 10)); setTrackResult(null); setTrackError(''); setTrackStep('phone'); }}
+                      placeholder="Enter 10-digit phone number"
+                      className="w-full bg-mgm-light/40 border border-mgm-dark/50 rounded-xl px-4 py-3 font-body text-sm text-mgm-dark outline-none focus:border-mgm-gold/40 focus:ring-2 focus:ring-mgm-gold/10 transition-all"
+                    />
+                  </div>
+                  <button
+                    onClick={handleTrackPayment}
+                    disabled={trackLoading || trackPhone.replace(/\D/g, '').length < 10}
+                    className="btn-interactive bg-mgm-gold text-mgm-dark px-6 py-3 rounded-xl font-semibold text-sm hover:bg-mgm-gold/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                  >
+                    {trackLoading ? (
+                      <div className="w-4 h-4 border-2 border-mgm-dark/20 border-t-mgm-dark rounded-full animate-spin" />
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
+                    )}
+                    Send OTP
+                  </button>
                 </div>
-                <button
-                  onClick={handleTrackPayment}
-                  disabled={trackLoading || trackPhone.replace(/\D/g, '').length < 10}
-                  className="btn-interactive bg-mgm-gold text-mgm-dark px-6 py-3 rounded-xl font-semibold text-sm hover:bg-mgm-gold/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-                >
-                  {trackLoading ? (
-                    <div className="w-4 h-4 border-2 border-mgm-dark/20 border-t-mgm-dark rounded-full animate-spin" />
-                  ) : (
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-                  )}
-                  Track
-                </button>
-              </div>
+              ) : (
+                <div>
+                  <p className="text-sm text-mgm-dark/70 font-body mb-4">If a payment exists for <span className="font-semibold text-mgm-dark">+91 {trackPhone}</span>, we sent a 6-digit code to the email registered on your payment record. Check your inbox.</p>
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      aria-label="One-time password"
+                      value={trackOtp}
+                      onChange={(e) => { setTrackOtp(e.target.value.replace(/[^\d]/g, '').slice(0, 6)); setTrackError(''); }}
+                      onKeyDown={(e) => e.key === 'Enter' && handleVerifyTrackOtp()}
+                      placeholder="Enter 6-digit OTP"
+                      maxLength={6}
+                      className="flex-1 min-w-0 bg-mgm-light/40 border border-mgm-dark/50 rounded-xl px-4 py-3 font-body text-sm text-mgm-dark outline-none focus:border-mgm-gold/40 focus:ring-2 focus:ring-mgm-gold/10 transition-all tracking-[0.3em] text-center font-bold"
+                    />
+                    <button
+                      onClick={handleVerifyTrackOtp}
+                      disabled={trackLoading || trackOtp.trim().length !== 6}
+                      className="btn-interactive bg-mgm-gold text-mgm-dark px-6 py-3 rounded-xl font-semibold text-sm hover:bg-mgm-gold/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      {trackLoading ? (
+                        <div className="w-4 h-4 border-2 border-mgm-dark/20 border-t-mgm-dark rounded-full animate-spin" />
+                      ) : null}
+                      Verify & Track
+                    </button>
+                  </div>
+                  <button onClick={() => { setTrackStep('phone'); setTrackOtp(''); setTrackError(''); }} className="mt-3 text-sm text-mgm-dark/60 hover:text-mgm-dark font-medium transition-colors">
+                    Use a different number
+                  </button>
+                </div>
+              )}
               {trackError && (
                 <p id="payemi-track-error" role="alert" className="text-red-600 font-body text-xs mt-3">{trackError}</p>
               )}
