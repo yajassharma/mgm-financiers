@@ -22,6 +22,9 @@ export class Grievance {
   @Prop({ required: true, trim: true })
   mobile!: string;
 
+  @Prop({ default: false })
+  mobileVerified!: boolean;
+
   @Prop({ required: true, trim: true })
   category!: string;
 

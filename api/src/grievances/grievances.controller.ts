@@ -11,6 +11,14 @@ export class GrievancesController {
   @Post()
   create(@Body() body: any) { return this.service.createGrievance(body); }
 
+  @Post('send-otp')
+  sendOtp(@Body() body: { phone: string }) { return this.service.sendGrievanceOtp(body?.phone); }
+
+  @Post('verify-otp')
+  verifyOtp(@Body() body: { phone: string; otp: string }) {
+    return this.service.checkGrievanceOtp(body?.phone, body?.otp);
+  }
+
   @Post(':grievanceId/follow-up')
   addFollowUp(@Param('grievanceId') grievanceId: string, @Body() body: { name: string; email: string; message: string }) {
     return this.service.addFollowUp(grievanceId, body);

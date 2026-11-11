@@ -17,6 +17,9 @@ async function bootstrap() {
     rawBody: true,
   });
 
+  // Trust Railway's edge proxy so req.ip reflects the real client IP
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   // 2) Security middlewares
   app.use(
     helmet({
@@ -67,6 +70,15 @@ async function bootstrap() {
     message: { statusCode: 429, status: 'error', title: 'Rate Limited', message: 'Too many authentication attempts. Please try again later.' },
   });
 
+  // SMS-sending endpoint limiter (each send costs money)
+  const smsLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { statusCode: 429, status: 'error', title: 'Rate Limited', message: 'Too many OTP requests. Please try again later.' },
+  });
+
   // Apply strict limits to public write endpoints (grievances, leads, payments)
   app.use('/grievances', (req: Request, res: Response, next: NextFunction) => {
     if (req.method === 'POST') return publicWriteLimiter(req, res, next);
@@ -84,6 +96,10 @@ async function bootstrap() {
   // Tracking endpoints (read-only but email-triggering)
   app.use('/grievances/track-by-email', trackingLimiter);
   app.use('/payments/track', trackingLimiter);
+
+  // SMS OTP endpoints (cost money per send)
+  app.use('/grievances/send-otp', smsLimiter);
+  app.use('/grievances/verify-otp', smsLimiter);
 
   // Auth endpoints rate limiting
   app.use('/auth/admin/login', authLimiter);

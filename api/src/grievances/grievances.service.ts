@@ -6,6 +6,7 @@ import { makeResponse } from 'src/common/helpers/response.helper';
 import { paginate } from 'src/common/helpers/pagination.helper';
 import { escapeRegex } from 'src/common/helpers/regex.helper';
 import { EmailNotificationService } from '../notifications/email-notification.service';
+import { OtpService } from 'src/auth/otp/otp.service';
 
 @Injectable()
 export class GrievancesService {
@@ -14,10 +15,19 @@ export class GrievancesService {
   constructor(
     @InjectModel(Grievance.name) readonly model: Model<GrievanceDocument>,
     private readonly emailNotifications: EmailNotificationService,
+    private readonly otpService: OtpService,
   ) {}
 
+  async sendGrievanceOtp(phone: string) {
+    return this.otpService.sendGrievanceOtp(phone);
+  }
+
+  async checkGrievanceOtp(phone: string, otp: string) {
+    return this.otpService.checkGrievanceOtp(phone, otp);
+  }
+
   async createGrievance(body: any) {
-    const { name, customerName, email, mobile, phone, category, subject, description, loanType, loanAccountNumber, address } = body;
+    const { name, customerName, email, mobile, phone, category, subject, description, loanType, loanAccountNumber, address, phoneOtp } = body;
     if (!email || !subject || !description) {
       return makeResponse({
         statusCode: 400, title: 'Error',
@@ -25,11 +35,34 @@ export class GrievancesService {
         status: 'error',
       });
     }
+
+    const mobileNumber = (mobile || phone || '').toString().trim();
+    if (!/^[6-9]\d{9}$/.test(mobileNumber)) {
+      return makeResponse({
+        statusCode: 400, title: 'Error',
+        message: 'A valid 10-digit Indian mobile number is required.',
+        status: 'error',
+      });
+    }
+
+    if (!phoneOtp) {
+      return makeResponse({
+        statusCode: 400, title: 'OTP Required',
+        message: 'Please verify your mobile number with an OTP before submitting.',
+        status: 'error',
+      });
+    }
+
+    // OTP is single-use — consume it atomically before creating the record
+    const consumed = await this.otpService.consumeGrievanceOtp(mobileNumber, phoneOtp);
+    if (consumed.statusCode !== 200) return consumed;
+
     const now = new Date();
     const grievance = await this.model.create({
       name: name || customerName || 'Anonymous',
       email,
-      mobile: mobile || phone || 'Not Provided',
+      mobile: mobileNumber,
+      mobileVerified: true,
       category: category || loanType || 'General',
       subject,
       description,
@@ -133,6 +166,26 @@ export class GrievancesService {
     const { name, email, message } = body;
     if (!message || !message.trim()) {
       return makeResponse({ statusCode: 400, title: 'Bad Request', message: 'Message is required.', status: 'error' });
+    }
+
+    // Per-grievance cap: 5 follow-ups per 24h
+    const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentFollowUps = (grievance.followUps || []).filter((f: any) => new Date(f.timestamp) >= dayAgo);
+    if (recentFollowUps.length >= 5) {
+      return makeResponse({
+        statusCode: 429, title: 'Too Many Follow-ups',
+        message: 'Maximum 5 follow-ups per grievance per day. Please try again later.',
+        status: 'error',
+      });
+    }
+
+    // Total follow-up cap per grievance: 10 lifetime
+    if ((grievance.followUps || []).length >= 10) {
+      return makeResponse({
+        statusCode: 429, title: 'Limit Reached',
+        message: 'This grievance has reached the maximum number of follow-ups. Please contact support.',
+        status: 'error',
+      });
     }
 
     const now = new Date();

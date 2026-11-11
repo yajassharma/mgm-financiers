@@ -315,6 +315,66 @@ function SubmitTab() {
   const [result, setResult] = useState(null);
   const [errors, setErrors] = useState({});
 
+  // Phone OTP verification state
+  const [phoneOtp, setPhoneOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpSending, setOtpSending] = useState(false);
+  const [otpVerifying, setOtpVerifying] = useState(false);
+  const [otpError, setOtpError] = useState('');
+
+  const isPhoneValid = /^[6-9]\d{9}$/.test(form.phone.trim());
+
+  const sendOtp = async () => {
+    if (!isPhoneValid || otpSending) return;
+    setOtpSending(true);
+    setOtpError('');
+    try {
+      const res = await fetch(`${API}/grievances/send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone.trim() }),
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setOtpSent(true);
+        setOtpVerified(false);
+        setPhoneOtp('');
+      } else {
+        setOtpError(data.message || 'Failed to send OTP. Please try again.');
+      }
+    } catch (err) {
+      setOtpError('Network error. Please try again.');
+    }
+    setOtpSending(false);
+  };
+
+  const verifyOtp = async () => {
+    if (!/^\d{6}$/.test(phoneOtp.trim()) || otpVerifying) {
+      setOtpError('Enter the 6-digit OTP.');
+      return;
+    }
+    setOtpVerifying(true);
+    setOtpError('');
+    try {
+      const res = await fetch(`${API}/grievances/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone.trim(), otp: phoneOtp.trim() }),
+      });
+      const data = await res.json();
+      if (data.status === 'success') {
+        setOtpVerified(true);
+        setOtpError('');
+      } else {
+        setOtpError(data.message || 'Invalid OTP.');
+      }
+    } catch (err) {
+      setOtpError('Network error. Please try again.');
+    }
+    setOtpVerifying(false);
+  };
+
   const validate = useCallback(() => {
     const e = {};
     if (!form.customerName.trim()) e.customerName = 'Required';
@@ -332,19 +392,30 @@ function SubmitTab() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const v = validate();
+    if (!otpVerified) {
+      v.phoneOtp = 'Please verify your mobile number with the OTP sent via SMS.';
+    }
     setErrors(v);
-    if (Object.keys(v).length > 0) return;
+    if (Object.keys(v).length > 0) {
+      if (v.phoneOtp) setOtpError(v.phoneOtp);
+      return;
+    }
 
     setSubmitting(true);
     try {
       const res = await fetch(`${API}/grievances`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, phoneOtp: phoneOtp.trim() }),
       });
       const data = await res.json();
       if (data.status === 'success') {
         setResult(data.data);
+      } else {
+        setErrors({ submit: data.message || 'Submission failed. Please verify your OTP again.' });
+        if (data.title === 'OTP' || /otp/i.test(data.message || '')) {
+          setOtpVerified(false);
+        }
       }
     } catch (err) {
       setErrors({ submit: 'Something went wrong. Please try again.' });
@@ -355,6 +426,12 @@ function SubmitTab() {
   const update = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }));
+    if (field === 'phone') {
+      setOtpSent(false);
+      setOtpVerified(false);
+      setPhoneOtp('');
+      setOtpError('');
+    }
   };
 
   if (result) {
@@ -389,7 +466,6 @@ function SubmitTab() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {[
           { label: 'Full Name', field: 'customerName', type: 'text', placeholder: 'Enter your full name', required: true },
-          { label: 'Mobile Number', field: 'phone', type: 'tel', placeholder: 'Enter 10-digit mobile number', required: true },
           { label: 'Email Address', field: 'email', type: 'email', placeholder: 'Enter your email address', required: true },
           { label: 'Loan Account Number (if applicable)', field: 'loanAccountNumber', type: 'text', placeholder: 'Optional', required: false },
         ].map(({ label, field, type, placeholder, required }) => (
@@ -409,6 +485,65 @@ function SubmitTab() {
             {errors[field] && <p id={`grievance-${field}-error`} role="alert" className="text-xs text-red-600 mt-1">{errors[field]}</p>}
           </div>
         ))}
+
+        {/* Mobile Number with OTP verification */}
+        <div>
+          <label htmlFor="grievance-phone" className="block text-sm font-semibold text-[#1a1a2e] mb-1.5">
+            {'Mobile Number'} <span className="text-red-600">*</span>
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="grievance-phone"
+              type="tel"
+              inputMode="numeric"
+              placeholder="Enter 10-digit mobile number"
+              value={form.phone}
+              aria-invalid={!!errors.phone} aria-describedby={errors.phone ? 'grievance-phone-error' : undefined}
+              onChange={(e) => update('phone', e.target.value.replace(/[^\d]/g, '').slice(0, 10))}
+              className={`flex-1 min-w-0 px-4 py-3 bg-white border rounded-xl text-sm text-[#1a1a2e] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all ${
+                errors.phone ? 'border-red-600' : 'border-gray-500'
+              }`}
+            />
+            <button
+              type="button"
+              onClick={sendOtp}
+              disabled={!isPhoneValid || otpSending || otpVerified}
+              className="px-4 py-3 bg-[#1a1a2e] text-white text-sm font-semibold rounded-xl hover:bg-[#2a2a3e] disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap"
+            >
+              {otpVerified ? 'Verified ✓' : otpSending ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+            </button>
+          </div>
+          {errors.phone && <p id="grievance-phone-error" role="alert" className="text-xs text-red-600 mt-1">{errors.phone}</p>}
+
+          {otpSent && !otpVerified && (
+            <div className="mt-3">
+              <div className="flex gap-2">
+                <input
+                  id="grievance-phoneOtp"
+                  type="text"
+                  inputMode="numeric"
+                  placeholder="Enter 6-digit OTP"
+                  maxLength={6}
+                  value={phoneOtp}
+                  aria-invalid={!!otpError} aria-describedby={otpError ? 'grievance-otp-error' : undefined}
+                  onChange={(e) => { setPhoneOtp(e.target.value.replace(/[^\d]/g, '').slice(0, 6)); setOtpError(''); }}
+                  className="flex-1 min-w-0 px-4 py-3 bg-white border border-gray-500 rounded-xl text-sm text-[#1a1a2e] placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#c9a227]/30 focus:border-mgm-gold-text transition-all tracking-widest text-center"
+                />
+                <button
+                  type="button"
+                  onClick={verifyOtp}
+                  disabled={otpVerifying || phoneOtp.trim().length !== 6}
+                  className="px-4 py-3 bg-[#c9a227] text-[#1a1a2e] text-sm font-bold rounded-xl hover:bg-[#b8922a] disabled:opacity-50 disabled:cursor-not-allowed transition-all whitespace-nowrap"
+                >
+                  {otpVerifying ? 'Verifying...' : 'Verify'}
+                </button>
+              </div>
+              <p className="text-xs text-gray-500 mt-1.5">We sent a 6-digit OTP to <span className="font-semibold text-[#1a1a2e]">+91 {form.phone}</span>. Valid for 10 minutes.</p>
+            </div>
+          )}
+          {otpVerified && <p className="text-xs text-green-700 mt-1.5 font-medium">✓ Mobile number verified</p>}
+          {otpError && <p id="grievance-otp-error" role="alert" className="text-xs text-red-600 mt-1.5">{otpError}</p>}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -723,40 +858,6 @@ function TrackTab() {
             })}
           </div>
         )}
-      </div>
-    );
-  }
-
-  if (step === 'otp') {
-    return (
-      <div className="max-w-md mx-auto text-center">
-        <button onClick={() => { setStep('email'); setOtp(['','','','','','']); setError(''); }} className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#1a1a2e] mb-6 transition-colors mx-auto">
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
-          Back
-        </button>
-        <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-[#1a1a2e] flex items-center justify-center">
-          <svg className="w-8 h-8 text-mgm-gold-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>
-          </svg>
-        </div>
-        <h3 className="text-xl font-bold text-[#1a1a2e] mb-2">Verify Your Email</h3>
-        <p className="text-sm text-gray-500 mb-8">We sent a 6-digit code to <span className="font-semibold text-[#1a1a2e]">{email}</span></p>
-        <div className="flex gap-3 justify-center mb-4">
-          {otp.map((digit, idx) => (
-            <input key={idx} ref={el => otpRefs.current[idx] = el} type="text" inputMode="numeric" maxLength={1}
-              aria-label={`OTP digit ${idx + 1} of 6`}
-              autoComplete={idx === 0 ? 'one-time-code' : 'off'}
-              aria-invalid={!!error} aria-describedby={error ? 'grievance-otp-error' : undefined}
-              value={digit} onChange={(e) => handleOtpChange(idx, e.target.value)} onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-              className="w-12 h-14 text-center text-xl font-bold bg-white border-2 border-gray-500 rounded-xl focus:outline-none focus:border-mgm-gold-text focus:ring-2 focus:ring-[#c9a227]/20 transition-all text-[#1a1a2e]"
-            />
-          ))}
-        </div>
-        {error && <p id="grievance-otp-error" role="alert" className="text-sm text-red-600 mb-4">{error}</p>}
-        <button onClick={verifyOtp} disabled={loading}
-          className="w-full py-3.5 bg-[#c9a227] text-[#1a1a2e] rounded-full text-sm font-bold hover:bg-[#b8922a] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-          {loading ? <><LoadingSpinner size="sm" /> Verifying...</> : 'Verify & Continue'}
-        </button>
       </div>
     );
   }
